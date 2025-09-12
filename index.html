@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pierre-Etienne Monreal - Consultant Product Owner Senior</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --card-bg-color: rgba(255, 255, 255, 0.7);
+            --text-color: #2d3748;
+            --text-color-light: #4a5568;
+            --primary-color: #1a202c;
+            --primary-color-darker: #2d3748;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Manrope', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; overflow-x: hidden; }
+
+        .background-shapes { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            z-index: -1; 
+            background: radial-gradient(circle at 15% 50%, #dbe3ed, transparent 25%), 
+                        radial-gradient(circle at 85% 30%, #e0e5ea, transparent 30%); 
+            filter: blur(100px);
+            opacity: 0.6;
+        }
+        .container { max-width: 1140px; margin: 0 auto; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+        .card { 
+            background: var(--card-bg-color); 
+            border: 1px solid var(--border-color); 
+            border-radius: 15px; 
+            padding: 3rem; 
+            backdrop-filter: blur(15px); 
+            -webkit-backdrop-filter: blur(15px); 
+            box-shadow: 0 8px 32px 0 var(--shadow-color); 
+            opacity: 0; 
+            transform: translateY(20px); 
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out; 
+        }
+        .card.is-visible { opacity: 1; transform: translateY(0); }
+
+        .hero { display: grid; grid-template-columns: 2fr 1fr; align-items: center; gap: 3rem; }
+        .hero-text h1 { font-size: 3rem; margin-bottom: 1rem; color: var(--primary-color); }
+        .hero-text p { color: var(--text-color); font-size: 1.1rem; }
+        .hero-text .subtitle { font-size: 1.5rem; font-weight: 300; margin-bottom: 1.5rem; color: var(--text-color-light); }
+        .hero-photo { display: flex; justify-content: center; align-items: center; }
+        .hero-photo img { width: 100%; max-width: 250px; aspect-ratio: 1 / 1; border-radius: 50%; object-fit: cover; border: 5px solid var(--border-color); box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+
+        .content-section h2 { 
+            font-size: 2rem; 
+            margin-bottom: 1.5rem; 
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem; 
+            display: inline-block; 
+            color: var(--primary-color);
+        }
+        .content-section p { color: var(--text-color); }
+
+        .cta-buttons-group { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; }
+        .cta-button { 
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-color); 
+            color: #ffffff;
+            padding: 12px 25px; 
+            border-radius: 8px; 
+            text-decoration: none; 
+            font-weight: 600; 
+            transition: all 0.3s ease; 
+            border: 1px solid transparent; 
+            gap: 0.75rem;
+        }
+        .cta-button:hover { 
+            background-color: var(--primary-color-darker); 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 15px var(--shadow-color); 
+        }
+        .cta-button.secondary { 
+            background-color: transparent; 
+            border: 1px solid var(--primary-color); 
+            color: var(--primary-color); 
+        }
+        .cta-button.secondary:hover { 
+            background-color: var(--primary-color); 
+            color: #ffffff; 
+        }
+
+        .skills-container h3 { margin-top: 2rem; margin-bottom: 1rem; color: var(--primary-color); }
+        .skills-container h3:first-child { margin-top: 0; }
+        .skills-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        .skill-tag { 
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--text-color);
+            padding: 0.5rem 1rem; 
+            border-radius: 20px; 
+            font-size: 0.9rem; 
+            font-weight: 500; 
+            border: 1px solid var(--border-color);
+        }
+
+        .swiper {
+            width: 100%;
+            padding-top: 20px;
+            padding-bottom: 40px;
+        }
+        .swiper-slide {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .mission-card {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 2rem;
+            align-items: center;
+            text-align: left;
+            width: 100%;
+        }
+        .mission-logo { width: 150px; height: 100px; display: flex; justify-content: center; align-items: center;}
+        .client-logo-item {  
+            border-radius: 10px; 
+            width: auto; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 0.5rem; 
+            font-weight: 400; 
+            color: var(--text-color-light); 
+            padding: 0.5rem; 
+            text-align: center; 
+        }
+        .client-logo-item img {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+        .logo-inner-item { font-size: 0.8rem; line-height: 1.2; }
+        .logo-separator { font-weight: 600; color: var(--primary-color); font-size: 1.2rem; }
+
+        .mission-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+        .mission-content p {
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+        .swiper-pagination-bullet-active {
+            background-color: var(--primary-color) !important;
+        }
+
+        .contact-links { display: flex; gap: 1.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .contact-links a { 
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-color); 
+            text-decoration: none; 
+            font-weight: 600; 
+            padding: 8px 15px; 
+            border-radius: 8px; 
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease; 
+        }
+        .contact-links a:hover { 
+            background: var(--primary-color); 
+            color: #ffffff; 
+        }
+        
+        .contact-links a svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--primary-color);
+            transition: fill 0.3s ease;
+        }
+        .contact-links a:hover svg {
+            fill: #ffffff;
+        }
+
+        .contact-details { margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 2rem; color: var(--text-color); }
+        .contact-details p { margin-bottom: 0.5rem; }
+        .contact-details a { color: var(--primary-color); text-decoration: none; font-weight: 600; }
+        .contact-details a:hover { text-decoration: underline; }
+        form { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
+        form input, form textarea { 
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--border-color); 
+            border-radius: 8px; 
+            padding: 12px; 
+            font-family: 'Manrope', sans-serif; 
+            color: var(--text-color); 
+            font-size: 1rem; 
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+        form input:focus, form textarea:focus { 
+            outline: none; 
+            border-color: var(--primary-color); 
+            box-shadow: 0 0 0 3px rgba(26, 32, 44, 0.1);
+        }
+        form textarea { min-height: 120px; resize: vertical; }
+        form button { align-self: flex-start; border: none; cursor: pointer; }
+        footer { text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.9rem; color: var(--text-color-light); }
+        footer a { color: var(--primary-color); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        @media (max-width: 992px) { 
+            .hero { grid-template-columns: 1fr; text-align: center; } 
+            .hero-photo { order: -1; margin-bottom: 2rem; } 
+            .hero-text h1 { font-size: 2.5rem; } 
+            .mission-card { grid-template-columns: 1fr; text-align: center; }
+            .mission-logo { margin: 0 auto 1.5rem auto; }
+        }
+        @media (max-width: 768px) { 
+            .container { padding: 1rem; } 
+            .card { padding: 1.5rem; } 
+            .cta-buttons-group { flex-direction: column; gap: 1rem; }
+            .client-logo-item img {
+                height: 30px;
+                max-width: 60px;
+            }
+            .logo-separator {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-shapes"></div>
+
+    <main class="container">
+
+        <section id="accueil" class="card hero">
+            <div class="hero-text">
+                <h1>Pierre-Etienne Monreal</h1>
+                <p class="subtitle">Consultant Product Owner Senior,<br />
+                📍 basé à <strong>Montpellier</strong>.</p>
+                <p>Product Owner <a href="https://www.exalt-company.com/fr-fr/index.html" target="_blank">@eXalt</a> | PSPO1 certified 👨‍💻 | Bénévole <a href="https://agilemontpellier.fr/" target="_blank">@AgileMontpellier</a>🔄</p><br />
+                <a href="#contact" class="cta-button">👋 Me contacter</a>
+            </div>
+            <div class="hero-photo">
+                <img src="https://media.licdn.com/dms/image/v2/D4D03AQH3JM4xvKcEjA/profile-displayphoto-shrink_800_800/B4DZO6Z7dZHMAg-/0/1733999179967?e=1759968000&v=beta&t=Wn5-2HBf-RwUI9ZwO7iqJm1uJfJol2JmIwoAKKgDSIk" alt="Photo de profil de Pierre-Etienne Monreal">
+            </div>
+        </section>
+
+        <section id="a-propos" class="card content-section">
+            <h2>A Propos</h2>
+                <p>Passionné par la création de produits technologiques complexes, je suis un <strong>Product Owner Senior</strong> avec 10 ans d'expériences au sein d'entreprises et de startups innovantes.<br />
+                Mon expertise couvre l'intégralité du cycle de vie des projets, de la conception à la livraison, avec une maîtrise de la <strong>build-chain</strong>. Je pilote des solutions transversales en optimisant la gestion des priorités pour maximiser la valeur produite.<p/><br />
+                <p>Mon approche, basée sur les principes de l'<strong>agilité</strong>, privilégie le partage, l'entraide, la confiance et l'empirisme. Toujours en veille technologique, je place la notion de <strong>"users-centric"</strong> au cœur de mes projets, ce qui me permet d'aligner les décisions stratégiques et techniques avec les besoins réels des utilisateurs.</p>
+            <div class="cta-buttons-group">
+                <a href="https://drive.google.com/file/d/1vg_93vra6rck78pkWbFrw9Y6GftIsD6s/view" target="_blank" download class="cta-button">📥 Télécharger mon CV</a>
+                <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view?usp=sharing" target="_blank" download class="cta-button secondary">🗒️ Annexe CV</a>
+            </div>
+        </section>
+
+        <section id="competences" class="card content-section">
+            <h2>Compétences & Certifications</h2>
+            <div class="skills-container">
+                <h3>Langages & Frameworks</h3>
+                <div class="skills-grid">
+                    <span class="skill-tag">JavaScript (ES6+)</span>
+                    <span class="skill-tag">TypeScript</span>
+                    <span class="skill-tag">React</span>
+                    <span class="skill-tag">Node.js</span>
+                    <span class="skill-tag">HTML5 & CSS3</span>
+                    <span class="skill-tag">SQL & NoSQL</span>
+                </div>
+                <h3>Outils & Plateformes</h3>
+                <div class="skills-grid">
+                    <span class="skill-tag">Docker</span>
+                    <span class="skill-tag">Git & GitHub</span>
+                    <span class="skill-tag">AWS</span>
+                    <span class="skill-tag">Figma</span>
+                    <span class="skill-tag">Jira</span>
+                </div>
+                <h3>Certifications</h3>
+                <div class="skills-grid">
+                    <span class="skill-tag">Certified PSPO1® (WIP PSPO2®/PSM1®)</span>
+                    <span class="skill-tag">Opquast Qualité Web</span>
+                    <span class="skill-tag">Google Analytics/Adwords</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="references" class="card content-section">
+            <h2>Missions & Références</h2>
+            <p>Voici un aperçu de quelques missions significatives réalisées pour le compte de divers clients et ESN.</p>
+            
+            <div class="swiper">
+                <div class="swiper-wrapper">
+                    
+                    <div class="swiper-slide">
+                        <div class="mission-card">
+                            <div class="mission-logo">
+                                <div class="client-logo-item">
+                                    <img src="images/exalt-min-carre" alt="Logo Exalt">
+                                    <span class="logo-separator">+</span>
+                                    <img src="images/cats-min.png" alt="Logo Crédit Agricole Services et Technologies">
+                                </div>
+                            </div>
+                            <div class="mission-content">
+                                <h3>Refonte d'une Application E-commerce</h3>
+                                <p>Conduite d'une équipe agile pour la refonte de la plateforme, l'optimisation des parcours d'achat et l'intégration de nouvelles fonctionnalités.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide">
+                        <div class="mission-card">
+                            <div class="mission-logo">
+                                <div class="client-logo-item">
+                                    <img src="path/to/logo-esn.png" alt="Logo de l'ESN">
+                                    <span class="logo-separator">+</span>
+                                    <img src="path/to/logo-client.png" alt="Logo du Client Final">
+                                </div>
+                            </div>
+                            <div class="mission-content">
+                                <h3>Lancement d'une Solution SaaS B2B</h3>
+                                <p>Définition de la vision produit et gestion du backlog pour une solution innovante destinée au secteur financier, de la découverte jusqu'au lancement.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide">
+                        <div class="mission-card">
+                            <div class="mission-logo">
+                                <div class="client-logo-item">
+                                    <img src="path/to/logo-esn.png" alt="Logo de l'ESN">
+                                    <span class="logo-separator">+</span>
+                                    <img src="path/to/logo-client.png" alt="Logo du Client Final">
+                                </div>
+                            </div>
+                            <div class="mission-content">
+                                <h3>Audit et Conseil en Stratégie Digitale</h3>
+                                <p>Réalisation d'audits techniques et fonctionnels et élaboration de feuilles de route stratégiques pour la digitalisation de processus internes.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </section>
+        
+        <section id="contact" class="card content-section">
+            <h2>Contact</h2>
+            <p>Un projet, une question ? Retrouvez-moi sur les plateformes suivantes ou contactez-moi directement.</p><br />
+            <div class="contact-links">
+                <a href="https://www.linkedin.com/in/pierreetiennemonreal/" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                    <span>LinkedIn</span>
+                </a>
+                <a href="https://www.malt.fr/profile/pierreetiennemonreal" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6v2H5v11h11v-6h2zM15 3h6v6h-2V5.41l-7.79 7.79-1.42-1.42L17.59 4H15V3z"/></svg>
+                    <span>Malt</span>
+                </a>
+                <a href="https://github.com/PEMtl" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    <span>GitHub</span>
+                </a>
+            </div>
+            <div class="contact-details">
+                <p>📨 Email : <a href="mailto:contact@pe-monreal.com">contact@pe-monreal.com</a></p>
+                <p>💻 En visio : <a href="https://calendly.com/pierre-etienne-monreal/rendez-vous-30min">Calendly</a></p>
+            </div>
+            <form action="https://formspree.io/f/xjkejbdp" method="POST">
+                <textarea name="message" placeholder="Ou laissez-moi un message directement ici" required></textarea>
+                <input type="email" name="email" placeholder="Renseignez votre e-mail" required>
+                <button type="submit" class="cta-button">🚀 Envoyer</button>
+            </form>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; <span id="copyright-year"></span> Pierre-Etienne Monreal. Tous droits réservés -<a href="#"> Mentions Légales</a></p>
+    </footer>
+
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.card');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            cards.forEach(card => { observer.observe(card); });
+
+            const copyrightYear = document.getElementById('copyright-year');
+            if (copyrightYear) {
+                copyrightYear.textContent = new Date().getFullYear();
+            }
+
+            const swiper = new Swiper('.swiper', {
+                loop: true,
+                autoplay: {
+                    delay: 3000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                breakpoints: {
+                    0: {
+                        slidesPerView: 1,
+                        spaceBetween: 20
+                    },
+                    768: {
+                        slidesPerView: 1,
+                        spaceBetween: 30
+                    },
+                    1024: {
+                        slidesPerView: 1,
+                        spaceBetween: 40
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
