@@ -59,7 +59,7 @@ body { font-family: 'Manrope', sans-serif; background-color: var(--bg-color); co
 .cta-button.secondary:hover { background-color: var(--primary-color); color: #ffffff; }
 
 /* Amélioration de l'accessibilité pour la navigation clavier */
-.cta-button:focus-visible, .contact-links a:focus-visible {
+.cta-button:focus-visible, .contact-links a:focus-visible, .reference-link:focus-visible {
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
 }
@@ -141,23 +141,31 @@ body { font-family: 'Manrope', sans-serif; background-color: var(--bg-color); co
     margin-bottom: 0;
 }
 
+/* NOUVEAU STYLE POUR LE LIEN "EN SAVOIR PLUS" */
 .reference-link {
     display: inline-block;
     margin-top: 1rem;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-weight: 600;
-    padding: 6px 12px;
-    border: 1px solid var(--primary-color);
     color: var(--primary-color);
-    border-radius: 6px;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: text-decoration 0.3s ease;
 }
 
 .reference-link:hover {
-    background-color: var(--primary-color);
-    color: #ffffff;
+    text-decoration: underline;
 }
+
+.reference-link .arrow {
+    display: inline-block;
+    margin-left: 5px;
+    transition: transform 0.3s ease;
+}
+
+.reference-link:hover .arrow {
+    transform: translateX(5px);
+}
+
 
 .contact-links { 
     display: flex; 
