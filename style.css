@@ -36,7 +36,12 @@ body { font-family: 'Manrope', sans-serif; background-color: var(--bg-color); co
     box-shadow: 0 8px 32px 0 var(--shadow-color); 
     opacity: 0; 
     transform: translateY(20px); 
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out; 
+    /* MODIFICATION ICI : On prépare la carte à animer ces propriétés en 0.3s */
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out, box-shadow 0.3s ease-in-out;}
+/* NOUVELLE RÈGLE : Définit ce qu'il se passe au survol de la souris */
+.card:hover {
+    transform: translateY(15px); /* On remonte la carte de 5px (de 20px à 15px) */
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.12); /* On accentue l'ombre */
 }
 .card.is-visible { opacity: 1; transform: translateY(0); }
 
