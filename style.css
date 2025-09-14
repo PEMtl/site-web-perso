@@ -11,7 +11,14 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { font-family: 'Manrope', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; overflow-x: hidden; }
+body { 
+    font-family: 'Manrope', sans-serif; 
+    background-color: var(--bg-color); 
+    color: var(--text-color); 
+    line-height: 1.6; 
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
 
 .background-shapes { 
     position: fixed; 
@@ -24,6 +31,7 @@ body { font-family: 'Manrope', sans-serif; background-color: var(--bg-color); co
                 radial-gradient(circle at 85% 30%, #e0e5ea, transparent 30%); 
     filter: blur(100px);
     opacity: 0.6;
+    transition: opacity 0.3s ease;
 }
 .container { max-width: 1140px; margin: 0 auto; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
 .card { 
@@ -36,10 +44,10 @@ body { font-family: 'Manrope', sans-serif; background-color: var(--bg-color); co
     box-shadow: 0 8px 32px 0 var(--shadow-color); 
     opacity: 0; 
     transform: translateY(20px); 
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out, box-shadow 0.3s ease-in-out;
+    transition: opacity 0.6s ease-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease, border-color 0.3s ease;
 }
 .card:hover {
-    transform: translateY(15px);
+    transform: translateY(-5px); /* CORRIGÉ : Soulève la carte au lieu de la baisser */
     box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.12);
 }
 .card.is-visible { opacity: 1; transform: translateY(0); }
@@ -119,7 +127,7 @@ body { font-family: 'Manrope', sans-serif; background-color: var(--bg-color); co
 .contact-links { 
     display: flex; 
     gap: 1.5rem; 
-    margin-top: 2rem; /* Espace ajouté au-dessus */
+    margin-top: 2rem;
     margin-bottom: 2rem; 
     flex-wrap: wrap; 
 }
@@ -133,7 +141,7 @@ body { font-family: 'Manrope', sans-serif; background-color: var(--bg-color); co
 
 .contact-line {
     display: flex;
-    justify-content: flex-start; /* Aligne les éléments au début */
+    justify-content: flex-start;
     align-items: center;
     gap: 1rem;
     margin-bottom: 0.75rem;
@@ -172,7 +180,41 @@ form input:focus, form textarea:focus { outline: none; border-color: var(--prima
 form textarea { min-height: 120px; resize: vertical; }
 form button { align-self: flex-start; border: none; cursor: pointer; }
 
-footer { text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.9rem; color: var(--text-color-light); }
+footer { 
+    text-align: center; 
+    padding: 2rem; 
+    margin-top: 2rem; 
+    font-size: 0.9rem; 
+    color: var(--text-color-light); 
+}
+.footer-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.theme-toggle {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    color: var(--text-color-light);
+    transition: all 0.3s ease;
+}
+.theme-toggle:hover {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+.theme-toggle .moon-icon { display: none; }
+.theme-toggle .sun-icon { display: block; }
+
 
 @media (max-width: 992px) { 
     .hero { grid-template-columns: 1fr; text-align: center; } 
@@ -187,4 +229,54 @@ footer { text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.9rem;
     .container { padding: 1rem; } 
     .card { padding: 1.5rem; } 
     .cta-buttons-group { flex-direction: column; gap: 1rem; }
+}
+
+
+/* ==================
+   DARK MODE STYLES
+   ================== */
+body.dark-mode {
+    --bg-color: #1a202c;
+    --card-bg-color: rgba(45, 55, 72, 0.7);
+    --text-color: #e2e8f0;
+    --text-color-light: #a0aec0;
+    --primary-color: #ffffff;
+    --primary-color-darker: #e2e8f0;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .background-shapes {
+    opacity: 0.1;
+}
+
+body.dark-mode .skill-tag,
+body.dark-mode .contact-links a {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-color);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode .cta-button.secondary {
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+body.dark-mode .cta-button.secondary:hover,
+body.dark-mode .contact-links a:hover,
+body.dark-mode .skill-tag:hover { /* CORRECTION AJOUTÉE ICI */
+    background-color: #ffffff;
+    color: #1a202c;
+}
+
+body.dark-mode .card:hover { /* CORRECTION AJOUTÉE ICI */
+    transform: translateY(-5px); /* On s'assure que la transformation est cohérente */
+    box-shadow: 0 12px 45px 0 rgba(0, 0, 0, 0.4); /* Ombre plus diffuse et sombre */
+}
+
+body.dark-mode .theme-toggle .moon-icon { display: block; }
+body.dark-mode .theme-toggle .sun-icon { display: none; }
+
+body.dark-mode .cta-button {
+    color: #1a202c;
 }

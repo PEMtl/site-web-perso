@@ -34,22 +34,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
             copyBtn.addEventListener('click', () => {
                 navigator.clipboard.writeText(emailToCopy).then(() => {
-                    // Succès de la copie
                     copyBtn.classList.add('copied');
                     copyTextSpan.textContent = 'Copié !';
 
-                    // Revenir à l'état initial après 2 secondes
                     setTimeout(() => {
                         copyBtn.classList.remove('copied');
                         copyTextSpan.textContent = originalText;
                     }, 2000);
 
                 }).catch(err => {
-                    // Gérer les erreurs (optionnel, mais une bonne pratique)
                     console.error('Erreur lors de la copie : ', err);
                     copyTextSpan.textContent = 'Erreur';
                 });
             });
         }
+    }
+
+    // Gestion du Dark Mode
+    const themeToggle = document.getElementById('theme-toggle');
+    const body = document.body;
+
+    // Appliquer le thème sauvegardé au chargement de la page
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        body.classList.add(savedTheme);
+    }
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            // Sauvegarder le choix de l'utilisateur
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark-mode');
+            } else {
+                localStorage.removeItem('theme');
+            }
+        });
     }
 });
