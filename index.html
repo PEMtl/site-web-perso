@@ -177,8 +177,16 @@
                 </a>
             </div>
             <div class="contact-details">
-                <address>📨 Email : <a href="mailto:contact@pe-monreal.com">contact@pe-monreal.com</a></address>
-                <address>💻 En visio : <a href="https://calendly.com/pierre-etienne-monreal/rendez-vous-30min" target="_blank" rel="noopener noreferrer">Calendly</a></address>
+                <div class="contact-line">
+                    <address>📨 Email : <a href="mailto:contact@pe-monreal.com">contact@pe-monreal.com</a></address>
+                    <button id="copy-email-btn" class="copy-btn" aria-label="Copier l'e-mail">
+                        <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        <span class="copy-text">Copier</span>
+                    </button>
+                </div>
+                <div class="contact-line">
+                    <address>💻 En visio : <a href="https://calendly.com/pierre-etienne-monreal/rendez-vous-30min" target="_blank" rel="noopener noreferrer">Calendly</a></address>
+                </div>
             </div>
             <form action="https://formspree.io/f/xjkejbdp" method="POST">
                 <input type="text" name="_gotcha" style="display:none">
@@ -194,6 +202,13 @@
     <footer>
         <p> Tous droits réservés - &copy; <span id="copyright-year"></span> Pierre-Etienne Monreal</p>
     </footer>
+
+    <a href="#accueil" class="back-to-top" aria-label="Retour en haut de la page">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+            <path d="M12 4l8 8h-6v8h-4v-8H4l8-8z"/>
+        </svg>
+    </a>
+
     <script src="script.js" defer></script>
 </body>
 </html>
