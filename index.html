@@ -22,14 +22,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css?v=1.1">
+    <link rel="stylesheet" href="style.css?v=1.2">
 </head>
 <body>
 
     <div class="background-shapes"></div>
 
     <main class="container">
-
         <section id="accueil" class="card hero">
             <div class="hero-text">
                 <h1>Pierre-Etienne Monreal</h1>
@@ -102,7 +101,7 @@
             <p>Un aperçu de quelques expériences significatives, et réalisées chez des clients finaux ou en prestation pour le compte de diverses ESN.</p>
             
             <div class="references-container">
-                <article class="reference-item">
+                 <article class="reference-item">
                     <div class="reference-context">
                         <div class="context-entity">
                             <span class="entity-label">eXalt</span>
@@ -118,45 +117,7 @@
                         <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="reference-link" target="_blank" rel="noopener noreferrer">En savoir plus <span class="arrow">&rarr;</span></a>
                     </div>
                 </article>
-
-                <article class="reference-item">
-                    <div class="reference-context">
-                        <div class="context-entity">
-                            <span class="entity-label">eXalt</span>
-                            <img src="https://via.placeholder.com/100x40.png?text=ESN" alt="Logo de l'ESN" loading="lazy">
-                        </div>
-                        <div class="context-separator"></div>
-                        <div class="context-entity">
-                            <span class="entity-label">Crédit Agricole</span>
-                            <img src="https://via.placeholder.com/100x40.png?text=Client" alt="Logo du Client Final" loading="lazy">
-                        </div>
-                    </div>
-                    <div class="reference-content">
-                        <h3>Lancement d'une Solution SaaS B2B</h3>
-                        <p>Définition de la vision produit et gestion du backlog pour une solution innovante destinée au secteur financier, de la phase de découverte jusqu'au lancement officiel.</p>
-                        <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="reference-link" target="_blank" rel="noopener noreferrer">En savoir plus <span class="arrow">&rarr;</span></a>
-                    </div>
-                </article>
-
-                <article class="reference-item">
-                    <div class="reference-context">
-                        <div class="context-entity">
-                            <span class="entity-label">Astek Technology</span>
-                            <img src="https://via.placeholder.com/100x40.png?text=ESN" alt="Logo de l'ESN" loading="lazy">
-                        </div>
-                        <div class="context-separator"></div>
-                        <div class="context-entity">
-                            <span class="entity-label">OVHcloud</span>
-                            <img src="https://via.placeholder.com/100x40.png?text=Client" alt="Logo du Client Final" loading="lazy">
-                        </div>
-                    </div>
-                    <div class="reference-content">
-                        <h3>Lorem ipsum dolor sit amet</h3>
-                        <p>Lorem ipsum dolor sit amet, nec mergitur, alea jac taes.</p>
-                        <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="reference-link" target="_blank" rel="noopener noreferrer">En savoir plus <span class="arrow">&rarr;</span></a>
-                    </div>
-                </article>
-            </div>
+                </div>
         </section>
         
         <section id="contact" class="card content-section">
@@ -177,12 +138,19 @@
                 </a>
             </div>
             <div class="contact-details">
-                <address>📨 Email : <a href="mailto:contact@pe-monreal.com">contact@pe-monreal.com</a></address>
-                <address>💻 En visio : <a href="https://calendly.com/pierre-etienne-monreal/rendez-vous-30min" target="_blank" rel="noopener noreferrer">Calendly</a></address>
+                <div class="contact-line">
+                    <address>📨 Email : <a href="mailto:contact@pe-monreal.com">contact@pe-monreal.com</a></address>
+                    <button id="copy-email-btn" class="copy-btn" aria-label="Copier l'e-mail">
+                        <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        <span class="copy-text">Copier</span>
+                    </button>
+                </div>
+                <div class="contact-line">
+                    <address>💻 En visio : <a href="https://calendly.com/pierre-etienne-monreal/rendez-vous-30min" target="_blank" rel="noopener noreferrer">Calendly</a></address>
+                </div>
             </div>
             <form action="https://formspree.io/f/xjkejbdp" method="POST">
                 <input type="text" name="_gotcha" style="display:none">
-                
                 <textarea name="message" placeholder="Ou laissez-moi un message directement ici" required></textarea>
                 <input type="email" name="email" placeholder="Renseignez votre e-mail" required>
                 <button type="submit" class="cta-button">🚀 Envoyer</button>
@@ -194,6 +162,7 @@
     <footer>
         <p> Tous droits réservés - &copy; <span id="copyright-year"></span> Pierre-Etienne Monreal</p>
     </footer>
+
     <script src="script.js" defer></script>
 </body>
 </html>

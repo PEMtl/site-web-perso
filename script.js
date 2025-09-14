@@ -23,16 +23,33 @@ document.addEventListener('DOMContentLoaded', () => {
         copyrightYear.textContent = new Date().getFullYear();
     }
 
-    // Gestion de l'affichage du bouton "Back to Top"
-    const backToTopButton = document.querySelector('.back-to-top');
-    if (backToTopButton) {
-        window.addEventListener('scroll', () => {
-            // Affiche le bouton si l'utilisateur a fait défiler de plus de 400px
-            if (window.scrollY > 400) {
-                backToTopButton.classList.add('visible');
-            } else {
-                backToTopButton.classList.remove('visible');
-            }
-        });
+    // Gestion de la copie de l'e-mail dans le presse-papiers
+    const copyBtn = document.getElementById('copy-email-btn');
+    if (copyBtn) {
+        const emailToCopy = 'contact@pe-monreal.com';
+        const copyTextSpan = copyBtn.querySelector('.copy-text');
+        
+        if (copyTextSpan) {
+            const originalText = copyTextSpan.textContent;
+
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(emailToCopy).then(() => {
+                    // Succès de la copie
+                    copyBtn.classList.add('copied');
+                    copyTextSpan.textContent = 'Copié !';
+
+                    // Revenir à l'état initial après 2 secondes
+                    setTimeout(() => {
+                        copyBtn.classList.remove('copied');
+                        copyTextSpan.textContent = originalText;
+                    }, 2000);
+
+                }).catch(err => {
+                    // Gérer les erreurs (optionnel, mais une bonne pratique)
+                    console.error('Erreur lors de la copie : ', err);
+                    copyTextSpan.textContent = 'Erreur';
+                });
+            });
+        }
     }
 });
