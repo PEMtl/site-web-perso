@@ -708,6 +708,20 @@
         body.dark-mode .cta-button {
             color: #1a202c;
         }
+
+        /* Amélioration du contraste des liens en dark mode */
+        body.dark-mode .content-section a,
+        body.dark-mode .contact-details a {
+            color: #81b2f3; /* Un bleu clair et accessible */
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+        }
+
+        body.dark-mode .content-section a:hover,
+        body.dark-mode .contact-details a:hover {
+            color: var(--primary-color-darker); /* Un blanc cassé au survol */
+        }
     </style>
 </head>
 <body>
