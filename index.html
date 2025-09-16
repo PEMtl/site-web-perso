@@ -303,24 +303,16 @@
             justify-content: center;
             color: var(--text-color);
             text-decoration: none;
-            /* CORRECTION : Cacher le bouton par défaut */
             opacity: 0;
             visibility: hidden;
             transform: translateY(20px);
             transition: all 0.3s ease-in-out;
         }
-
-        .back-to-top svg { /* CORRECTION : Réduire la taille de l'icône */
-            width: 20px;
-            height: 20px;
-        }
-
         .back-to-top.visible {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
         }
-
         .back-to-top:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px var(--shadow-color);
@@ -344,10 +336,6 @@
                 height: 40px;
                 bottom: 15px;
                 right: 15px;
-            }
-            .back-to-top svg {
-                width: 18px;
-                height: 18px;
             }
         }
 
@@ -660,8 +648,9 @@
     <script src="script.js" defer></script>
 
     <a href="#accueil" class="back-to-top" aria-label="Retour en haut de la page">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
-            <path d="M12 4l8 8h-6v8h-4v-8H4l8-8z"/>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="19" x2="12" y2="5"></line>
+            <polyline points="5 12 12 5 19 12"></polyline>
         </svg>
     </a>
 </body>
