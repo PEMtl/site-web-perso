@@ -63,8 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (savedTheme) {
         body.classList.add(savedTheme);
     }
-    // La partie qui vérifiait la préférence système a été supprimée.
-
+    
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
             body.classList.toggle('dark-mode');
