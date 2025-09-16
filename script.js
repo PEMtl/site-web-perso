@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const originalText = copyTextSpan.textContent;
 
             copyBtn.addEventListener('click', () => {
-                // Vérifie si l'API est disponible (contexte sécurisé http/https)
                 if (navigator.clipboard && window.isSecureContext) {
                     navigator.clipboard.writeText(emailToCopy).then(() => {
                         copyBtn.classList.add('copied');
@@ -49,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         copyTextSpan.textContent = 'Erreur';
                     });
                 } else {
-                    // Fallback pour les contextes non sécurisés (ou anciens navigateurs)
                     console.log('API Clipboard non disponible.');
                 }
             });
@@ -60,14 +58,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
 
-    // Appliquer le thème sauvegardé au chargement de la page
+    // Appliquer le thème sauvegardé (uniquement le choix de l'utilisateur)
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
         body.classList.add(savedTheme);
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        // (Bonus) Appliquer le thème sombre si c'est la préférence système de l'utilisateur
-        body.classList.add('dark-mode');
     }
+    // La partie qui vérifiait la préférence système a été supprimée.
 
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
@@ -82,12 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // CODE MANQUANT AJOUTÉ ICI
     // Gestion de l'affichage du bouton "Back to Top"
     const backToTopButton = document.querySelector('.back-to-top');
     if (backToTopButton) {
         window.addEventListener('scroll', () => {
-            // Affiche le bouton si l'utilisateur a fait défiler de plus de 400px
             if (window.scrollY > 400) {
                 backToTopButton.classList.add('visible');
             } else {
