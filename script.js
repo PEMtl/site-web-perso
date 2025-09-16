@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     
     // Animation d'apparition des cartes au défilement
-    const cards = document.querySelectorAll('.card');
+    const cards = document.querySelectorAll('.card:not(.hero)');
     if (cards.length > 0) {
         const observer = new IntersectionObserver(entries => {
             entries.forEach(entry => {
@@ -33,19 +33,25 @@ document.addEventListener('DOMContentLoaded', () => {
             const originalText = copyTextSpan.textContent;
 
             copyBtn.addEventListener('click', () => {
-                navigator.clipboard.writeText(emailToCopy).then(() => {
-                    copyBtn.classList.add('copied');
-                    copyTextSpan.textContent = 'Copié !';
+                // Vérifie si l'API est disponible (contexte sécurisé http/https)
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(emailToCopy).then(() => {
+                        copyBtn.classList.add('copied');
+                        copyTextSpan.textContent = 'Copié !';
 
-                    setTimeout(() => {
-                        copyBtn.classList.remove('copied');
-                        copyTextSpan.textContent = originalText;
-                    }, 2000);
+                        setTimeout(() => {
+                            copyBtn.classList.remove('copied');
+                            copyTextSpan.textContent = originalText;
+                        }, 2000);
 
-                }).catch(err => {
-                    console.error('Erreur lors de la copie : ', err);
-                    copyTextSpan.textContent = 'Erreur';
-                });
+                    }).catch(err => {
+                        console.error('Erreur lors de la copie : ', err);
+                        copyTextSpan.textContent = 'Erreur';
+                    });
+                } else {
+                    // Fallback pour les contextes non sécurisés (ou anciens navigateurs)
+                    console.log('API Clipboard non disponible.');
+                }
             });
         }
     }
@@ -58,6 +64,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
         body.classList.add(savedTheme);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // (Bonus) Appliquer le thème sombre si c'est la préférence système de l'utilisateur
+        body.classList.add('dark-mode');
     }
 
     if (themeToggle) {
