@@ -20,6 +20,33 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Style du lien d'évitement (Skip Link) */
+.skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -100px; /* Cache le lien bien en dehors de l'écran */
+    z-index: 1000;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    
+    /* Nouveaux styles alignés sur le design des cartes */
+    background: var(--card-bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px var(--shadow-color);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    
+    transition: top 0.3s ease-in-out;
+}
+
+/* Fait apparaître le lien avec une marge lorsqu'il reçoit le focus */
+.skip-link:focus {
+    top: 1rem;
+}
+
 .background-shapes { 
     position: fixed; 
     top: 0; 
@@ -47,7 +74,7 @@ body {
     transition: opacity 0.6s ease-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease, border-color 0.3s ease;
 }
 .card:hover {
-    transform: translateY(-5px); /* CORRIGÉ : Soulève la carte au lieu de la baisser */
+    transform: translateY(-5px);
     box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.12);
 }
 .card.is-visible { opacity: 1; transform: translateY(0); }
@@ -264,14 +291,14 @@ body.dark-mode .cta-button.secondary {
 
 body.dark-mode .cta-button.secondary:hover,
 body.dark-mode .contact-links a:hover,
-body.dark-mode .skill-tag:hover { /* CORRECTION AJOUTÉE ICI */
+body.dark-mode .skill-tag:hover {
     background-color: #ffffff;
     color: #1a202c;
 }
 
-body.dark-mode .card:hover { /* CORRECTION AJOUTÉE ICI */
-    transform: translateY(-5px); /* On s'assure que la transformation est cohérente */
-    box-shadow: 0 12px 45px 0 rgba(0, 0, 0, 0.4); /* Ombre plus diffuse et sombre */
+body.dark-mode .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 45px 0 rgba(0, 0, 0, 0.4);
 }
 
 body.dark-mode .theme-toggle .moon-icon { display: block; }
