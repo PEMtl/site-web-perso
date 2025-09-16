@@ -81,4 +81,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // CODE MANQUANT AJOUTÉ ICI
+    // Gestion de l'affichage du bouton "Back to Top"
+    const backToTopButton = document.querySelector('.back-to-top');
+    if (backToTopButton) {
+        window.addEventListener('scroll', () => {
+            // Affiche le bouton si l'utilisateur a fait défiler de plus de 400px
+            if (window.scrollY > 400) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+    }
 });
