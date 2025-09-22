@@ -9,7 +9,7 @@
     <meta property="og:image" content="/images/photo-profil.webp">
     <meta property="og:url" content="https://www.pe-monreal.com">
     <meta property="og:type" content="website">  
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' https://via.placeholder.com; script-src 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://formspree.io; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' https://via.placeholder.com; script-src 'self';">
 
     <link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
     <link rel="apple-touch-icon" href="images/favicon-32x32.png">
@@ -188,7 +188,12 @@
         .reference-context { display: flex; flex-direction: column; align-items: center; text-align: center; }
         .context-entity { width: 100%; }
         .entity-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-color-light); margin-bottom: 0.5rem; }
-        .context-entity img { height: 40px; max-width: 120px; width: auto; object-fit: contain; }
+        .entity-logo {
+            height: 40px;
+            width: auto;
+            max-width: 120px;
+            object-fit: contain;
+        }
         .context-separator { width: 1px; height: 20px; background-color: var(--border-color); margin: 1rem 0; }
         .reference-content h3 { font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--primary-color); }
         .reference-content p { font-size: 1rem; margin-bottom: 0; }
@@ -252,6 +257,27 @@
         form input:focus, form textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(26, 32, 44, 0.1); }
         form textarea { min-height: 120px; resize: vertical; }
         form button { align-self: flex-start; border: none; cursor: pointer; }
+        
+        #form-status {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+        #form-status.success {
+            display: block;
+            background-color: #d1f7d1;
+            border: 1px solid #2b8a3e;
+            color: #2b8a3e;
+        }
+        #form-status.error {
+            display: block;
+            background-color: #f8d7da;
+            border: 1px solid #721c24;
+            color: #721c24;
+        }
 
         footer { 
             text-align: center; 
@@ -325,6 +351,42 @@
             box-shadow: 0 8px 20px var(--shadow-color);
         }
 
+        /* NOUVEAUX STYLES POUR LA SECTION "A PROPOS" */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .about-principles ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .about-principles li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .about-principles li svg {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+            margin-top: 2px;
+            color: var(--primary-color);
+        }
+        .about-principles li span {
+            color: var(--text-color);
+        }
+        .about-intro p:last-of-type {
+            margin-bottom: 0;
+        }
+
+
         @media (max-width: 992px) { 
             .hero { grid-template-columns: 1fr; text-align: center; } 
             .hero-photo { order: -1; margin-bottom: 2rem; } 
@@ -335,6 +397,10 @@
             }
             .reference-context { flex-direction: row; justify-content: center; gap: 1rem; }
             .context-separator { height: 40px; margin: 0; }
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
         }
 
         @media (max-width: 768px) { 
@@ -417,6 +483,12 @@
             color: #63b3ed;
             text-decoration: underline;
         }
+        body.dark-mode .entity-logo {
+            filter: invert(1);
+        }
+        body.dark-mode .about-principles li svg {
+            color: var(--primary-color);
+        }
     </style>
         <script type="application/ld+json">
         {
@@ -463,15 +535,47 @@
             </div>
         </section>
 
-        <section id="a-propos" class="card content-section">
+<section id="a-propos" class="card content-section">
             <h2>A Propos</h2>
-            <p>
-                Passionné par la création de produits technologiques complexes, je suis un <strong>Product Owner Senior</strong> avec 10 ans d'expériences au sein d'entreprises et de startups innovantes.<br>
-                Mon expertise couvre l'intégralité du cycle de vie des projets, de la conception à la livraison, avec une maîtrise de la <strong>build-chain</strong>. Je pilote des solutions transversales en optimisant la gestion des priorités pour maximiser la valeur produite.
-            </p>
-            <p>
-                Mon approche, basée sur les principes de l'<strong>agilité</strong>, privilégie le partage, l'entraide, la confiance et l'empirisme. Toujours en veille technologique, je place la notion de <strong>"users-centric"</strong> au cœur de mes projets, ce qui me permet d'aligner les décisions stratégiques et techniques avec les besoins réels des utilisateurs.
-            </p>
+            <div class="about-grid">
+                <div class="about-intro">
+                    <p>
+                        Passionné par la création de produits technologiques complexes, je suis un <strong>Product Owner Senior</strong> avec 10 ans d'expériences au sein d'entreprises et de startups innovantes.
+                    </p><br />
+                    <p>
+                        Mon expertise couvre l'intégralité du cycle de vie des projets, de la conception à la livraison, avec une maîtrise de la <strong>build-chain</strong>. Je pilote des solutions transversales en optimisant la gestion des priorités pour maximiser la valeur produite.
+                    </p>
+                </div>
+                <div class="about-principles">
+                    <ul>
+                        <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 2v6h6"/>
+                                <path d="M21 12A9 9 0 0 0 6 5.3L3 8"/>
+                                <path d="M21 22v-6h-6"/>
+                                <path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/>
+                            </svg>
+                            <span>Mon approche, basée sur les principes de l'<strong>agilité</strong>, privilégie le partage, l'entraide, la confiance et l'empirisme.</span>
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                            <span>Je place la notion de <strong>"users-centric"</strong> au cœur de mes projets, ce qui me permet d'aligner les décisions stratégiques et techniques avec les besoins réels des utilisateurs.</span>
+                        </li>
+                        <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 3v18h18"/>
+                            <path d="m19 9-5 5-4-4-3 3"/>
+                        </svg>
+                            <span>Toujours en <strong>veille technologique</strong>, je m'assure de proposer des solutions innovantes et performantes.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
             <div class="cta-buttons-group">
                 <a href="https://drive.google.com/file/d/1vg_93vra6rck78pkWbFrw9Y6GftIsD6s/view" target="_blank" rel="noopener noreferrer" class="cta-button">
                     📥 Télécharger mon CV
@@ -540,11 +644,11 @@
                 <article class="reference-item">
                     <div class="reference-context">
                         <div class="context-entity">
-                            <img class="entity-logo" src="/images/logos/exalt-min-carre.png" alt="Logo eXalt">
+                            <img class="entity-logo" src="/images/logos/exalt.svg" alt="Logo eXalt">
                         </div>
                         <div class="context-separator"></div>
                         <div class="context-entity">
-                            <span class="entity-label">Crédit Agricole</span>
+                            <img class="entity-logo" src="/images/logos/credit-agricole.svg" alt="Logo Crédit Agricole">
                         </div>
                     </div>
                     <div class="reference-content">
@@ -561,11 +665,11 @@
                 <article class="reference-item">
                     <div class="reference-context">
                         <div class="context-entity">
-                            <span class="entity-label">Astek Technology</span>
+                             <img class="entity-logo" src="/images/logos/astek.svg" alt="Logo Astek">
                         </div>
                         <div class="context-separator"></div>
                         <div class="context-entity">
-                            <span class="entity-label">OVH</span>
+                             <img class="entity-logo" src="/images/logos/ovh.svg" alt="Logo OVH">
                         </div>
                     </div>
                     <div class="reference-content">
@@ -585,11 +689,11 @@
                 <article class="reference-item">
                     <div class="reference-context">
                         <div class="context-entity">
-                            <span class="entity-label">Klanik</span>
+                             <img class="entity-logo" src="/images/logos/klanik.svg" alt="Logo Klanik">
                         </div>
                         <div class="context-separator"></div>
                         <div class="context-entity">
-                            <span class="entity-label">Groupe La Poste</span>
+                             <img class="entity-logo" src="/images/logos/la-poste.svg" alt="Logo Groupe La Poste">
                         </div>
                     </div>
                     <div class="reference-content">
@@ -606,11 +710,10 @@
                     </div>
                 </article>
 
-                                <article class="reference-item">
+                <article class="reference-item">
                     <div class="reference-context">
-                        <div class="context-separator"></div>
                         <div class="context-entity">
-                            <span class="entity-label">Easy Cash</span>
+                            <img class="entity-logo" src="/images/logos/easy-cash.svg" alt="Logo Easy Cash">
                         </div>
                     </div>
                     <div class="reference-content">
@@ -670,14 +773,14 @@
                     </address>
                 </div>
             </div>
-            <form action="https://formspree.io/f/xjkejbdp" method="POST">
-                    <input type="text" name="_gotcha" style="display:none">
-                    <textarea name="message" placeholder="Ou laissez-moi un message directement ici" required></textarea>
-                    <input type="email" name="email" placeholder="Renseignez votre e-mail" required>
-                        <button type="submit" class="cta-button">🚀 Envoyer</button>
-                    </form>
-                    <div id="form-status"></div>
-            </section>
+            <form id="contact-form" action="https://formspree.io/f/xjkejbdp" method="POST">
+                <input type="text" name="_gotcha" style="display:none">
+                <textarea name="message" placeholder="Ou laissez-moi un message directement ici" required></textarea>
+                <input type="email" name="email" placeholder="Renseignez votre e-mail" required>
+                <button type="submit" class="cta-button">🚀 Envoyer</button>
+            </form>
+            <div id="form-status"></div>
+        </section>
     </main>
 
     <footer>
