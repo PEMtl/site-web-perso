@@ -417,6 +417,29 @@
             color: #63b3ed;
             text-decoration: underline;
         }
+
+        #form-status {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            display: none; /* Caché par défaut */
+        }
+
+        #form-status.success {
+            display: block;
+            background-color: #d1f7d1;
+            border: 1px solid #2b8a3e;
+            color: #2b8a3e;
+        }
+
+        #form-status.error {
+            display: block;
+            background-color: #f8d7da;
+            border: 1px solid #721c24;
+            color: #721c24;
+        }
     </style>
         <script type="application/ld+json">
         {
@@ -670,13 +693,14 @@
                     </address>
                 </div>
             </div>
-            <form action="https://formspree.io/f/xjkejbdp" method="POST">
-                <input type="text" name="_gotcha" style="display:none">
-                <textarea name="message" placeholder="Ou laissez-moi un message directement ici" required></textarea>
-                <input type="email" name="email" placeholder="Renseignez votre e-mail" required>
-                <button type="submit" class="cta-button">🚀 Envoyer</button>
-            </form>
-        </section>
+            <form id="contact-form" action="https://formspree.io/f/xjkejbdp" method="POST">
+                    <input type="text" name="_gotcha" style="display:none">
+                    <textarea name="message" placeholder="Ou laissez-moi un message directement ici" required></textarea>
+                    <input type="email" name="email" placeholder="Renseignez votre e-mail" required>
+                        <button type="submit" class="cta-button">🚀 Envoyer</button>
+                    </form>
+                    <div id="form-status"></div>
+            </section>
     </main>
 
     <footer>
