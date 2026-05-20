@@ -3,23 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Pierre-Etienne Monreal, Consultant Product Owner Senior basé à Montpellier. Agiliste, spécialisé en cycle de vie projets et création de produits technologiques.">
-    <meta property="og:title" content="Pierre-Etienne Monreal - Consultant Product Owner Senior">
-    <meta property="og:description" content="Pierre-Etienne Monreal, Consultant Product Owner Senior basé à Montpellier. Agiliste, spécialisé en cycle de vie projets et création de produits technologiques.">
-    <meta property="og:image" content="/images/photo-profil.webp">
-    <meta property="og:url" content="https://www.pe-monreal.com">
-    <meta property="og:type" content="website">  
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src https://formspree.io; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' https://via.placeholder.com; script-src 'self';">
 
-    <link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
-    <link rel="apple-touch-icon" href="images/favicon-32x32.png">
-    <meta name="msapplication-TileImage" content="images/favicon-32x32.png">
-    <link rel="preload" fetchpriority="high" as="image" href="/images/photo-profil.webp" type="image/webp">
+    <!-- SEO primaire -->
+    <title>Pierre-Etienne Monreal | Product Owner Senior — Montpellier</title>
+    <meta name="description" content="Pierre-Etienne Monreal, Consultant Product Owner Senior basé à Montpellier. PSPO1 certifié, 10 ans d'expérience sur des projets tech complexes (OVHcloud, La Poste, Crédit Agricole).">
+    <link rel="canonical" href="https://www.pe-monreal.com/">
 
-    <title>Product Owner Senior | Pierre-Etienne Monreal</title>
-    
+    <!-- Open Graph -->
+    <meta property="og:type"        content="website">
+    <meta property="og:url"         content="https://www.pe-monreal.com/">
+    <meta property="og:title"       content="Pierre-Etienne Monreal | Product Owner Senior">
+    <meta property="og:description" content="Consultant PO Senior basé à Montpellier. PSPO1 certifié, 10 ans d'XP sur des projets tech complexes.">
+    <meta property="og:image"       content="https://www.pe-monreal.com/images/photo-profil.webp">
+    <meta property="og:locale"      content="fr_FR">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:title"       content="Pierre-Etienne Monreal | Product Owner Senior">
+    <meta name="twitter:description" content="Consultant PO Senior basé à Montpellier. PSPO1 certifié.">
+    <meta name="twitter:image"       content="https://www.pe-monreal.com/images/photo-profil.webp">
+
+    <!-- Favicons -->
+    <link rel="icon"             href="/images/favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="icon"             href="/images/favicon-16x16.png" sizes="16x16" type="image/png">
+    <link rel="apple-touch-icon" href="/images/favicon-32x32.png">
+
+    <!-- Preload critique -->
+    <link rel="preload" as="image"  href="/images/photo-profil.webp" type="image/webp" fetchpriority="high">
+    <link rel="preload" as="font"   href="/fonts/manrope-v20-latin-regular.woff2" type="font/woff2" crossorigin>
+    <link rel="preload" as="font"   href="/fonts/manrope-v20-latin-600.woff2"     type="font/woff2" crossorigin>
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Pierre-Etienne Monreal",
+      "url": "https://www.pe-monreal.com",
+      "image": "https://www.pe-monreal.com/images/photo-profil.webp",
+      "jobTitle": "Consultant Product Owner Senior",
+      "worksFor": { "@type": "Organization", "name": "eXalt", "url": "https://www.exalt-company.com" },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Montpellier",
+        "addressCountry": "FR"
+      },
+      "sameAs": [
+        "https://www.linkedin.com/in/pierreetiennemonreal/",
+        "https://github.com/PEMtl",
+        "https://www.malt.fr/profile/pierreetiennemonreal"
+      ]
+    }
+    </script>
+
     <style>
-        /* Manrope 300 */
+        /* ── Fonts auto-hébergées ── */
         @font-face {
           font-family: 'Manrope';
           font-style: normal;
@@ -27,7 +65,6 @@
           font-display: swap;
           src: url('/fonts/manrope-v20-latin-300.woff2') format('woff2');
         }
-        /* Manrope regular (400) */
         @font-face {
           font-family: 'Manrope';
           font-style: normal;
@@ -35,7 +72,6 @@
           font-display: swap;
           src: url('/fonts/manrope-v20-latin-regular.woff2') format('woff2');
         }
-        /* Manrope 600 */
         @font-face {
           font-family: 'Manrope';
           font-style: normal;
@@ -44,28 +80,40 @@
           src: url('/fonts/manrope-v20-latin-600.woff2') format('woff2');
         }
 
+        /* ── Tokens ── */
         :root {
-            --bg-color: #f0f2f5;
-            --card-bg-color: rgba(255, 255, 255, 0.7);
-            --text-color: #2d3748;
-            --text-color-light: #4a5568;
-            --primary-color: #1a202c;
-            --primary-color-darker: #2d3748;
-            --border-color: rgba(0, 0, 0, 0.1);
-            --shadow-color: rgba(0, 0, 0, 0.08);
+            --bg:            #f0f2f5;
+            --card-bg:       rgba(255,255,255,0.72);
+            --text:          #2d3748;
+            --text-muted:    #4a5568;
+            --accent:        #1a202c;
+            --accent-hover:  #2d3748;
+            --border:        rgba(0,0,0,0.1);
+            --shadow:        rgba(0,0,0,0.08);
+            --radius:        15px;
+            --transition:    0.3s ease;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* ── Reset minimal ── */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body { 
-            font-family: 'Manrope', sans-serif; 
-            background-color: var(--bg-color); 
-            color: var(--text-color); 
-            line-height: 1.6; 
-            overflow-x: hidden;
-            transition: background-color 0.3s ease, color 0.3s ease;
+
+        /* Désactiver les animations si l'utilisateur le préfère */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+            html { scroll-behavior: auto; }
         }
 
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color var(--transition), color var(--transition);
+        }
+
+        /* ── Skip link accessibilité ── */
         .skip-link {
             position: absolute;
             left: 1rem;
@@ -74,163 +122,180 @@
             padding: 0.5rem 1rem;
             font-weight: 600;
             text-decoration: none;
-            background: var(--card-bg-color);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
             border-radius: 8px;
-            box-shadow: 0 4px 12px var(--shadow-color);
+            box-shadow: 0 4px 12px var(--shadow);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             transition: top 0.3s ease-in-out;
         }
-        .skip-link:focus {
-            top: 1rem;
-        }
+        .skip-link:focus { top: 1rem; }
 
-        .background-shapes { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            z-index: -1; 
-            background: radial-gradient(circle at 15% 50%, #dbe3ed, transparent 25%), 
-                        radial-gradient(circle at 85% 30%, #e0e5ea, transparent 30%); 
+        /* ── Background décoratif ── */
+        .background-shapes {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background:
+                radial-gradient(circle at 15% 50%, #dbe3ed, transparent 25%),
+                radial-gradient(circle at 85% 30%, #e0e5ea, transparent 30%);
             filter: blur(100px);
             opacity: 0.6;
-            transition: opacity 0.3s ease;
-        }
-        .container { max-width: 1140px; margin: 0 auto; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
-        .card { 
-            background: var(--card-bg-color); 
-            border: 1px solid var(--border-color); 
-            border-radius: 15px; 
-            padding: 3rem; 
-            backdrop-filter: blur(15px); 
-            -webkit-backdrop-filter: blur(15px); 
-            box-shadow: 0 8px 32px 0 var(--shadow-color); 
-            opacity: 0; 
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease, border-color 0.3s ease;
-        }
-        .card.hero {
-            opacity: 1;
-            transform: none;
-        }
-        .card.is-visible { 
-            opacity: 1; 
-            transform: translateY(0); 
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.12);
+            pointer-events: none;
+            transition: opacity var(--transition);
         }
 
+        /* ── Layout ── */
+        .container { max-width: 1140px; margin: 0 auto; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+
+        /* ── Card ── */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 3rem;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px 0 var(--shadow);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform var(--transition), box-shadow var(--transition), background-color var(--transition), border-color var(--transition);
+            contain: layout style;
+        }
+        .card.hero { opacity: 1; transform: none; }
+        .card.is-visible { opacity: 1; transform: translateY(0); }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px 0 rgba(0,0,0,0.12); }
+
+        /* ── Hero ── */
         .hero { display: grid; grid-template-columns: 2fr 1fr; align-items: center; gap: 3rem; }
-        .hero-text h1 { font-size: 3rem; margin-bottom: 1rem; color: var(--primary-color); }
-        .hero-text p { color: var(--text-color); font-size: 1.1rem; }
-        .hero-text .subtitle { font-size: 1.5rem; font-weight: 300; margin-bottom: 1.5rem; color: var(--text-color-light); }
+        .hero-text h1 { font-size: 3rem; margin-bottom: 1rem; color: var(--accent); }
+        .hero-text .subtitle { font-size: 1.5rem; font-weight: 300; margin-bottom: 1.5rem; color: var(--text-muted); }
         .hero-text .intro-p { margin-bottom: 1.5rem; }
         .hero-photo { display: flex; justify-content: center; align-items: center; }
-        .hero-photo img { width: 100%; max-width: 250px; aspect-ratio: 1 / 1; border-radius: 50%; object-fit: cover; border: 5px solid var(--border-color); box-shadow: 0 0 20px rgba(0,0,0,0.1); }
-
-        .content-section h2 { font-size: 2rem; margin-bottom: 1.5rem; border-bottom: 2px solid var(--primary-color); padding-bottom: 0.5rem; display: inline-block; color: var(--primary-color); }
-        .content-section > p { color: var(--text-color); margin-bottom: 1rem; }
-
-        .cta-buttons-group { display: flex; gap: 1.5rem; margin-top: 2rem; flex-wrap: wrap; }
-        .cta-button { display: inline-flex; align-items: center; justify-content: center; background-color: var(--primary-color); color: #ffffff; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: all 0.3s ease; border: 1px solid transparent; gap: 0.75rem; }
-        .cta-button:hover { background-color: var(--primary-color-darker); transform: translateY(-2px); box-shadow: 0 4px 15px var(--shadow-color); }
-        .cta-button.secondary { background-color: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); }
-        .cta-button.secondary:hover { background-color: var(--primary-color); color: #ffffff; }
-
-        .cta-button:focus-visible, .contact-links a:focus-visible, .reference-link:focus-visible {
-            outline: 2px solid var(--primary-color);
-            outline-offset: 2px;
+        .hero-photo img {
+            width: 100%;
+            max-width: 250px;
+            aspect-ratio: 1/1;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--border);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
 
-        .skills-container h3 { margin-top: 2rem; margin-bottom: 1rem; color: var(--primary-color); }
-        .skills-container h3:first-child { margin-top: 0; }
-        .skills-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-        .skill-tag { 
-            background: rgba(0, 0, 0, 0.05); 
-            color: var(--text-color); 
-            padding: 0.5rem 1rem; 
-            border-radius: 20px; 
-            font-size: 0.9rem; 
-            font-weight: 500; 
-            border: 1px solid var(--border-color);
-            transition: background-color 0.3s ease, color 0.3s ease;
+        /* ── Sections ── */
+        .content-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+            color: var(--accent);
+        }
+        .content-section > p { margin-bottom: 1rem; }
+
+        /* ── Boutons CTA ── */
+        .cta-buttons-group { display: flex; gap: 1.5rem; margin-top: 2rem; flex-wrap: wrap; }
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--accent);
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: background-color var(--transition), transform var(--transition), box-shadow var(--transition);
+            border: 1px solid transparent;
+            gap: 0.75rem;
             cursor: pointer;
         }
-        .skill-tag:hover {
-            background-color: var(--primary-color-darker);
-            color: #ffffff;
-        }
+        .cta-button:hover { background-color: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 4px 15px var(--shadow); }
+        .cta-button.secondary { background-color: transparent; border-color: var(--accent); color: var(--accent); }
+        .cta-button.secondary:hover { background-color: var(--accent); color: #fff; }
+        .cta-button:focus-visible,
+        .contact-links a:focus-visible,
+        .reference-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+        .cta-button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-        .references-container {
-            margin-top: 2.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
+        /* ── Compétences ── */
+        .skills-container h3 { margin-top: 2rem; margin-bottom: 1rem; color: var(--accent); }
+        .skills-container h3:first-child { margin-top: 0; }
+        .skills-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        .skill-tag {
+            background: rgba(0,0,0,0.05);
+            color: var(--text);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid var(--border);
+            transition: background-color var(--transition), color var(--transition);
+            cursor: default;
+            user-select: none;
         }
+        .skill-tag:hover { background-color: var(--accent-hover); color: #fff; }
+
+        /* ── Références ── */
+        .references-container { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 2rem; }
         .reference-item {
             display: grid;
             grid-template-columns: 160px 1fr;
             gap: 2.5rem;
             align-items: center;
             padding-bottom: 2rem;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border);
         }
-        .reference-item:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-        .reference-context { display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .context-entity { width: 100%; }
-        .entity-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-color-light); margin-bottom: 0.5rem; }
-        .entity-logo {
-            height: 40px;
-            width: auto;
-            max-width: 120px;
-            object-fit: contain;
-        }
-        .context-separator { width: 1px; height: 20px; background-color: var(--border-color); margin: 1rem 0; }
-        .reference-content h3 { font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--primary-color); }
-        .reference-content p { font-size: 1rem; margin-bottom: 0; }
-        .reference-link { display: inline-block; margin-top: 1rem; font-size: 0.9rem; font-weight: 600; color: var(--primary-color); text-decoration: none; transition: text-decoration 0.3s ease; }
+        .reference-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .reference-context { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; }
+        .context-entity { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+        .entity-label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .entity-logo { height: 32px; width: auto; max-width: 120px; object-fit: contain; }
+        /* SVG inline logos */
+        .entity-logo-svg { height: 32px; width: 120px; display: flex; align-items: center; justify-content: center; }
+        .entity-logo-svg svg { height: 32px; width: auto; max-width: 120px; }
+        .context-separator { width: 1px; height: 20px; background-color: var(--border); margin: 0.5rem 0; }
+        .reference-content h3 { font-size: 1.4rem; margin-bottom: 0.5rem; color: var(--accent); line-height: 1.3; }
+        .reference-content p { font-size: 1rem; margin-bottom: 0.75rem; }
+        .reference-link { display: inline-block; margin-top: 0.75rem; font-size: 0.9rem; font-weight: 600; color: var(--accent); text-decoration: none; }
         .reference-link:hover { text-decoration: underline; }
-        .reference-link .arrow { display: inline-block; margin-left: 5px; transition: transform 0.3s ease; }
+        .reference-link .arrow { display: inline-block; margin-left: 5px; transition: transform var(--transition); }
         .reference-link:hover .arrow { transform: translateX(5px); }
 
-        .contact-links { 
-            display: flex; 
-            gap: 1.5rem; 
-            margin-top: 2rem;
-            margin-bottom: 2rem; 
-            flex-wrap: wrap; 
-        }
-        .contact-links a { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--primary-color); text-decoration: none; font-weight: 600; padding: 8px 15px; border-radius: 8px; background: rgba(0, 0, 0, 0.05); border: 1px solid var(--border-color); transition: all 0.3s ease; }
-        .contact-links a:hover { background: var(--primary-color); color: #ffffff; }
-        .contact-links a svg { width: 20px; height: 20px; fill: currentColor; }
-        .contact-details { border-top: 1px solid var(--border-color); padding-top: 2rem; }
-        .contact-details address { font-style: normal; }
-        .contact-details a { color: var(--primary-color); text-decoration: none; font-weight: 600; }
-        .contact-details a:hover { text-decoration: underline; }
-
-        .contact-line {
-            display: flex;
-            justify-content: flex-start;
+        /* ── Contact ── */
+        .contact-links { display: flex; gap: 1.5rem; margin-top: 2rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .contact-links a {
+            display: inline-flex;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 0.75rem;
+            gap: 0.5rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 15px;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            transition: background var(--transition), color var(--transition);
         }
+        .contact-links a:hover { background: var(--accent); color: #fff; }
+        .contact-links a svg { width: 20px; height: 20px; fill: currentColor; flex-shrink: 0; }
+        .contact-details { border-top: 1px solid var(--border); padding-top: 2rem; }
+        .contact-details address { font-style: normal; }
+        .contact-details a { color: var(--accent); text-decoration: none; font-weight: 600; }
+        .contact-details a:hover { text-decoration: underline; }
+        .contact-line { display: flex; justify-content: flex-start; align-items: center; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+
+        /* ── Copier email btn ── */
         .copy-btn {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background-color: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-color-light);
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
             font-family: 'Manrope', sans-serif;
             font-size: 0.8rem;
             padding: 4px 10px;
@@ -239,63 +304,69 @@
             transition: all 0.2s ease-in-out;
             white-space: nowrap;
         }
-        .copy-btn:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-        }
-        .copy-btn.copied {
-            background-color: #d1f7d1;
-            border-color: #2b8a3e;
-            color: #2b8a3e;
-        }
-        .copy-btn .copy-icon { transition: transform 0.2s ease; }
-        .copy-btn.copied .copy-icon { transform: scale(0); }
+        .copy-btn:hover { background: rgba(0,0,0,0.05); border-color: var(--accent); color: var(--accent); }
+        .copy-btn.copied { background: #d1f7d1; border-color: #2b8a3e; color: #2b8a3e; }
 
+        /* ── Formulaire ── */
         form { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
-        form input, form textarea { background: rgba(255, 255, 255, 0.5); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; font-family: 'Manrope', sans-serif; color: var(--text-color); font-size: 1rem; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); }
-        form input:focus, form textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(26, 32, 44, 0.1); }
+        form input, form textarea {
+            background: rgba(255,255,255,0.5);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'Manrope', sans-serif;
+            color: var(--text);
+            font-size: 1rem;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+            transition: border-color var(--transition), box-shadow var(--transition);
+        }
+        form input:focus, form textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(26,32,44,0.12);
+        }
         form textarea { min-height: 120px; resize: vertical; }
-        form button { align-self: flex-start; border: none; cursor: pointer; }
-        
+        form button[type="submit"] { align-self: flex-start; border: none; }
+
         #form-status {
             margin-top: 1.5rem;
             padding: 1rem;
             border-radius: 8px;
             font-weight: 600;
-            text-align: center;
             display: none;
         }
-        #form-status.success {
-            display: block;
-            background-color: #d1f7d1;
-            border: 1px solid #2b8a3e;
-            color: #2b8a3e;
-        }
-        #form-status.error {
-            display: block;
-            background-color: #f8d7da;
-            border: 1px solid #721c24;
-            color: #721c24;
-        }
+        #form-status.success { display: block; background: #d1f7d1; border: 1px solid #2b8a3e; color: #2b8a3e; }
+        #form-status.error   { display: block; background: #f8d7da; border: 1px solid #721c24; color: #721c24; }
 
-        footer { 
-            text-align: center; 
-            padding: 2rem; 
-            margin-top: 2rem; 
-            font-size: 0.9rem; 
-            color: var(--text-color-light); 
+        /* ── À propos ── */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
         }
-        .footer-content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1.5rem;
-        }
+        .about-intro p { margin-bottom: 1rem; }
+        .about-intro p:last-child { margin-bottom: 0; }
+        .about-principles ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1.5rem; }
+        .about-principles li { display: flex; align-items: flex-start; gap: 1rem; }
+        .about-principles li svg { flex-shrink: 0; width: 24px; height: 24px; margin-top: 2px; color: var(--accent); }
 
+        /* ── Footer ── */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .footer-content { display: flex; justify-content: center; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+
+        /* ── Theme toggle ── */
         .theme-toggle {
             background: none;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border);
             border-radius: 50%;
             cursor: pointer;
             width: 40px;
@@ -304,514 +375,448 @@
             align-items: center;
             justify-content: center;
             padding: 0;
-            color: var(--text-color-light);
-            transition: all 0.3s ease;
+            color: var(--text-muted);
+            transition: color var(--transition), border-color var(--transition);
         }
-        .theme-toggle:hover {
-            color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
+        .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
         .theme-toggle .moon-icon { display: none; }
-        .theme-toggle .sun-icon { display: block; }
+        .theme-toggle .sun-icon  { display: block; }
 
+        /* ── Back to top ── */
         .back-to-top {
             position: fixed;
             bottom: 20px;
             right: 20px;
             z-index: 999;
-            background: var(--card-bg-color);
-            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            border: 1px solid var(--border);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 4px 12px var(--shadow-color);
+            box-shadow: 0 4px 12px var(--shadow);
             width: 50px;
             height: 50px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-color);
+            color: var(--text);
             text-decoration: none;
             opacity: 0;
             visibility: hidden;
             transform: translateY(20px);
             transition: all 0.3s ease-in-out;
         }
-        .back-to-top svg {
-            width: 20px;
-            height: 20px;
-        }
-        .back-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-        .back-to-top:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px var(--shadow-color);
-        }
+        .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+        .back-to-top:hover { transform: translateY(-3px); box-shadow: 0 8px 20px var(--shadow); }
 
-        /* NOUVEAUX STYLES POUR LA SECTION "A PROPOS" */
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-            margin-top: 2rem;
-            margin-bottom: 2rem;
-        }
-        .about-principles ul {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-        .about-principles li {
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-        }
-        .about-principles li svg {
-            flex-shrink: 0;
-            width: 24px;
-            height: 24px;
-            margin-top: 2px;
-            color: var(--primary-color);
-        }
-        .about-principles li span {
-            color: var(--text-color);
-        }
-        .about-intro p:last-of-type {
-            margin-bottom: 0;
-        }
-
-
-        @media (max-width: 992px) { 
-            .hero { grid-template-columns: 1fr; text-align: center; } 
-            .hero-photo { order: -1; margin-bottom: 2rem; } 
-            .hero-text h1 { font-size: 2.5rem; } 
+        /* ── Responsive ── */
+        @media (max-width: 992px) {
+            .hero { grid-template-columns: 1fr; text-align: center; }
+            .hero-photo { order: -1; margin-bottom: 1.5rem; }
+            .hero-text h1 { font-size: 2.5rem; }
+            .cta-buttons-group { justify-content: center; }
             .reference-item { grid-template-columns: 1fr; text-align: center; gap: 1.5rem; }
-            .reference-content {
-                text-align: left;
-            }
-            .reference-context { flex-direction: row; justify-content: center; gap: 1rem; }
-            .context-separator { height: 40px; margin: 0; }
-            .about-grid {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
+            .reference-content { text-align: left; }
+            .reference-context { flex-direction: row; justify-content: center; gap: 1.5rem; }
+            .context-separator { width: 1px; height: 40px; margin: 0; }
+            .about-grid { grid-template-columns: 1fr; gap: 2rem; }
         }
-
-        @media (max-width: 768px) { 
-            .container { padding: 1rem; } 
-            .card { padding: 1.5rem; } 
-            .cta-buttons-group { flex-direction: column; gap: 1rem; }
-            .back-to-top {
-                display: none;
-            }
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .card { padding: 1.5rem; }
+            .cta-buttons-group { flex-direction: column; }
+            .back-to-top { display: none; }
             .reference-link {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                background-color: var(--primary-color);
-                color: #ffffff;
+                background: var(--accent);
+                color: #fff;
                 padding: 10px 20px;
                 border-radius: 8px;
                 text-decoration: none;
                 font-weight: 600;
-                text-align: center;
             }
-            .reference-link .arrow {
-                display: none;
-            }
-            body.dark-mode .reference-link {
-                color: #1a202c;
-            }
+            .reference-link .arrow { display: none; }
         }
 
-        /* ==================
-           DARK MODE STYLES
-           ================== */
+        /* ── Dark Mode ── */
         body.dark-mode {
-            --bg-color: #1a202c;
-            --card-bg-color: rgba(45, 55, 72, 0.7);
-            --text-color: #e2e8f0;
-            --text-color-light: #a0aec0;
-            --primary-color: #ffffff;
-            --primary-color-darker: #e2e8f0;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --shadow-color: rgba(0, 0, 0, 0.2);
+            --bg:           #1a202c;
+            --card-bg:      rgba(45,55,72,0.72);
+            --text:         #e2e8f0;
+            --text-muted:   #a0aec0;
+            --accent:       #ffffff;
+            --accent-hover: #e2e8f0;
+            --border:       rgba(255,255,255,0.1);
+            --shadow:       rgba(0,0,0,0.25);
         }
-
-        body.dark-mode .background-shapes {
-            opacity: 0.1;
-        }
-
+        body.dark-mode .background-shapes { opacity: 0.08; }
         body.dark-mode .skill-tag,
         body.dark-mode .contact-links a {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-color);
-            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.15);
         }
-
-        body.dark-mode .cta-button.secondary {
-            color: #ffffff;
-            border-color: #ffffff;
-        }
-
+        body.dark-mode .cta-button.secondary { color: #fff; border-color: #fff; }
         body.dark-mode .cta-button.secondary:hover,
         body.dark-mode .contact-links a:hover,
-        body.dark-mode .skill-tag:hover {
-            background-color: #ffffff;
-            color: #1a202c;
-        }
-
-        body.dark-mode .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 45px 0 rgba(0, 0, 0, 0.4);
-        }
-
+        body.dark-mode .skill-tag:hover { background: #fff; color: #1a202c; }
+        body.dark-mode .cta-button { color: #1a202c; }
+        body.dark-mode .card:hover { box-shadow: 0 12px 45px 0 rgba(0,0,0,0.45); }
         body.dark-mode .theme-toggle .moon-icon { display: block; }
-        body.dark-mode .theme-toggle .sun-icon { display: none; }
-
-        body.dark-mode .cta-button {
-            color: #1a202c;
-        }
+        body.dark-mode .theme-toggle .sun-icon  { display: none; }
         body.dark-mode .intro-p a,
-        body.dark-mode #a-propos a {
-            color: #63b3ed;
-            text-decoration: underline;
-        }
-        body.dark-mode .entity-logo {
-            filter: invert(1);
-        }
-        body.dark-mode .about-principles li svg {
-            color: var(--primary-color);
+        body.dark-mode #a-propos a { color: #63b3ed; text-decoration: underline; }
+        body.dark-mode .entity-logo { filter: invert(1); }
+        body.dark-mode form input,
+        body.dark-mode form textarea { background: rgba(255,255,255,0.06); color: var(--text); }
+        body.dark-mode .reference-link { color: #fff; }
+        @media (max-width: 768px) {
+            body.dark-mode .reference-link { color: #1a202c; }
         }
     </style>
-        <script type="application/ld+json">
-        {
-        "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Pierre-Etienne Monreal",
-        "url": "https://www.pe-monreal.com",
-        "image": "https://www.pe-monreal.com/images/photo-profil.webp",
-        "jobTitle": "Consultant Product Owner Senior",
-        "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Montpellier",
-            "addressCountry": "FR"
-        },
-        "sameAs": [
-            "https://www.linkedin.com/in/pierreetiennemonreal/",
-            "https://github.com/PEMtl",
-            "https://www.malt.fr/profile/pierreetiennemonreal"
-        ]
-        }
-        </script>
 </head>
 <body>
 
-    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+<a href="#main-content" class="skip-link">Aller au contenu principal</a>
+<div class="background-shapes" aria-hidden="true"></div>
 
-    <div class="background-shapes"></div>
+<main class="container" id="main-content">
 
-    <main class="container" id="main-content">
-        <section id="accueil" class="card hero">
-            <div class="hero-text">
-                <h1>Pierre-Etienne Monreal</h1>
-                <p class="subtitle">
-                    Consultant Product Owner Senior,<br>
-                    📍 basé à <strong>Montpellier</strong>.
-                </p>
-                <p class="intro-p">
-                    Product Owner <a href="https://www.exalt-company.com/fr-fr/index.html" target="_blank" rel="noopener noreferrer">@eXalt</a> | PSPO1&reg; certified👨‍💻 | Bénévole <a href="https://agilemontpellier.fr/" target="_blank" rel="noopener noreferrer">@AgileMontpellier</a>🔄️
-                </p>
-                <a href="#contact" class="cta-button">👋 Me contacter</a>
-            </div>
-            <div class="hero-photo">
-                <img src="/images/photo-profil.webp" alt="Photo de profil de Pierre-Etienne Monreal" loading="eager" fetchpriority="high">
-            </div>
-        </section>
-
-<section id="a-propos" class="card content-section">
-            <h2>A Propos</h2>
-            <div class="about-grid">
-                <div class="about-intro">
-                    <p>
-                        Passionné par la création de produits technologiques complexes, je suis un <strong>Product Owner Senior</strong> avec 10 ans d'expériences au sein d'entreprises et de startups innovantes.
-                    </p><br />
-                    <p>
-                        Mon expertise couvre l'intégralité du cycle de vie des projets, de la conception à la livraison, avec une maîtrise de la <strong>build-chain</strong>. Je pilote des solutions transversales en optimisant la gestion des priorités pour maximiser la valeur produite.
-                    </p>
-                </div>
-                <div class="about-principles">
-                    <ul>
-                        <li>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 2v6h6"/>
-                                <path d="M21 12A9 9 0 0 0 6 5.3L3 8"/>
-                                <path d="M21 22v-6h-6"/>
-                                <path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/>
-                            </svg>
-                            <span>Mon approche, basée sur les principes de l'<strong>agilité</strong>, privilégie le partage, l'entraide, la confiance et l'empirisme.</span>
-                        </li>
-                        <li>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                                <circle cx="9" cy="7" r="4"/>
-                                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                            </svg>
-                            <span>Je place la notion de <strong>"users-centric"</strong> au cœur de mes projets, ce qui me permet d'aligner les décisions stratégiques et techniques avec les besoins réels des utilisateurs.</span>
-                        </li>
-                        <li>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 3v18h18"/>
-                            <path d="m19 9-5 5-4-4-3 3"/>
-                        </svg>
-                            <span>Toujours en <strong>veille technologique</strong>, je m'assure de proposer des solutions innovantes et performantes.</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="cta-buttons-group">
-                <a href="https://drive.google.com/file/d/1vg_93vra6rck78pkWbFrw9Y6GftIsD6s/view" target="_blank" rel="noopener noreferrer" class="cta-button">
-                    📥 Télécharger mon CV
-                </a>
-                <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="cta-button secondary">
-                    🗒️ Annexe CV
-                </a>
-            </div>
-        </section>
-
-        <section id="competences" class="card content-section">
-            <h2>Compétences & Certifications</h2>
-            <div class="skills-container">
-                <h3>Certifications</h3>
-                <div class="skills-grid">
-                    <span class="skill-tag">🏆 Certified PSPO1&reg;</span>
-                    <span class="skill-tag">🏆 Opquast Qualité Web</span>
-                    <span class="skill-tag">🏆 Google Analytics/Adwords</span>
-                </div>
-                
-                <h3>Product</h3>
-                <div class="skills-grid">
-                    <span class="skill-tag">Agilité</span>
-                    <span class="skill-tag">Scrum/Kanban/SAFe</span>
-                    <span class="skill-tag">User centric</span>
-                    <span class="skill-tag">Vision delivery</span>
-                    <span class="skill-tag">Mobile first</span>
-                    <span class="skill-tag">Vision roadmap</span>
-                    <span class="skill-tag">Test fonctionnel/TNR</span>
-                </div>
-                
-                <h3>Outils</h3>
-                <div class="skills-grid">
-                    <span class="skill-tag">Suite Atlassian</span>
-                    <span class="skill-tag">Git & GitHub</span>
-                    <span class="skill-tag">Google Workspace/M365</span>
-                    <span class="skill-tag">Notions/Loop/Trello</span>
-                    <span class="skill-tag">Figma/Invision</span>
-                    <span class="skill-tag">Windows/macOS</span>
-                </div>
-                
-                <h3>Stacks projets en mission</h3>
-                <div class="skills-grid">
-                    <span class="skill-tag">CMS</span>
-                    <span class="skill-tag">Docker</span>
-                    <span class="skill-tag">Git/GitHub</span>
-                    <span class="skill-tag">Grafana/Prometheus</span>
-                    <span class="skill-tag">HTML5 & CSS3</span>
-                    <span class="skill-tag">Js (NuxtJS/VueJs)</span>
-                    <span class="skill-tag">Angular</span>
-                    <span class="skill-tag">React</span>
-                    <span class="skill-tag">Swift/Kotlin</span>
-                    <span class="skill-tag">SQL</span>
-                    <span class="skill-tag">OVH/AWS/O2Switch</span>
-                    <span class="skill-tag">Google Cloud</span>
-                </div>
-            </div>
-        </section>
-
-        <section id="references" class="card content-section">
-            <h2>Missions & Références</h2>
-            <p>
-                Aperçu de quelques expériences significatives, menées auprès de clients finaux ou en mission pour différentes ESN.
+    <!-- ══════════════════════════ HERO ══════════════════════════ -->
+    <section id="accueil" class="card hero" aria-label="Présentation">
+        <div class="hero-text">
+            <h1>Pierre-Etienne Monreal</h1>
+            <p class="subtitle">
+                Consultant Product Owner Senior,<br>
+                📍 basé à <strong>Montpellier</strong>
             </p>
-            <div class="references-container">
-                <article class="reference-item">
-                    <div class="reference-context">
-                        <div class="context-entity">
-                            <img class="entity-logo" src="/images/logos/exalt.svg" alt="Logo eXalt">
-                        </div>
-                        <div class="context-separator"></div>
-                        <div class="context-entity">
-                            <img class="entity-logo" src="/images/logos/credit-agricole.svg" alt="Logo Crédit Agricole">
-                        </div>
-                    </div>
-                    <div class="reference-content">
-                        <h3>Création d'un parcours web/mobile de souscription dédié aux professionnels.</h3>
-                        <p>
-                            En tant que <strong>Business Analyst</strong>, et au sein d'une squad pluridiscplinaire de quasi 20 personnes, j'ai aidé à la conduite d'une équipe — Scrum — aux phases de design thinking et de démarrage de production de la refonte d'une application d'entrée en relation dédiée pour de la souscription de produits bancaires réservés aux professionnels, l'optimisation du parcours et l'intégration de nouvelles fonctionnalités pour le <strong>Crédit Agricole</strong>.
-                        </p>
-                        <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="reference-link" target="_blank" rel="noopener noreferrer">
-                            En savoir plus <span class="arrow">&rarr;</span>
-                        </a>
-                    </div>
-                </article>
-                
-                <article class="reference-item">
-                    <div class="reference-context">
-                        <div class="context-entity">
-                             <img class="entity-logo" src="/images/logos/astek.svg" alt="Logo Astek">
-                        </div>
-                        <div class="context-separator"></div>
-                        <div class="context-entity">
-                             <img class="entity-logo" src="/images/logos/ovh.svg" alt="Logo OVH">
-                        </div>
-                    </div>
-                    <div class="reference-content">
-                        <h3>Gestion d'un applicatif de monitoring infra</h3>
-                        <p>
-                            Pendant un an, en tant que <strong>Product Owner</strong> intégré dans une squad d'une quinzaine de personnes — en Scrum — chez <strong>OVHcloud</strong>. J'ai piloté la gestion d'une application de monitoring d'infrastructure en datacenters à l'international, impliquant des déploiements, et de la formation sur les sites à migrer.
-                        </p>
-                        <p>
-                            J'ai supervisé la migration d'applicatifs legacy vers ces nouvelles solutions cibles, tout en prenant en charge la priorisation et le suivi d'un product backlog. En parallèle, j'ai travaillé sur la consolidation de la roadmap produit, la création d'une communauté utilisateurs, et assuré la coordination de la dette technique et des projets R&D.
-                        </p>
-                        <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="reference-link" target="_blank" rel="noopener noreferrer">
-                            En savoir plus <span class="arrow">&rarr;</span>
-                        </a>
-                    </div>
-                </article>
-                
-                <article class="reference-item">
-                    <div class="reference-context">
-                        <div class="context-entity">
-                             <img class="entity-logo" src="/images/logos/klanik.svg" alt="Logo Klanik">
-                        </div>
-                        <div class="context-separator"></div>
-                        <div class="context-entity">
-                             <img class="entity-logo" src="/images/logos/la-poste.svg" alt="Logo Groupe La Poste">
-                        </div>
-                    </div>
-                    <div class="reference-content">
-                        <h3>Pilotage TMA d'applicatifs legacy, migrations et accompagnement agile des équipes</h3>
-                        <p>
-                            Au sein du <strong>Groupe La Poste</strong>, pendant une année, j'ai piloté, en tant que <strong>Run Owner</strong>, une Tierce Maintenance Applicative et plus largement pour un portefeuille de plus de 30 applications legacy — du micro services à de applicatifs exposés public — avec un focus sur la sécurisation transverse et le suivi des backlogs, incidents, et demandes de support.
-                        </p>
-                        <p>
-                            J'ai également supervisé des migrations/démantèlements applicatifs. Mon rôle a impliqué donc une composante technique, avec une gestion de la transition applicative et des phases de coaching agile/process des équipes métier en interface avec la DSI et les partenaires IT.
-                        </p>
-                        <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="reference-link" target="_blank" rel="noopener noreferrer">
-                            En savoir plus <span class="arrow">&rarr;</span>
-                        </a>
-                    </div>
-                </article>
-
-                <article class="reference-item">
-                    <div class="reference-context">
-                        <div class="context-entity">
-                            <img class="entity-logo" src="/images/logos/easy-cash.svg" alt="Logo Easy Cash">
-                        </div>
-                    </div>
-                    <div class="reference-content">
-                        <h3>Product Owner e-commerce</h3>
-                        <p>Pendant deux ans, j’ai accompagné la croissance d’un acteur e-commerce (CA 8,4 M€ → 13,6 M€) en pilotant la migration AWS, les projets d’évolution et la maintenance de deux sites (+200 000 pages). J’ai assuré la qualité, la performance et le suivi utilisateur, tout en formant les équipes internes et les franchisés.</p>
-                        <p>J’ai géré des composants variés — tunnel de conversion, paiements, réservation, API SOAP/REST, géolocalisation — et supervisé la dématérialisation des processus clients, l’intégration RGPD et les outils internes connectés à l’ERP</p>
-                        <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="reference-link" target="_blank" rel="noopener noreferrer">
-                            En savoir plus <span class="arrow">&rarr;</span>
-                        </a>
-                    </div>
-                </article>
-            </div>
-        </section>
-        
-        <section id="contact" class="card content-section">
-            <h2>Contact</h2>
-            <p>
-                Un projet, une question ? Retrouvez-moi sur les plateformes suivantes ou contactez-moi directement.
+            <p class="intro-p">
+                Product Owner <a href="https://www.exalt-company.com/fr-fr/index.html" target="_blank" rel="noopener noreferrer">@eXalt</a> &nbsp;|&nbsp;
+                PSPO1® certifié 👨‍💻 &nbsp;|&nbsp;
+                Bénévole <a href="https://agilemontpellier.fr/" target="_blank" rel="noopener noreferrer">@AgileMontpellier</a> 🔄
             </p>
-            <div class="contact-links">
-                <a href="https://www.linkedin.com/in/pierreetiennemonreal/" target="_blank" rel="noopener noreferrer">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img">
-                        <title>LinkedIn</title>
-                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                    </svg>
-                    <span>LinkedIn</span>
-                </a>
-                <a href="https://www.malt.fr/profile/pierreetiennemonreal" target="_blank" rel="noopener noreferrer">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img">
-                        <title>Malt</title>
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6v2H5v11h11v-6h2zM15 3h6v6h-2V5.41l-7.79 7.79-1.42-1.42L17.59 4H15V3z"/>
-                    </svg>
-                    <span>Malt</span>
-                </a>
-                <a href="https://github.com/PEMtl" target="_blank" rel="noopener noreferrer">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img">
-                        <title>GitHub</title>
-                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                    <span>GitHub</span>
-                </a>
-            </div>
-            <div class="contact-details">
-                <div class="contact-line">
-                    <address>📨 Email : contact@pe-monreal.com</address>
-                    <button id="copy-email-btn" class="copy-btn" aria-label="Copier l'e-mail">
-                        <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        </svg>
-                        <span class="copy-text">Copier</span>
-                    </button>
-                </div>
-                <div class="contact-line">
-                    <address>
-                        💻 En visio : <a href="https://calendly.com/pierre-etienne-monreal/rendez-vous-30min" target="_blank" rel="noopener noreferrer">Calendly</a>
-                    </address>
-                </div>
-            </div>
-            <form id="contact-form" action="https://formspree.io/f/xjkejbdp" method="POST">
-                <input type="text" name="_gotcha" style="display:none">
-                <textarea name="message" placeholder="Ou laissez-moi un message directement ici" required></textarea>
-                <input type="email" name="email" placeholder="Renseignez votre e-mail" required>
-                <button type="submit" class="cta-button">🚀 Envoyer</button>
-            </form>
-            <div id="form-status"></div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="footer-content">
-            <p>Tous droits réservés - &copy; <span id="copyright-year"></span> Pierre-Etienne Monreal</p>
-            <button id="theme-toggle" class="theme-toggle" aria-label="Changer le thème">
-                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                </svg>
-                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                </svg>
-            </button>
+            <a href="#contact" class="cta-button">👋 Me contacter</a>
         </div>
-    </footer>
+        <div class="hero-photo">
+            <img src="/images/photo-profil.webp"
+                 alt="Photo de profil de Pierre-Etienne Monreal"
+                 width="250" height="250"
+                 loading="eager"
+                 fetchpriority="high">
+        </div>
+    </section>
 
-    <script src="script.js" defer></script>
+    <!-- ══════════════════════════ À PROPOS ══════════════════════════ -->
+    <section id="a-propos" class="card content-section">
+        <h2>À Propos</h2>
+        <div class="about-grid">
+            <div class="about-intro">
+                <p>
+                    Passionné par la création de produits technologiques complexes, je suis un <strong>Product Owner Senior</strong> avec 10 ans d'expérience au sein d'entreprises et de startups innovantes.
+                </p>
+                <p>
+                    Mon expertise couvre l'intégralité du cycle de vie des projets, de la conception à la livraison, avec une maîtrise de la <strong>build-chain</strong>. Je pilote des solutions transversales en optimisant la gestion des priorités pour maximiser la valeur produite.
+                </p>
+            </div>
+            <div class="about-principles">
+                <ul>
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M3 2v6h6"/><path d="M21 12A9 9 0 0 0 6 5.3L3 8"/>
+                            <path d="M21 22v-6h-6"/><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/>
+                        </svg>
+                        <span>Mon approche, basée sur les principes de l'<strong>agilité</strong>, privilégie le partage, l'entraide, la confiance et l'empirisme.</span>
+                    </li>
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        <span>Je place la notion de <strong>user-centric</strong> au cœur de mes projets pour aligner les décisions stratégiques et techniques avec les besoins réels des utilisateurs.</span>
+                    </li>
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/>
+                        </svg>
+                        <span>Toujours en <strong>veille technologique</strong>, je propose des solutions innovantes et performantes adaptées au contexte.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="cta-buttons-group">
+            <a href="https://drive.google.com/file/d/1vg_93vra6rck78pkWbFrw9Y6GftIsD6s/view" target="_blank" rel="noopener noreferrer" class="cta-button">
+                📥 Télécharger mon CV
+            </a>
+            <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="cta-button secondary">
+                🗒️ Annexe CV
+            </a>
+        </div>
+    </section>
 
-    <a href="#accueil" class="back-to-top" aria-label="Retour en haut de la page">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="12" y1="19" x2="12" y2="5"></line>
-            <polyline points="5 12 12 5 19 12"></polyline>
-        </svg>
-    </a>
+    <!-- ══════════════════════════ COMPÉTENCES ══════════════════════════ -->
+    <section id="competences" class="card content-section">
+        <h2>Compétences &amp; Certifications</h2>
+        <div class="skills-container">
+            <h3>Certifications</h3>
+            <div class="skills-grid" role="list">
+                <span class="skill-tag" role="listitem">🏆 Certified PSPO1®</span>
+                <span class="skill-tag" role="listitem">🏆 Opquast Qualité Web</span>
+                <span class="skill-tag" role="listitem">🏆 Google Analytics / Adwords</span>
+            </div>
+
+            <h3>Product</h3>
+            <div class="skills-grid" role="list">
+                <span class="skill-tag" role="listitem">Agilité</span>
+                <span class="skill-tag" role="listitem">Scrum / Kanban / SAFe</span>
+                <span class="skill-tag" role="listitem">User centric</span>
+                <span class="skill-tag" role="listitem">Vision delivery</span>
+                <span class="skill-tag" role="listitem">Mobile first</span>
+                <span class="skill-tag" role="listitem">Vision roadmap</span>
+                <span class="skill-tag" role="listitem">Test fonctionnel / TNR</span>
+            </div>
+
+            <h3>Outils</h3>
+            <div class="skills-grid" role="list">
+                <span class="skill-tag" role="listitem">Suite Atlassian</span>
+                <span class="skill-tag" role="listitem">Git &amp; GitHub</span>
+                <span class="skill-tag" role="listitem">Google Workspace / M365</span>
+                <span class="skill-tag" role="listitem">Notion / Loop / Trello</span>
+                <span class="skill-tag" role="listitem">Figma / Invision</span>
+                <span class="skill-tag" role="listitem">Windows / macOS</span>
+            </div>
+
+            <h3>Stacks projets en mission</h3>
+            <div class="skills-grid" role="list">
+                <span class="skill-tag" role="listitem">CMS</span>
+                <span class="skill-tag" role="listitem">Docker</span>
+                <span class="skill-tag" role="listitem">Git / GitHub</span>
+                <span class="skill-tag" role="listitem">Grafana / Prometheus</span>
+                <span class="skill-tag" role="listitem">HTML5 &amp; CSS3</span>
+                <span class="skill-tag" role="listitem">NuxtJS / VueJS</span>
+                <span class="skill-tag" role="listitem">Angular</span>
+                <span class="skill-tag" role="listitem">React</span>
+                <span class="skill-tag" role="listitem">Swift / Kotlin</span>
+                <span class="skill-tag" role="listitem">SQL</span>
+                <span class="skill-tag" role="listitem">OVH / AWS / O2Switch</span>
+                <span class="skill-tag" role="listitem">Google Cloud</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════ RÉFÉRENCES ══════════════════════════ -->
+    <section id="references" class="card content-section">
+        <h2>Missions &amp; Références</h2>
+        <p>Aperçu de quelques expériences significatives, menées auprès de clients finaux ou en mission pour différentes ESN.</p>
+
+        <div class="references-container">
+
+            <!-- eXalt → Crédit Agricole -->
+            <article class="reference-item">
+                <div class="reference-context" aria-label="Mission : eXalt pour Crédit Agricole">
+                    <div class="context-entity">
+                        <span class="entity-label">ESN</span>
+                        <!-- Logo eXalt inline (PNG existant dans le projet) -->
+                        <img class="entity-logo" src="/images/logos/exalt.png" alt="Logo eXalt" width="120" height="40" loading="lazy">
+                    </div>
+                    <div class="context-separator" aria-hidden="true"></div>
+                    <div class="context-entity">
+                        <span class="entity-label">Client</span>
+                        <!-- Logo Crédit Agricole inline SVG -->
+                        <div class="entity-logo-svg" aria-label="Crédit Agricole">
+                            <svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Crédit Agricole">
+                                <rect x="0" y="10" width="20" height="20" rx="3" fill="#008A00"/>
+                                <rect x="5" y="15" width="10" height="10" rx="1" fill="#fff"/>
+                                <text x="26" y="26" font-family="Manrope,sans-serif" font-size="9" font-weight="600" fill="currentColor">Crédit Agricole</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="reference-content">
+                    <h3>Création d'un parcours web/mobile de souscription dédié aux professionnels</h3>
+                    <p>En tant que <strong>Business Analyst</strong>, au sein d'une squad pluridisciplinaire de quasi 20 personnes, j'ai conduit les phases de design thinking et de démarrage de production pour la refonte d'une application d'entrée en relation dédiée à la souscription de produits bancaires professionnels pour le <strong>Crédit Agricole</strong>.</p>
+                    <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="reference-link" target="_blank" rel="noopener noreferrer">
+                        En savoir plus <span class="arrow" aria-hidden="true">&rarr;</span>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Astek → OVHcloud -->
+            <article class="reference-item">
+                <div class="reference-context" aria-label="Mission : Astek pour OVHcloud">
+                    <div class="context-entity">
+                        <span class="entity-label">ESN</span>
+                        <div class="entity-logo-svg" aria-label="Astek">
+                            <svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Astek">
+                                <text x="0" y="28" font-family="Manrope,sans-serif" font-size="22" font-weight="700" fill="currentColor">Astek</text>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="context-separator" aria-hidden="true"></div>
+                    <div class="context-entity">
+                        <span class="entity-label">Client</span>
+                        <div class="entity-logo-svg" aria-label="OVHcloud">
+                            <svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OVHcloud">
+                                <text x="0" y="28" font-family="Manrope,sans-serif" font-size="18" font-weight="700" fill="#123F6D">OVH</text>
+                                <text x="44" y="28" font-family="Manrope,sans-serif" font-size="18" font-weight="300" fill="#123F6D">cloud</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="reference-content">
+                    <h3>Gestion d'un applicatif de monitoring infra</h3>
+                    <p>Pendant un an, en tant que <strong>Product Owner</strong> intégré dans une squad d'une quinzaine de personnes — en Scrum — chez <strong>OVHcloud</strong>, j'ai piloté une application de monitoring d'infrastructure en datacenters à l'international, impliquant des déploiements et de la formation sur les sites à migrer.</p>
+                    <p>J'ai supervisé la migration d'applicatifs legacy vers les solutions cibles, la priorisation du product backlog, la consolidation de la roadmap, la création d'une communauté utilisateurs, et la coordination de la dette technique et des projets R&D.</p>
+                    <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="reference-link" target="_blank" rel="noopener noreferrer">
+                        En savoir plus <span class="arrow" aria-hidden="true">&rarr;</span>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Klanik → La Poste -->
+            <article class="reference-item">
+                <div class="reference-context" aria-label="Mission : Klanik pour La Poste">
+                    <div class="context-entity">
+                        <span class="entity-label">ESN</span>
+                        <div class="entity-logo-svg" aria-label="Klanik">
+                            <svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Klanik">
+                                <text x="0" y="28" font-family="Manrope,sans-serif" font-size="20" font-weight="700" fill="currentColor">Klanik</text>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="context-separator" aria-hidden="true"></div>
+                    <div class="context-entity">
+                        <span class="entity-label">Client</span>
+                        <div class="entity-logo-svg" aria-label="La Poste">
+                            <svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="La Poste">
+                                <rect x="0" y="8" width="24" height="24" rx="3" fill="#FFCD00"/>
+                                <text x="4" y="26" font-family="serif" font-size="16" font-weight="700" fill="#003189">P</text>
+                                <text x="30" y="26" font-family="Manrope,sans-serif" font-size="13" font-weight="600" fill="currentColor">La Poste</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="reference-content">
+                    <h3>Pilotage TMA d'applicatifs legacy, migrations et accompagnement agile</h3>
+                    <p>Au sein du <strong>Groupe La Poste</strong>, j'ai piloté en tant que <strong>Run Owner</strong> une Tierce Maintenance Applicative sur un portefeuille de plus de 30 applications legacy — du micro-service à l'applicatif exposé public — avec un focus sur la sécurisation transverse et le suivi des backlogs, incidents et demandes de support.</p>
+                    <p>J'ai également supervisé des migrations et démantèlements applicatifs, assuré le coaching agile des équipes métier en interface avec la DSI et les partenaires IT.</p>
+                    <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="reference-link" target="_blank" rel="noopener noreferrer">
+                        En savoir plus <span class="arrow" aria-hidden="true">&rarr;</span>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Easy Cash (direct) -->
+            <article class="reference-item">
+                <div class="reference-context" aria-label="Mission : Easy Cash">
+                    <div class="context-entity">
+                        <span class="entity-label">Client</span>
+                        <div class="entity-logo-svg" aria-label="Easy Cash">
+                            <svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Easy Cash">
+                                <text x="0" y="16" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="#E30613">Easy</text>
+                                <text x="0" y="32" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="currentColor">Cash</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="reference-content">
+                    <h3>Product Owner e-commerce</h3>
+                    <p>Pendant deux ans, j'ai accompagné la croissance d'un acteur e-commerce (CA 8,4 M€ → 13,6 M€) en pilotant la migration AWS, les projets d'évolution et la maintenance de deux sites (+200 000 pages). J'ai assuré la qualité, la performance et le suivi utilisateur, tout en formant les équipes internes et les franchisés.</p>
+                    <p>J'ai géré des composants variés — tunnel de conversion, paiements, réservation, API SOAP/REST, géolocalisation — et supervisé la dématérialisation des processus clients, l'intégration RGPD et les outils internes connectés à l'ERP.</p>
+                    <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="reference-link" target="_blank" rel="noopener noreferrer">
+                        En savoir plus <span class="arrow" aria-hidden="true">&rarr;</span>
+                    </a>
+                </div>
+            </article>
+
+        </div>
+    </section>
+
+    <!-- ══════════════════════════ CONTACT ══════════════════════════ -->
+    <section id="contact" class="card content-section">
+        <h2>Contact</h2>
+        <p>Un projet, une question ? Retrouvez-moi sur les plateformes suivantes ou contactez-moi directement.</p>
+
+        <div class="contact-links">
+            <a href="https://www.linkedin.com/in/pierreetiennemonreal/" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="LinkedIn">
+                    <title>LinkedIn</title>
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                </svg>
+                <span>LinkedIn</span>
+            </a>
+            <a href="https://www.malt.fr/profile/pierreetiennemonreal" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="Malt">
+                    <title>Malt</title>
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6v2H5v11h11v-6h2zM15 3h6v6h-2V5.41l-7.79 7.79-1.42-1.42L17.59 4H15V3z"/>
+                </svg>
+                <span>Malt</span>
+            </a>
+            <a href="https://github.com/PEMtl" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="GitHub">
+                    <title>GitHub</title>
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                <span>GitHub</span>
+            </a>
+        </div>
+
+        <div class="contact-details">
+            <div class="contact-line">
+                <address>📨 Email : <a href="mailto:contact@pe-monreal.com">contact@pe-monreal.com</a></address>
+                <button id="copy-email-btn" class="copy-btn" aria-label="Copier l'e-mail">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span class="copy-text">Copier</span>
+                </button>
+            </div>
+            <div class="contact-line">
+                <address>💻 En visio : <a href="https://calendly.com/pierre-etienne-monreal/rendez-vous-30min" target="_blank" rel="noopener noreferrer">Calendly</a></address>
+            </div>
+        </div>
+
+        <!-- Formulaire : honeypot amélioré + ordre champs logique -->
+        <form id="contact-form" action="https://formspree.io/f/xjkejbdp" method="POST" novalidate>
+            <!-- Honeypot anti-spam -->
+            <input type="text" name="_gotcha" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;pointer-events:none;">
+            <!-- Champ email en premier pour une meilleure UX logique -->
+            <input type="email" name="email" placeholder="Votre e-mail" required autocomplete="email">
+            <textarea name="message" placeholder="Votre message" required minlength="10"></textarea>
+            <button type="submit" class="cta-button">🚀 Envoyer</button>
+        </form>
+        <div id="form-status" role="alert" aria-live="polite"></div>
+    </section>
+
+</main>
+
+<footer>
+    <div class="footer-content">
+        <p>Tous droits réservés &mdash; &copy; <span id="copyright-year"></span> Pierre-Etienne Monreal</p>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Passer en mode sombre">
+            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+        </button>
+    </div>
+</footer>
+
+<a href="#accueil" class="back-to-top" aria-label="Retour en haut de la page">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
+    </svg>
+</a>
+
+<script src="script.js" defer></script>
 </body>
 </html>
