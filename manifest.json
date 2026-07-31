@@ -1,0 +1,14 @@
+{
+  "name": "Pierre-Etienne Monreal — Product Owner Senior",
+  "short_name": "PE Monreal",
+  "description": "Consultant Product Owner Senior basé à Montpellier",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f0f2f5",
+  "theme_color": "#1a202c",
+  "lang": "fr",
+  "icons": [
+    { "src": "/images/favicon-32x32.png", "sizes": "32x32", "type": "image/png" },
+    { "src": "/images/favicon-32x32.png", "sizes": "192x192", "type": "image/png" }
+  ]
+}
