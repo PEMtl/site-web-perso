@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smoke Tests — pe-monreal.com</title>
+    <title>Smoke Tests v1.3.0 — pe-monreal.com</title>
     <style>
         :root { --pass: #2b8a3e; --fail: #c92a2a; --bg: #f8f9fa; --card: #fff; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -17,7 +17,6 @@
         .badge { font-weight: 700; font-size: 0.75rem; padding: 2px 8px; border-radius: 4px; flex-shrink: 0; }
         .pass { background: #d3f9d8; color: var(--pass); }
         .fail { background: #ffe3e3; color: var(--fail); }
-        .skip { background: #e9ecef; color: #868e96; }
         .detail { font-size: 0.78rem; color: #999; margin-left: auto; }
         #summary { position: sticky; top: 0; background: var(--bg); padding: 0.75rem 0; margin-bottom: 1rem; font-weight: 600; font-size: 1.1rem; }
         #summary.all-pass { color: var(--pass); }
@@ -27,174 +26,186 @@
 <body>
 
 <h1>🧪 Smoke Tests — pe-monreal.com</h1>
-<p class="meta">À ouvrir après chaque déploiement. Tests statiques : ne nécessitent pas de serveur.</p>
+<p class="meta">v1.3.0 · À ouvrir depuis le dossier projet avec un serveur local (ex: <code>npx serve .</code> ou Live Server VSCode)</p>
 <div id="summary">⏳ Exécution en cours…</div>
-
 <div id="results"></div>
 
 <script>
-// ─────────────────────────────────────────────
-// Micro framework de test
-// ─────────────────────────────────────────────
 const suites = [];
 let totalPass = 0, totalFail = 0;
 
-function suite(name, fn) { suites.push({ name, tests: [], fn }); }
-function _record(suite, label, passed, detail = '') {
-    suite.tests.push({ label, passed, detail });
-    if (passed) totalPass++; else totalFail++;
+function suite(name, fn) { suites.push({ name, fn, tests: [] }); }
+function _record(s, label, passed, detail = '') {
+  s.tests.push({ label, passed, detail });
+  if (passed) totalPass++; else totalFail++;
 }
 
-// ─────────────────────────────────────────────
-// SUITE 1 : Structure DOM (nécessite index.html chargé dans même domaine)
-// En mode standalone (file://) on teste ce qu'on peut
-// ─────────────────────────────────────────────
-suite('Structure HTML', (s) => {
-    const checks = [
-        ['<html lang="fr"> présent',      () => document.documentElement.lang === 'fr'],
-        ['<title> non vide',               () => document.title.length > 0],
-        ['meta description présente',      () => !!document.querySelector('meta[name="description"]')],
-        ['meta og:title présente',         () => !!document.querySelector('meta[property="og:title"]')],
-        ['meta twitter:card présente',     () => !!document.querySelector('meta[name="twitter:card"]')],
-        ['link canonical présent',         () => !!document.querySelector('link[rel="canonical"]')],
-        ['link manifest présent',          () => !!document.querySelector('link[rel="manifest"]')],
-        ['skip-link présent',              () => !!document.querySelector('.skip-link')],
-        ['nav.site-nav présente',          () => !!document.querySelector('.site-nav')],
-        ['#main-content présent',          () => !!document.getElementById('main-content')],
-        ['section #accueil présente',      () => !!document.getElementById('accueil')],
-        ['section #a-propos présente',     () => !!document.getElementById('a-propos')],
-        ['section #competences présente',  () => !!document.getElementById('competences')],
-        ['section #references présente',   () => !!document.getElementById('references')],
-        ['section #contact présente',      () => !!document.getElementById('contact')],
-        ['photo profil width défini',      () => { const img = document.querySelector('.hero-photo img'); return img && img.getAttribute('width') === '250'; }],
-        ['photo profil height défini',     () => { const img = document.querySelector('.hero-photo img'); return img && img.getAttribute('height') === '250'; }],
-        ['photo profil alt non vide',      () => { const img = document.querySelector('.hero-photo img'); return img && img.alt.length > 0; }],
-        ['JSON-LD Person présent',         () => { const s = document.querySelector('script[type="application/ld+json"]'); return s && s.textContent.includes('"Person"'); }],
-        ['footer présent',                 () => !!document.querySelector('footer')],
-        ['#copyright-year présent',        () => !!document.getElementById('copyright-year')],
-        ['#theme-toggle présent',          () => !!document.getElementById('theme-toggle')],
-    ];
-    checks.forEach(([label, fn]) => {
-        try { _record(s, label, fn()); }
-        catch(e) { _record(s, label, false, e.message); }
-    });
+// ── 1. Structure HTML ──
+suite('Structure HTML', s => {
+  const checks = [
+    ['<html lang="fr">',                () => document.documentElement.lang === 'fr'],
+    ['<title> non vide',                () => document.title.length > 0],
+    ['meta description',                () => !!document.querySelector('meta[name="description"]')],
+    ['meta og:title',                   () => !!document.querySelector('meta[property="og:title"]')],
+    ['meta twitter:card',               () => !!document.querySelector('meta[name="twitter:card"]')],
+    ['link canonical',                  () => !!document.querySelector('link[rel="canonical"]')],
+    ['link manifest',                   () => !!document.querySelector('link[rel="manifest"]')],
+    ['JSON-LD Person',                  () => document.querySelector('script[type="application/ld+json"]')?.textContent.includes('"Person"')],
+    ['skip-link présent',               () => !!document.querySelector('.skip-link')],
+    ['skip-link href=#main-content',    () => document.querySelector('.skip-link')?.getAttribute('href') === '#main-content'],
+    ['nav.site-nav présente',           () => !!document.querySelector('.site-nav')],
+    ['#main-content présent',           () => !!document.getElementById('main-content')],
+    ['section #accueil',                () => !!document.getElementById('accueil')],
+    ['section #a-propos',               () => !!document.getElementById('a-propos')],
+    ['section #competences',            () => !!document.getElementById('competences')],
+    ['section #references',             () => !!document.getElementById('references')],
+    ['section #contact',                () => !!document.getElementById('contact')],
+    ['footer présent',                  () => !!document.querySelector('footer')],
+    ['#copyright-year présent',         () => !!document.getElementById('copyright-year')],
+    ['#theme-toggle présent',           () => !!document.getElementById('theme-toggle')],
+    ['style.css en <link>',             () => !!document.querySelector('link[href*="style.css"]')],
+    ['pas de <style> inline dans head', () => document.querySelectorAll('head style').length === 0],
+  ];
+  checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
 });
 
-// ─────────────────────────────────────────────
-// SUITE 2 : Formulaire contact
-// ─────────────────────────────────────────────
-suite('Formulaire contact', (s) => {
-    const form = document.getElementById('contact-form');
-    const checks = [
-        ['#contact-form présent',              () => !!form],
-        ['action pointe vers Formspree',        () => form && form.action.includes('formspree.io')],
-        ['method POST',                         () => form && form.method === 'post'],
-        ['honeypot _gotcha présent',            () => !!document.querySelector('input[name="_gotcha"]')],
-        ['honeypot aria-hidden="true"',         () => { const el = document.querySelector('input[name="_gotcha"]'); return el && el.getAttribute('aria-hidden') === 'true'; }],
-        ['champ name présent',                  () => !!document.querySelector('input[name="name"]')],
-        ['champ email présent',                 () => !!document.querySelector('input[name="email"]')],
-        ['champ message présent',               () => !!document.querySelector('textarea[name="message"]')],
-        ['champ email type=email',              () => { const el = document.querySelector('input[name="email"]'); return el && el.type === 'email'; }],
-        ['champ message minlength≥10',          () => { const el = document.querySelector('textarea[name="message"]'); return el && parseInt(el.minLength) >= 10; }],
-        ['#form-status role="alert"',           () => { const el = document.getElementById('form-status'); return el && el.getAttribute('role') === 'alert'; }],
-        ['#form-status aria-live="polite"',     () => { const el = document.getElementById('form-status'); return el && el.getAttribute('aria-live') === 'polite'; }],
-        ['bouton submit présent',               () => !!document.querySelector('#contact-form button[type="submit"]')],
-    ];
-    checks.forEach(([label, fn]) => {
-        try { _record(s, label, fn()); }
-        catch(e) { _record(s, label, false, e.message); }
-    });
+// ── 2. Hero v1.3 ──
+suite('Hero — v1.3 features', s => {
+  const checks = [
+    ['.availability-badge présent',         () => !!document.querySelector('.availability-badge')],
+    ['.availability-badge a role=status',   () => document.querySelector('.availability-badge')?.getAttribute('role') === 'status'],
+    ['.badge-dot présent',                  () => !!document.querySelector('.badge-dot')],
+    ['.hero-stats présent',                 () => !!document.querySelector('.hero-stats')],
+    ['3 stat-number avec data-target',      () => document.querySelectorAll('.stat-number[data-target]').length === 3],
+    ['stat 10 ans exp data-target=10',      () => !!document.querySelector('.stat-number[data-target="10"]')],
+    ['stat 4 grands comptes',               () => !!document.querySelector('.stat-number[data-target="4"]')],
+    ['stat 30+ apps',                       () => !!document.querySelector('.stat-number[data-target="30"]')],
+    ['photo width=250',                     () => document.querySelector('.hero-photo img')?.getAttribute('width') === '250'],
+    ['photo alt non vide',                  () => document.querySelector('.hero-photo img')?.alt.length > 0],
+    ['photo fetchpriority=high',            () => document.querySelector('.hero-photo img')?.getAttribute('fetchpriority') === 'high'],
+  ];
+  checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
 });
 
-// ─────────────────────────────────────────────
-// SUITE 3 : Accessibilité
-// ─────────────────────────────────────────────
-suite('Accessibilité', (s) => {
-    const checks = [
-        ['skip-link href="#main-content"',       () => document.querySelector('.skip-link')?.getAttribute('href') === '#main-content'],
-        ['nav aria-label présent',               () => !!document.querySelector('nav[aria-label]')],
-        ['#copy-email-btn aria-label',           () => !!document.querySelector('#copy-email-btn[aria-label]')],
-        ['#theme-toggle aria-label',             () => !!document.querySelector('#theme-toggle[aria-label]')],
-        ['back-to-top aria-label',               () => !!document.querySelector('.back-to-top[aria-label]')],
-        ['tous les <img> ont un alt',            () => [...document.querySelectorAll('img')].every(img => img.hasAttribute('alt'))],
-        ['skills-grid role="list"',              () => document.querySelectorAll('.skills-grid[role="list"]').length > 0],
-        ['background-shapes aria-hidden',        () => document.querySelector('.background-shapes')?.getAttribute('aria-hidden') === 'true'],
-    ];
-    checks.forEach(([label, fn]) => {
-        try { _record(s, label, fn()); }
-        catch(e) { _record(s, label, false, e.message); }
-    });
+// ── 3. Timeline ──
+suite('Timeline carrière', s => {
+  const checks = [
+    ['.timeline présente',              () => !!document.querySelector('.timeline')],
+    ['4 timeline-item',                 () => document.querySelectorAll('.timeline-item').length === 4],
+    ['chaque item a .timeline-year',    () => document.querySelectorAll('.timeline-item .timeline-year').length === 4],
+    ['chaque item a un h3',             () => document.querySelectorAll('.timeline-item h3').length === 4],
+    ['chaque item a .timeline-context', () => document.querySelectorAll('.timeline-item .timeline-context').length === 4],
+    ['chaque item a .timeline-link',    () => document.querySelectorAll('.timeline-item .timeline-link').length === 4],
+    ['timeline role=list',              () => document.querySelector('.timeline')?.getAttribute('role') === 'list'],
+    ['1er item = poste actuel (2023)',   () => document.querySelector('.timeline-item .timeline-year')?.textContent.includes('2023')],
+  ];
+  checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
 });
 
-// ─────────────────────────────────────────────
-// SUITE 4 : CSS / Performance
-// ─────────────────────────────────────────────
-suite('CSS & Performance', (s) => {
-    const checks = [
-        ['style.css chargé en <link>',             () => !!document.querySelector('link[href*="style.css"]')],
-        ['preload photo profil',                    () => !!document.querySelector('link[rel="preload"][as="image"]')],
-        ['preload font regular',                    () => !!document.querySelector('link[rel="preload"][href*="regular"]')],
-        ['preload font 600',                        () => !!document.querySelector('link[rel="preload"][href*="600"]')],
-        ['pas de <style> inline dans <head>',       () => document.querySelectorAll('head style').length === 0],
-        ['fetchpriority="high" sur photo profil',   () => document.querySelector('.hero-photo img')?.getAttribute('fetchpriority') === 'high'],
-        ['loading="eager" sur photo profil',        () => document.querySelector('.hero-photo img')?.getAttribute('loading') === 'eager'],
-        ['logos références loading="lazy"',         () => { const logos = document.querySelectorAll('.entity-logo[loading]'); return logos.length > 0 && [...logos].every(l => l.getAttribute('loading') === 'lazy'); }],
-    ];
-    checks.forEach(([label, fn]) => {
-        try { _record(s, label, fn()); }
-        catch(e) { _record(s, label, false, e.message); }
-    });
+// ── 4. Social proof ──
+suite('Social proof', s => {
+  const checks = [
+    ['.social-proof présent',           () => !!document.querySelector('.social-proof')],
+    ['.testimonials présent',           () => !!document.querySelector('.testimonials')],
+    ['2 .testimonial',                  () => document.querySelectorAll('.testimonial').length === 2],
+    ['chaque testimonial a blockquote', () => document.querySelectorAll('.testimonial blockquote').length === 2],
+    ['chaque testimonial a cite',       () => document.querySelectorAll('.testimonial cite').length === 2],
+  ];
+  checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
 });
 
-// ─────────────────────────────────────────────
-// SUITE 5 : Liens & navigation
-// ─────────────────────────────────────────────
-suite('Liens & navigation', (s) => {
-    const extLinks = [...document.querySelectorAll('a[target="_blank"]')];
-    const checks = [
-        ['nav contient 5 liens',                    () => document.querySelectorAll('.nav-links a').length === 5],
-        ['nav lien #accueil présent',               () => !!document.querySelector('.nav-links a[href="#accueil"]')],
-        ['nav lien #contact présent',               () => !!document.querySelector('.nav-links a[href="#contact"]')],
-        ['liens externes ont rel=noopener',         () => extLinks.every(a => a.rel.includes('noopener'))],
-        ['liens externes ont rel=noreferrer',       () => extLinks.every(a => a.rel.includes('noreferrer'))],
-        ['email en mailto: cliquable',              () => !!document.querySelector('a[href^="mailto:"]')],
-        ['Calendly en target="_blank"',             () => !!document.querySelector('a[href*="calendly.com"][target="_blank"]')],
-        ['lien CV téléchargeable présent',          () => !!document.querySelector('a[href*="drive.google.com"]')],
-        ['.back-to-top href="#accueil"',            () => document.querySelector('.back-to-top')?.getAttribute('href') === '#accueil'],
-    ];
-    checks.forEach(([label, fn]) => {
-        try { _record(s, label, fn()); }
-        catch(e) { _record(s, label, false, e.message); }
-    });
+// ── 5. Tooltips skill tags ──
+suite('Tooltips skill tags', s => {
+  const tagsWithTooltip = document.querySelectorAll('.skill-tag[data-tooltip]');
+  const checks = [
+    ['Au moins 5 tags avec data-tooltip', () => tagsWithTooltip.length >= 5],
+    ['data-tooltip non vide sur chacun',  () => [...tagsWithTooltip].every(t => t.dataset.tooltip.length > 0)],
+    ['PSPO1 a un tooltip',                () => [...tagsWithTooltip].some(t => t.textContent.includes('PSPO'))],
+  ];
+  checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
 });
 
-// ─────────────────────────────────────────────
-// Rendu
-// ─────────────────────────────────────────────
+// ── 6. Formulaire ──
+suite('Formulaire contact', s => {
+  const form = document.getElementById('contact-form');
+  const checks = [
+    ['#contact-form présent',           () => !!form],
+    ['action Formspree',                () => form?.action.includes('formspree.io')],
+    ['method POST',                     () => form?.method === 'post'],
+    ['honeypot aria-hidden',            () => document.querySelector('input[name="_gotcha"]')?.getAttribute('aria-hidden') === 'true'],
+    ['champ name présent',              () => !!document.querySelector('input[name="name"]')],
+    ['champ email type=email',          () => document.querySelector('input[name="email"]')?.type === 'email'],
+    ['champ message minlength>=10',     () => parseInt(document.querySelector('textarea[name="message"]')?.minLength) >= 10],
+    ['#form-status role=alert',         () => document.getElementById('form-status')?.getAttribute('role') === 'alert'],
+    ['#form-status aria-live=polite',   () => document.getElementById('form-status')?.getAttribute('aria-live') === 'polite'],
+    ['bouton submit présent',           () => !!document.querySelector('#contact-form button[type="submit"]')],
+  ];
+  checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+});
+
+// ── 7. Accessibilité ──
+suite('Accessibilité', s => {
+  const checks = [
+    ['nav aria-label',                  () => !!document.querySelector('nav[aria-label]')],
+    ['#copy-email-btn aria-label',      () => !!document.querySelector('#copy-email-btn[aria-label]')],
+    ['#theme-toggle aria-label',        () => !!document.querySelector('#theme-toggle[aria-label]')],
+    ['.back-to-top aria-label',         () => !!document.querySelector('.back-to-top[aria-label]')],
+    ['tous les <img> ont un alt',       () => [...document.querySelectorAll('img')].every(i => i.hasAttribute('alt'))],
+    ['skills-grid role=list',           () => document.querySelectorAll('.skills-grid[role="list"]').length > 0],
+    ['.background-shapes aria-hidden',  () => document.querySelector('.background-shapes')?.getAttribute('aria-hidden') === 'true'],
+    ['availability-badge role=status',  () => document.querySelector('.availability-badge')?.getAttribute('role') === 'status'],
+    ['timeline role=list',              () => document.querySelector('.timeline')?.getAttribute('role') === 'list'],
+    ['email en mailto:',                () => !!document.querySelector('a[href^="mailto:"]')],
+  ];
+  checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+});
+
+// ── 8. Perf & SEO ──
+suite('Performance & SEO', s => {
+  const checks = [
+    ['preload photo profil',            () => !!document.querySelector('link[rel="preload"][as="image"]')],
+    ['preload font regular',            () => !!document.querySelector('link[rel="preload"][href*="regular"]')],
+    ['preload font 600',                () => !!document.querySelector('link[rel="preload"][href*="600"]')],
+    ['fetchpriority=high sur photo',    () => document.querySelector('.hero-photo img')?.getAttribute('fetchpriority') === 'high'],
+    ['loading=eager sur photo',         () => document.querySelector('.hero-photo img')?.getAttribute('loading') === 'eager'],
+    ['logos loading=lazy',              () => { const l = document.querySelectorAll('.entity-logo[loading]'); return l.length === 0 || [...l].every(e => e.getAttribute('loading') === 'lazy'); }],
+  ];
+  checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+});
+
+// ── 9. Liens & nav ──
+suite('Liens & navigation', s => {
+  const extLinks = [...document.querySelectorAll('a[target="_blank"]')];
+  const checks = [
+    ['nav contient 5 liens',            () => document.querySelectorAll('.nav-links a').length === 5],
+    ['nav lien #references présent',    () => !!document.querySelector('.nav-links a[href="#references"]')],
+    ['liens externes rel=noopener',     () => extLinks.every(a => a.rel.includes('noopener'))],
+    ['liens externes rel=noreferrer',   () => extLinks.every(a => a.rel.includes('noreferrer'))],
+    ['Calendly en _blank',              () => !!document.querySelector('a[href*="calendly.com"][target="_blank"]')],
+    ['CV Google Drive présent',         () => !!document.querySelector('a[href*="drive.google.com"]')],
+    ['.back-to-top href=#accueil',      () => document.querySelector('.back-to-top')?.getAttribute('href') === '#accueil'],
+    ['timeline-link en _blank',         () => [...document.querySelectorAll('.timeline-link')].every(a => a.target === '_blank')],
+  ];
+  checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+});
+
+// ── Rendu ──
 const container = document.getElementById('results');
 suites.forEach(s => {
-    s.fn(s);
-    const div = document.createElement('div');
-    div.className = 'suite';
-    div.innerHTML = `<h2>${s.name}</h2>` + s.tests.map(t =>
-        `<div class="test">
-            <span class="badge ${t.passed ? 'pass' : 'fail'}">${t.passed ? 'PASS' : 'FAIL'}</span>
-            <span>${t.label}</span>
-            ${t.detail ? `<span class="detail">${t.detail}</span>` : ''}
-        </div>`
-    ).join('');
-    container.appendChild(div);
+  s.fn(s);
+  const div = document.createElement('div');
+  div.className = 'suite';
+  div.innerHTML = `<h2>${s.name} <span style="font-weight:400;font-size:0.85rem;color:#aaa">(${s.tests.filter(t=>t.passed).length}/${s.tests.length})</span></h2>`
+    + s.tests.map(t => `<div class="test"><span class="badge ${t.passed ? 'pass' : 'fail'}">${t.passed ? 'PASS' : 'FAIL'}</span><span>${t.label}</span>${t.detail ? `<span class="detail">${t.detail}</span>` : ''}</div>`).join('');
+  container.appendChild(div);
 });
 
 const summary = document.getElementById('summary');
 const total = totalPass + totalFail;
-if (totalFail === 0) {
-    summary.textContent = `✅ ${totalPass}/${total} tests passés — TOUT EST OK`;
-    summary.className = 'all-pass';
-} else {
-    summary.textContent = `❌ ${totalFail} ÉCHEC(S) sur ${total} tests — ${totalPass} passés`;
-    summary.className = 'has-fail';
-}
+summary.textContent = totalFail === 0
+  ? `✅ ${totalPass}/${total} tests passés — TOUT EST OK`
+  : `❌ ${totalFail} ÉCHEC(S) sur ${total} — ${totalPass} passés`;
+summary.className = totalFail === 0 ? 'all-pass' : 'has-fail';
 </script>
 </body>
 </html>

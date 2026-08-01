@@ -143,7 +143,7 @@ git add index.html style.css  && git commit -m "feat: CSS externe, nav sticky, c
 git add script.js              && git commit -m "feat: nav sticky JS, section active, version exposée"
 git add manifest.json sitemap.xml && git commit -m "feat: manifest PWA, sitemap lastmod 2026-07-31"
 git add tests.html             && git commit -m "test: smoke tests 5 suites ~55 assertions"
-git add README.md              && git commit -m "docs: README complet v1.2.0"
+git add README.md              && git commit -m "docs: README complet v1.3.0"
 ```
 
 ---
@@ -157,4 +157,4 @@ git add README.md              && git commit -m "docs: README complet v1.2.0"
 
 ---
 
-*v1.2.0 · Juillet 2026*
+*v1.3.0 · Août 2026*

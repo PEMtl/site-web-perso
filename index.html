@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- SEO -->
     <title>Pierre-Etienne Monreal | Product Owner Senior — Montpellier</title>
     <meta name="description" content="Pierre-Etienne Monreal, Consultant Product Owner Senior basé à Montpellier. PSPO1 certifié, 10 ans d'expérience sur des projets tech complexes (OVHcloud, La Poste, Crédit Agricole).">
     <link rel="canonical" href="https://www.pe-monreal.com/">
 
-    <!-- Open Graph -->
     <meta property="og:type"        content="website">
     <meta property="og:url"         content="https://www.pe-monreal.com/">
     <meta property="og:title"       content="Pierre-Etienne Monreal | Product Owner Senior">
@@ -17,26 +15,22 @@
     <meta property="og:image"       content="https://www.pe-monreal.com/images/photo-profil.webp">
     <meta property="og:locale"      content="fr_FR">
 
-    <!-- Twitter Card -->
     <meta name="twitter:card"        content="summary_large_image">
     <meta name="twitter:title"       content="Pierre-Etienne Monreal | Product Owner Senior">
     <meta name="twitter:description" content="Consultant PO Senior basé à Montpellier. PSPO1 certifié.">
     <meta name="twitter:image"       content="https://www.pe-monreal.com/images/photo-profil.webp">
 
-    <!-- Favicons -->
     <link rel="icon"             href="/images/favicon-32x32.png" sizes="32x32" type="image/png">
     <link rel="icon"             href="/images/favicon-16x16.png" sizes="16x16" type="image/png">
     <link rel="apple-touch-icon" href="/images/favicon-32x32.png">
     <link rel="manifest"         href="/manifest.json">
 
-    <!-- Preload critique -->
-    <link rel="preload" as="image"      href="/images/photo-profil.webp" type="image/webp" fetchpriority="high">
-    <link rel="preload" as="font"       href="/fonts/manrope-v20-latin-regular.woff2" type="font/woff2" crossorigin>
-    <link rel="preload" as="font"       href="/fonts/manrope-v20-latin-600.woff2"     type="font/woff2" crossorigin>
-    <link rel="preload" as="style"      href="/style.css">
-    <link rel="stylesheet"              href="/style.css">
+    <link rel="preload" as="image"  href="/images/photo-profil.webp" type="image/webp" fetchpriority="high">
+    <link rel="preload" as="font"   href="/fonts/manrope-v20-latin-regular.woff2" type="font/woff2" crossorigin>
+    <link rel="preload" as="font"   href="/fonts/manrope-v20-latin-600.woff2"     type="font/woff2" crossorigin>
+    <link rel="preload" as="style"  href="/style.css">
+    <link rel="stylesheet"          href="/style.css">
 
-    <!-- Schema.org JSON-LD -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -60,32 +54,52 @@
 <a href="#main-content" class="skip-link">Aller au contenu principal</a>
 <div class="background-shapes" aria-hidden="true"></div>
 
-<!-- ══════════════════════════ NAV STICKY ══════════════════════════ -->
 <nav class="site-nav" aria-label="Navigation principale">
     <ul class="nav-links">
-        <li><a href="#accueil"    data-section="accueil">Accueil</a></li>
-        <li><a href="#a-propos"   data-section="a-propos">À propos</a></li>
+        <li><a href="#accueil"     data-section="accueil">Accueil</a></li>
+        <li><a href="#a-propos"    data-section="a-propos">À propos</a></li>
         <li><a href="#competences" data-section="competences">Compétences</a></li>
-        <li><a href="#references" data-section="references">Missions</a></li>
-        <li><a href="#contact"    data-section="contact">Contact</a></li>
+        <li><a href="#references"  data-section="references">Missions</a></li>
+        <li><a href="#contact"     data-section="contact">Contact</a></li>
     </ul>
 </nav>
 
 <main class="container" id="main-content">
 
-    <!-- ══════════════════════════ HERO ══════════════════════════ -->
+    <!-- ══ HERO ══ -->
     <section id="accueil" class="card hero" aria-label="Présentation">
         <div class="hero-text">
             <h1>Pierre-Etienne Monreal</h1>
-            <p class="subtitle">
-                Consultant Product Owner Senior,<br>
-                📍 basé à <strong>Montpellier</strong>
-            </p>
+            <p class="subtitle">Consultant Product Owner Senior,<br>📍 basé à <strong>Montpellier</strong></p>
+
+            <!-- Badge disponibilité — changer "available"/"busy" et le texte selon ta situation -->
+            <div class="availability-badge busy" role="status" aria-label="Statut de disponibilité">
+                <span class="badge-dot" aria-hidden="true"></span>
+                Indisponible actuellement (en mission)
+            </div>
+
             <p class="intro-p">
                 Product Owner <a href="https://www.exalt-company.com/fr-fr/index.html" target="_blank" rel="noopener noreferrer">@eXalt</a> &nbsp;|&nbsp;
                 PSPO1® certifié 👨‍💻 &nbsp;|&nbsp;
                 Bénévole <a href="https://agilemontpellier.fr/" target="_blank" rel="noopener noreferrer">@AgileMontpellier</a> 🔄
             </p>
+
+            <!-- Compteurs animés -->
+            <div class="hero-stats" aria-label="Chiffres clés">
+                <div class="stat-item">
+                    <span class="stat-number" data-target="10" data-suffix="+" aria-label="10 ans d'expérience">0</span>
+                    <span class="stat-label">ans d'expérience</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-target="4" data-suffix="" aria-label="4 grands comptes">0</span>
+                    <span class="stat-label">grands comptes</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-target="30" data-suffix="+" aria-label="Plus de 30 apps pilotées">0</span>
+                    <span class="stat-label">apps pilotées</span>
+                </div>
+            </div>
+
             <a href="#contact" class="cta-button">👋 Me contacter</a>
         </div>
         <div class="hero-photo">
@@ -97,17 +111,13 @@
         </div>
     </section>
 
-    <!-- ══════════════════════════ À PROPOS ══════════════════════════ -->
+    <!-- ══ À PROPOS ══ -->
     <section id="a-propos" class="card content-section">
         <h2>À Propos</h2>
         <div class="about-grid">
             <div class="about-intro">
-                <p>
-                    Passionné par la création de produits technologiques complexes, je suis un <strong>Product Owner Senior</strong> avec 10 ans d'expérience au sein d'entreprises et de startups innovantes.
-                </p>
-                <p>
-                    Mon expertise couvre l'intégralité du cycle de vie des projets, de la conception à la livraison, avec une maîtrise de la <strong>build-chain</strong>. Je pilote des solutions transversales en optimisant la gestion des priorités pour maximiser la valeur produite.
-                </p>
+                <p>Passionné par la création de produits technologiques complexes, je suis un <strong>Product Owner Senior</strong> avec 10 ans d'expérience au sein d'entreprises et de startups innovantes.</p>
+                <p>Mon expertise couvre l'intégralité du cycle de vie des projets, de la conception à la livraison, avec une maîtrise de la <strong>build-chain</strong>. Je pilote des solutions transversales en optimisant la gestion des priorités pour maximiser la valeur produite.</p>
             </div>
             <div class="about-principles">
                 <ul>
@@ -136,178 +146,124 @@
                 </ul>
             </div>
         </div>
+
+        <!-- Social proof -->
+        <div class="social-proof">
+            <h3>Ce qu'ils disent</h3>
+            <div class="testimonials">
+                <div class="testimonial">
+                    <blockquote>Pierre-Etienne a su prendre en main un backlog complexe et livrer de la valeur dès le premier sprint. Sa maîtrise des enjeux techniques et métier est un vrai différenciateur.</blockquote>
+                    <cite>
+                        Prénom Nom
+                        <span>Product Manager — [Entreprise]</span>
+                    </cite>
+                </div>
+                <div class="testimonial">
+                    <blockquote>Un PO rigoureux et humain, capable de fédérer des équipes pluridisciplinaires autour d'une vision claire. Je recommande sans hésitation.</blockquote>
+                    <cite>
+                        Prénom Nom
+                        <span>Directeur Technique — [Entreprise]</span>
+                    </cite>
+                </div>
+            </div>
+        </div>
+
         <div class="cta-buttons-group">
-            <a href="https://drive.google.com/file/d/1vg_93vra6rck78pkWbFrw9Y6GftIsD6s/view" target="_blank" rel="noopener noreferrer" class="cta-button">
-                📥 Télécharger mon CV
-            </a>
-            <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="cta-button secondary">
-                🗒️ Annexe CV
-            </a>
+            <a href="https://drive.google.com/file/d/1vg_93vra6rck78pkWbFrw9Y6GftIsD6s/view" target="_blank" rel="noopener noreferrer" class="cta-button">📥 Télécharger mon CV</a>
+            <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="cta-button secondary">🗒️ Annexe CV</a>
         </div>
     </section>
 
-    <!-- ══════════════════════════ COMPÉTENCES ══════════════════════════ -->
+    <!-- ══ COMPÉTENCES ══ -->
     <section id="competences" class="card content-section">
         <h2>Compétences &amp; Certifications</h2>
         <div class="skills-container">
             <h3>Certifications</h3>
             <div class="skills-grid" role="list">
-                <span class="skill-tag" role="listitem">🏆 Certified PSPO1®</span>
-                <span class="skill-tag" role="listitem">🏆 Opquast Qualité Web</span>
-                <span class="skill-tag" role="listitem">🏆 Google Analytics / Adwords</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Professional Scrum Product Owner I">🏆 Certified PSPO1®</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Qualité et accessibilité web">🏆 Opquast Qualité Web</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Mesure audience et acquisition">🏆 Google Analytics / Adwords</span>
             </div>
             <h3>Product</h3>
             <div class="skills-grid" role="list">
-                <span class="skill-tag" role="listitem">Agilité</span>
-                <span class="skill-tag" role="listitem">Scrum / Kanban / SAFe</span>
-                <span class="skill-tag" role="listitem">User centric</span>
-                <span class="skill-tag" role="listitem">Vision delivery</span>
-                <span class="skill-tag" role="listitem">Mobile first</span>
-                <span class="skill-tag" role="listitem">Vision roadmap</span>
-                <span class="skill-tag" role="listitem">Test fonctionnel / TNR</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Manifeste Agile, principes empiriques">Agilité</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Sprints, WIP limits, PI Planning">Scrum / Kanban / SAFe</span>
+                <span class="skill-tag" role="listitem" data-tooltip="UX Research, interviews, personas">User centric</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Définition et suivi de la delivery">Vision delivery</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Design mobile-first systématique">Mobile first</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Roadmap produit, OKR, priorisation">Vision roadmap</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Recette fonctionnelle et TNR">Test fonctionnel / TNR</span>
             </div>
             <h3>Outils</h3>
             <div class="skills-grid" role="list">
-                <span class="skill-tag" role="listitem">Suite Atlassian</span>
-                <span class="skill-tag" role="listitem">Git &amp; GitHub</span>
-                <span class="skill-tag" role="listitem">Google Workspace / M365</span>
-                <span class="skill-tag" role="listitem">Notion / Loop / Trello</span>
-                <span class="skill-tag" role="listitem">Figma / Invision</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Jira, Confluence, Bitbucket">Suite Atlassian</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Versioning, PR, CI/CD">Git &amp; GitHub</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Docs, Sheets, Drive, Teams">Google Workspace / M365</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Documentation et gestion de projet">Notion / Loop / Trello</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Maquettes, prototypes interactifs">Figma / Invision</span>
                 <span class="skill-tag" role="listitem">Windows / macOS</span>
             </div>
             <h3>Stacks projets en mission</h3>
             <div class="skills-grid" role="list">
                 <span class="skill-tag" role="listitem">CMS</span>
-                <span class="skill-tag" role="listitem">Docker</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Containerisation, orchestration">Docker</span>
                 <span class="skill-tag" role="listitem">Git / GitHub</span>
-                <span class="skill-tag" role="listitem">Grafana / Prometheus</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Monitoring infra (OVHcloud)">Grafana / Prometheus</span>
                 <span class="skill-tag" role="listitem">HTML5 &amp; CSS3</span>
                 <span class="skill-tag" role="listitem">NuxtJS / VueJS</span>
                 <span class="skill-tag" role="listitem">Angular</span>
                 <span class="skill-tag" role="listitem">React</span>
-                <span class="skill-tag" role="listitem">Swift / Kotlin</span>
-                <span class="skill-tag" role="listitem">SQL</span>
-                <span class="skill-tag" role="listitem">OVH / AWS / O2Switch</span>
+                <span class="skill-tag" role="listitem" data-tooltip="iOS et Android natif">Swift / Kotlin</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Requêtes, modélisation, reporting">SQL</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Cloud public et hébergement mutualisé">OVH / AWS / O2Switch</span>
                 <span class="skill-tag" role="listitem">Google Cloud</span>
             </div>
         </div>
     </section>
 
-    <!-- ══════════════════════════ RÉFÉRENCES ══════════════════════════ -->
+    <!-- ══ MISSIONS / TIMELINE ══ -->
     <section id="references" class="card content-section">
         <h2>Missions &amp; Références</h2>
-        <p>Aperçu de quelques expériences significatives, menées auprès de clients finaux ou en mission pour différentes ESN.</p>
+        <p>Parcours de 10 ans sur des projets tech complexes, en ESN et en direct client.</p>
 
-        <div class="references-container">
+        <div class="timeline" role="list">
 
-            <article class="reference-item">
-                <div class="reference-context" aria-label="Mission eXalt pour Crédit Agricole">
-                    <div class="context-entity">
-                        <span class="entity-label">ESN</span>
-                        <img class="entity-logo" src="/images/logos/exalt.png" alt="Logo eXalt" width="120" height="40" loading="lazy">
-                    </div>
-                    <div class="context-separator" aria-hidden="true"></div>
-                    <div class="context-entity">
-                        <span class="entity-label">Client</span>
-                        <div class="entity-logo-svg">
-                            <svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" aria-label="Crédit Agricole" role="img">
-                                <rect x="0" y="10" width="20" height="20" rx="3" fill="#008A00"/>
-                                <rect x="5" y="15" width="10" height="10" rx="1" fill="#fff"/>
-                                <text x="26" y="26" font-family="Manrope,sans-serif" font-size="9" font-weight="600" fill="currentColor">Crédit Agricole</text>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="reference-content">
-                    <h3>Création d'un parcours web/mobile de souscription dédié aux professionnels</h3>
-                    <p>En tant que <strong>Business Analyst</strong>, au sein d'une squad pluridisciplinaire de quasi 20 personnes, j'ai conduit les phases de design thinking et de démarrage de production pour la refonte d'une application d'entrée en relation dédiée à la souscription de produits bancaires professionnels pour le <strong>Crédit Agricole</strong>.</p>
-                    <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="reference-link" target="_blank" rel="noopener noreferrer">En savoir plus <span class="arrow" aria-hidden="true">&rarr;</span></a>
-                </div>
+            <article class="timeline-item" role="listitem">
+                <p class="timeline-year">2023 — Aujourd'hui</p>
+                <h3>Product Owner — Crédit Agricole</h3>
+                <p class="timeline-context">Via <strong>eXalt</strong> · Montpellier</p>
+                <p>Conduite des phases de design thinking et démarrage de production pour la refonte d'un parcours web/mobile de souscription de produits bancaires professionnels, au sein d'une squad de 20 personnes.</p>
+                <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="timeline-link" target="_blank" rel="noopener noreferrer">Voir le détail &rarr;</a>
             </article>
 
-            <article class="reference-item">
-                <div class="reference-context" aria-label="Mission Astek pour OVHcloud">
-                    <div class="context-entity">
-                        <span class="entity-label">ESN</span>
-                        <div class="entity-logo-svg">
-                            <svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" aria-label="Astek" role="img">
-                                <text x="0" y="28" font-family="Manrope,sans-serif" font-size="22" font-weight="700" fill="currentColor">Astek</text>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="context-separator" aria-hidden="true"></div>
-                    <div class="context-entity">
-                        <span class="entity-label">Client</span>
-                        <div class="entity-logo-svg">
-                            <svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" aria-label="OVHcloud" role="img">
-                                <text x="0" y="28" font-family="Manrope,sans-serif" font-size="18" font-weight="700" fill="#123F6D">OVH</text>
-                                <text x="44" y="28" font-family="Manrope,sans-serif" font-size="18" font-weight="300" fill="#123F6D">cloud</text>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="reference-content">
-                    <h3>Gestion d'un applicatif de monitoring infra</h3>
-                    <p>Pendant un an, en tant que <strong>Product Owner</strong> au sein d'une squad d'une quinzaine de personnes — en Scrum — chez <strong>OVHcloud</strong>, j'ai piloté une application de monitoring d'infrastructure en datacenters à l'international.</p>
-                    <p>J'ai supervisé la migration d'applicatifs legacy, la priorisation du backlog, la roadmap produit, la création d'une communauté utilisateurs et la coordination de la dette technique et des projets R&amp;D.</p>
-                    <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="reference-link" target="_blank" rel="noopener noreferrer">En savoir plus <span class="arrow" aria-hidden="true">&rarr;</span></a>
-                </div>
+            <article class="timeline-item" role="listitem">
+                <p class="timeline-year">2021 — 2023</p>
+                <h3>Product Owner — OVHcloud</h3>
+                <p class="timeline-context">Via <strong>Astek</strong> · Roubaix / Remote</p>
+                <p>Pilotage d'une application de monitoring d'infrastructure datacenter à l'international — migration legacy, priorisation backlog, roadmap, communauté utilisateurs, R&amp;D.</p>
+                <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="timeline-link" target="_blank" rel="noopener noreferrer">Voir le détail &rarr;</a>
             </article>
 
-            <article class="reference-item">
-                <div class="reference-context" aria-label="Mission Klanik pour La Poste">
-                    <div class="context-entity">
-                        <span class="entity-label">ESN</span>
-                        <div class="entity-logo-svg">
-                            <svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" aria-label="Klanik" role="img">
-                                <text x="0" y="28" font-family="Manrope,sans-serif" font-size="20" font-weight="700" fill="currentColor">Klanik</text>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="context-separator" aria-hidden="true"></div>
-                    <div class="context-entity">
-                        <span class="entity-label">Client</span>
-                        <div class="entity-logo-svg">
-                            <svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" aria-label="La Poste" role="img">
-                                <rect x="0" y="8" width="24" height="24" rx="3" fill="#FFCD00"/>
-                                <text x="4" y="26" font-family="serif" font-size="16" font-weight="700" fill="#003189">P</text>
-                                <text x="30" y="26" font-family="Manrope,sans-serif" font-size="13" font-weight="600" fill="currentColor">La Poste</text>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="reference-content">
-                    <h3>Pilotage TMA d'applicatifs legacy, migrations et accompagnement agile</h3>
-                    <p>Au sein du <strong>Groupe La Poste</strong>, j'ai piloté en tant que <strong>Run Owner</strong> une TMA sur un portefeuille de plus de 30 applications legacy — du micro-service à l'applicatif exposé public — avec un focus sur la sécurisation transverse et le suivi des backlogs, incidents et demandes de support.</p>
-                    <p>J'ai supervisé des migrations et démantèlements applicatifs, assuré le coaching agile des équipes métier en interface avec la DSI et les partenaires IT.</p>
-                    <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="reference-link" target="_blank" rel="noopener noreferrer">En savoir plus <span class="arrow" aria-hidden="true">&rarr;</span></a>
-                </div>
+            <article class="timeline-item" role="listitem">
+                <p class="timeline-year">2019 — 2021</p>
+                <h3>Run Owner — La Poste Groupe</h3>
+                <p class="timeline-context">Via <strong>Klanik</strong> · Montpellier</p>
+                <p>TMA sur 30+ applications legacy — sécurisation transverse, coaching agile, migrations et démantèlements applicatifs en interface DSI/partenaires IT.</p>
+                <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="timeline-link" target="_blank" rel="noopener noreferrer">Voir le détail &rarr;</a>
             </article>
 
-            <article class="reference-item">
-                <div class="reference-context" aria-label="Mission Easy Cash">
-                    <div class="context-entity">
-                        <span class="entity-label">Client</span>
-                        <div class="entity-logo-svg">
-                            <svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" aria-label="Easy Cash" role="img">
-                                <text x="0" y="16" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="#E30613">Easy</text>
-                                <text x="0" y="32" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="currentColor">Cash</text>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="reference-content">
-                    <h3>Product Owner e-commerce</h3>
-                    <p>Pendant deux ans, j'ai accompagné la croissance d'un acteur e-commerce (CA 8,4 M€ → 13,6 M€) en pilotant la migration AWS, les projets d'évolution et la maintenance de deux sites (+200 000 pages).</p>
-                    <p>J'ai géré des composants variés — tunnel de conversion, paiements, API SOAP/REST, géolocalisation — et supervisé la dématérialisation des processus clients, l'intégration RGPD et les outils internes connectés à l'ERP.</p>
-                    <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="reference-link" target="_blank" rel="noopener noreferrer">En savoir plus <span class="arrow" aria-hidden="true">&rarr;</span></a>
-                </div>
+            <article class="timeline-item" role="listitem">
+                <p class="timeline-year">2017 — 2019</p>
+                <h3>Product Owner e-commerce — Easy Cash</h3>
+                <p class="timeline-context">Client direct · Montpellier</p>
+                <p>Croissance CA 8,4 M€ → 13,6 M€ sur 2 ans. Migration AWS, tunnel de conversion, API SOAP/REST, géolocalisation, RGPD, ERP. 200 000+ pages gérées.</p>
+                <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="timeline-link" target="_blank" rel="noopener noreferrer">Voir le détail &rarr;</a>
             </article>
 
         </div>
     </section>
 
-    <!-- ══════════════════════════ CONTACT ══════════════════════════ -->
+    <!-- ══ CONTACT ══ -->
     <section id="contact" class="card content-section">
         <h2>Contact</h2>
         <p>Un projet, une question ? Retrouvez-moi sur les plateformes suivantes ou contactez-moi directement.</p>
