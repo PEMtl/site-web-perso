@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  const VERSION = '1.3.0';
+  const VERSION = '1.3.1';
 
-  // ── Scroll animation cards (alternance gauche/droite gérée CSS) ──
+  // ── Scroll animation cards ──
   const cards = document.querySelectorAll('.card:not(.hero)');
   if (cards.length > 0 && 'IntersectionObserver' in window) {
     const observer = new IntersectionObserver((entries) => {
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const yearEl = document.getElementById('copyright-year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  // ── Compteurs animés (déclenchés à la visibilité du hero-stats) ──
+  // ── Compteurs animés ──
   const statNumbers = document.querySelectorAll('.stat-number[data-target]');
   if (statNumbers.length > 0 && 'IntersectionObserver' in window) {
     const counterObserver = new IntersectionObserver((entries) => {
@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
         function tick(now) {
           const elapsed = now - start;
           const progress = Math.min(elapsed / duration, 1);
-          // Easing ease-out
           const eased = 1 - Math.pow(1 - progress, 3);
           el.textContent = Math.round(eased * target) + suffix;
           if (progress < 1) requestAnimationFrame(tick);
@@ -159,6 +158,19 @@ document.addEventListener('DOMContentLoaded', () => {
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Envoi en cours…'; }
       formStatus.className = '';
       formStatus.style.display = 'none';
+
+      // ── Mock local : court-circuite Formspree sur localhost/127.0.0.1 ──
+      const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+      if (isLocal) {
+        await new Promise(r => setTimeout(r, 800));
+        formStatus.textContent = '✅ [TEST LOCAL] Formulaire OK — Formspree non sollicité.';
+        formStatus.classList.add('success');
+        formStatus.style.display = 'block';
+        form.reset();
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '🚀 Envoyer'; }
+        return;
+      }
+
       try {
         const response = await fetch(form.action, {
           method: 'POST',
