@@ -1,4 +1,4 @@
-# 🌐 pe-monreal.com — Site Web Personnel
+# 🌐 pe-monreal.com — Site web perso
 
 Site vitrine one-page de Pierre-Etienne Monreal, Consultant Product Owner Senior basé à Montpellier.
 
