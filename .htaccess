@@ -30,6 +30,9 @@
   Header always set Content-Security-Policy "default-src 'self'; connect-src 'self' https://formspree.io; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; script-src 'self';"
 </IfModule>
 
+# ── Page 404 personnalisée ──
+ErrorDocument 404 /404.html
+
 # ── Redirection www → non-www (adapter selon ton setup) ──
 <IfModule mod_rewrite.c>
   RewriteEngine On

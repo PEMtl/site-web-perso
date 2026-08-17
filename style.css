@@ -530,6 +530,49 @@ footer { text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.9rem;
 .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
 .back-to-top:hover { transform: translateY(-3px); box-shadow: 0 8px 20px var(--shadow); }
 
+/* ── Page 404 ── */
+.error-page {
+    min-height: calc(100vh - 8rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.error-card {
+    opacity: 1;
+    transform: none;
+    text-align: center;
+    max-width: 560px;
+    width: 100%;
+}
+.error-code {
+    font-size: clamp(4rem, 15vw, 6rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent);
+    opacity: 0.12;
+    margin-bottom: 0.5rem;
+}
+.error-card h1 {
+    font-size: 2rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
+.error-message {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+.error-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+@media (max-width: 768px) {
+    .error-actions { flex-direction: column; align-items: stretch; }
+    .error-actions .cta-button { width: 100%; }
+}
+
 /* ── Mode impression ── */
 @media print {
     .site-nav, .back-to-top, .theme-toggle, .background-shapes,
