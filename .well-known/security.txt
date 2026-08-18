@@ -1,0 +1,3 @@
+Contact: mailto:contact@pe-monreal.com
+Preferred-Languages: fr, en
+Canonical: https://pe-monreal.com/.well-known/security.txt

@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  const VERSION = '1.3.1';
+  const VERSION = '1.5.0';
 
   // ── Scroll animation cards ──
   const cards = document.querySelectorAll('.card:not(.hero)');
@@ -193,6 +193,15 @@ document.addEventListener('DOMContentLoaded', () => {
       } finally {
         if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '🚀 Envoyer'; }
       }
+    });
+  }
+
+  // ── Service Worker (cache offline) ──
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch((err) => {
+        console.error('SW registration failed:', err);
+      });
     });
   }
 

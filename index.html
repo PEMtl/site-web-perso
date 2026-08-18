@@ -6,45 +6,71 @@
 
     <title>Pierre-Etienne Monreal | Product Owner Senior — Montpellier</title>
     <meta name="description" content="Pierre-Etienne Monreal, Consultant Product Owner Senior basé à Montpellier. PSPO1 certifié, 10 ans d'expérience sur des projets tech complexes (OVHcloud, La Poste, Crédit Agricole).">
-    <link rel="canonical" href="https://www.pe-monreal.com/">
+    <meta name="theme-color" content="#1a202c">
+    <link rel="canonical" href="https://pe-monreal.com/">
 
     <meta property="og:type"        content="website">
-    <meta property="og:url"         content="https://www.pe-monreal.com/">
+    <meta property="og:url"         content="https://pe-monreal.com/">
     <meta property="og:title"       content="Pierre-Etienne Monreal | Product Owner Senior">
     <meta property="og:description" content="Consultant PO Senior basé à Montpellier. PSPO1 certifié, 10 ans d'XP sur des projets tech complexes.">
-    <meta property="og:image"       content="https://www.pe-monreal.com/images/photo-profil.webp">
+    <meta property="og:image"       content="https://pe-monreal.com/images/photo-profil.webp">
     <meta property="og:locale"      content="fr_FR">
 
     <meta name="twitter:card"        content="summary_large_image">
     <meta name="twitter:title"       content="Pierre-Etienne Monreal | Product Owner Senior">
     <meta name="twitter:description" content="Consultant PO Senior basé à Montpellier. PSPO1 certifié.">
-    <meta name="twitter:image"       content="https://www.pe-monreal.com/images/photo-profil.webp">
+    <meta name="twitter:image"       content="https://pe-monreal.com/images/photo-profil.webp">
 
     <link rel="icon"             href="/images/favicon-32x32.png" sizes="32x32" type="image/png">
     <link rel="icon"             href="/images/favicon-16x16.png" sizes="16x16" type="image/png">
-    <link rel="apple-touch-icon" href="/images/favicon-32x32.png">
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
     <link rel="manifest"         href="/manifest.json">
 
     <link rel="preload" as="image"  href="/images/photo-profil.webp" type="image/webp" fetchpriority="high">
+    <link rel="preload" as="font"   href="/fonts/manrope-v20-latin-300.woff2"     type="font/woff2" crossorigin>
     <link rel="preload" as="font"   href="/fonts/manrope-v20-latin-regular.woff2" type="font/woff2" crossorigin>
     <link rel="preload" as="font"   href="/fonts/manrope-v20-latin-600.woff2"     type="font/woff2" crossorigin>
-    <link rel="preload" as="style"  href="/style.css">
-    <link rel="stylesheet"          href="/style.css">
+    <!-- SRI : regénérer les 2 hash à CHAQUE modification de style.css (voir README > Maintenance) -->
+    <link rel="preload" as="style" href="/style.css"
+          integrity="sha384-ec6z+q5HlzBvzxrtqOMTcfRtu7EjSKXBxrgCXnnrxnxOAcHR6lC662A+uEy5KBip"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="/style.css"
+          integrity="sha384-ec6z+q5HlzBvzxrtqOMTcfRtu7EjSKXBxrgCXnnrxnxOAcHR6lC662A+uEy5KBip"
+          crossorigin="anonymous">
 
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Pierre-Etienne Monreal",
-      "url": "https://www.pe-monreal.com",
-      "image": "https://www.pe-monreal.com/images/photo-profil.webp",
-      "jobTitle": "Consultant Product Owner Senior",
-      "worksFor": { "@type": "Organization", "name": "eXalt", "url": "https://www.exalt-company.com" },
-      "address": { "@type": "PostalAddress", "addressLocality": "Montpellier", "addressCountry": "FR" },
-      "sameAs": [
-        "https://www.linkedin.com/in/pierreetiennemonreal/",
-        "https://github.com/PEMtl",
-        "https://www.malt.fr/profile/pierreetiennemonreal"
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://pe-monreal.com/#person",
+          "name": "Pierre-Etienne Monreal",
+          "url": "https://pe-monreal.com",
+          "image": "https://pe-monreal.com/images/photo-profil.webp",
+          "jobTitle": "Consultant Product Owner Senior",
+          "worksFor": { "@type": "Organization", "name": "eXalt", "url": "https://www.exalt-company.com" },
+          "address": { "@type": "PostalAddress", "addressLocality": "Montpellier", "addressCountry": "FR" },
+          "sameAs": [
+            "https://www.linkedin.com/in/pierreetiennemonreal/",
+            "https://github.com/PEMtl",
+            "https://www.malt.fr/profile/pierreetiennemonreal"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://pe-monreal.com/#website",
+          "url": "https://pe-monreal.com",
+          "name": "Pierre-Etienne Monreal | Product Owner Senior",
+          "inLanguage": "fr-FR",
+          "publisher": { "@id": "https://pe-monreal.com/#person" }
+        },
+        {
+          "@type": "ProfilePage",
+          "@id": "https://pe-monreal.com/#profilepage",
+          "url": "https://pe-monreal.com",
+          "mainEntity": { "@id": "https://pe-monreal.com/#person" }
+        }
       ]
     }
     </script>
@@ -75,7 +101,7 @@
             <!-- Badge disponibilité — changer "available"/"busy" et le texte selon ta situation -->
             <div class="availability-badge busy" role="status" aria-label="Statut de disponibilité">
                 <span class="badge-dot" aria-hidden="true"></span>
-                Indisponible actuellement (en mission)
+                En mission client
             </div>
 
             <p class="intro-p">
@@ -147,26 +173,7 @@
             </div>
         </div>
 
-        <!-- Social proof -->
-        <div class="social-proof">
-            <h3>Ce qu'ils disent</h3>
-            <div class="testimonials">
-                <div class="testimonial">
-                    <blockquote>Pierre-Etienne a su prendre en main un backlog complexe et livrer de la valeur dès le premier sprint. Sa maîtrise des enjeux techniques et métier est un vrai différenciateur.</blockquote>
-                    <cite>
-                        Prénom Nom
-                        <span>Product Manager — [Entreprise]</span>
-                    </cite>
-                </div>
-                <div class="testimonial">
-                    <blockquote>Un PO rigoureux et humain, capable de fédérer des équipes pluridisciplinaires autour d'une vision claire. Je recommande sans hésitation.</blockquote>
-                    <cite>
-                        Prénom Nom
-                        <span>Directeur Technique — [Entreprise]</span>
-                    </cite>
-                </div>
-            </div>
-        </div>
+        <!-- Social proof — retiré temporairement, à réactiver avec de vrais témoignages (nom + entreprise réels) -->
 
         <div class="cta-buttons-group">
             <a href="https://drive.google.com/file/d/1vg_93vra6rck78pkWbFrw9Y6GftIsD6s/view" target="_blank" rel="noopener noreferrer" class="cta-button">📥 Télécharger mon CV</a>
@@ -180,42 +187,42 @@
         <div class="skills-container">
             <h3>Certifications</h3>
             <div class="skills-grid" role="list">
-                <span class="skill-tag" role="listitem" data-tooltip="Professional Scrum Product Owner I">🏆 Certified PSPO1®</span>
-                <span class="skill-tag" role="listitem" data-tooltip="Qualité et accessibilité web">🏆 Opquast Qualité Web</span>
-                <span class="skill-tag" role="listitem" data-tooltip="Mesure audience et acquisition">🏆 Google Analytics / Adwords</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Professional Scrum Product Owner I">🏆 Certified PSPO1®</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Qualité et accessibilité web">🏆 Opquast Qualité Web</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Mesure audience et acquisition">🏆 Google Analytics / Adwords</span>
             </div>
             <h3>Product</h3>
             <div class="skills-grid" role="list">
-                <span class="skill-tag" role="listitem" data-tooltip="Manifeste Agile, principes empiriques">Agilité</span>
-                <span class="skill-tag" role="listitem" data-tooltip="Sprints, WIP limits, PI Planning">Scrum / Kanban / SAFe</span>
-                <span class="skill-tag" role="listitem" data-tooltip="UX Research, interviews, personas">User centric</span>
-                <span class="skill-tag" role="listitem" data-tooltip="Définition et suivi de la delivery">Vision delivery</span>
-                <span class="skill-tag" role="listitem" data-tooltip="Design mobile-first systématique">Mobile first</span>
-                <span class="skill-tag" role="listitem" data-tooltip="Roadmap produit, OKR, priorisation">Vision roadmap</span>
-                <span class="skill-tag" role="listitem" data-tooltip="Recette fonctionnelle et TNR">Test fonctionnel / TNR</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Manifeste Agile, principes empiriques">Agilité</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Sprints, WIP limits, PI Planning">Scrum / Kanban / SAFe</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="UX Research, interviews, personas">User centric</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Définition et suivi de la delivery">Vision delivery</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Design mobile-first systématique">Mobile first</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Roadmap produit, OKR, priorisation">Vision roadmap</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Recette fonctionnelle et TNR">Test fonctionnel / TNR</span>
             </div>
             <h3>Outils</h3>
             <div class="skills-grid" role="list">
-                <span class="skill-tag" role="listitem" data-tooltip="Jira, Confluence, Bitbucket">Suite Atlassian</span>
-                <span class="skill-tag" role="listitem" data-tooltip="Versioning, PR, CI/CD">Git &amp; GitHub</span>
-                <span class="skill-tag" role="listitem" data-tooltip="Docs, Sheets, Drive, Teams">Google Workspace / M365</span>
-                <span class="skill-tag" role="listitem" data-tooltip="Documentation et gestion de projet">Notion / Loop / Trello</span>
-                <span class="skill-tag" role="listitem" data-tooltip="Maquettes, prototypes interactifs">Figma / Invision</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Jira, Confluence, Bitbucket">Suite Atlassian</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Versioning, PR, CI/CD">Git &amp; GitHub</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Docs, Sheets, Drive, Teams">Google Workspace / M365</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Documentation et gestion de projet">Notion / Loop / Trello</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Maquettes, prototypes interactifs">Figma / Invision</span>
                 <span class="skill-tag" role="listitem">Windows / macOS</span>
             </div>
             <h3>Stacks projets en mission</h3>
             <div class="skills-grid" role="list">
                 <span class="skill-tag" role="listitem">CMS</span>
-                <span class="skill-tag" role="listitem" data-tooltip="Containerisation, orchestration">Docker</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Containerisation, orchestration">Docker</span>
                 <span class="skill-tag" role="listitem">Git / GitHub</span>
-                <span class="skill-tag" role="listitem" data-tooltip="Monitoring infra (OVHcloud)">Grafana / Prometheus</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Monitoring infra (OVHcloud)">Grafana / Prometheus</span>
                 <span class="skill-tag" role="listitem">HTML5 &amp; CSS3</span>
                 <span class="skill-tag" role="listitem">NuxtJS / VueJS</span>
                 <span class="skill-tag" role="listitem">Angular</span>
                 <span class="skill-tag" role="listitem">React</span>
-                <span class="skill-tag" role="listitem" data-tooltip="iOS et Android natif">Swift / Kotlin</span>
-                <span class="skill-tag" role="listitem" data-tooltip="Requêtes, modélisation, reporting">SQL</span>
-                <span class="skill-tag" role="listitem" data-tooltip="Cloud public et hébergement mutualisé">OVH / AWS / O2Switch</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="iOS et Android natif">Swift / Kotlin</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Requêtes, modélisation, reporting">SQL</span>
+                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Cloud public et hébergement mutualisé">OVH / AWS / O2Switch</span>
                 <span class="skill-tag" role="listitem">Google Cloud</span>
             </div>
         </div>
@@ -300,10 +307,17 @@
         </div>
 
         <form id="contact-form" action="https://formspree.io/f/xjkejbdp" method="POST" novalidate>
-            <input type="text" name="_gotcha" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;pointer-events:none;">
-            <input type="text"  name="name"    placeholder="Votre nom"    required autocomplete="name">
-            <input type="email" name="email"   placeholder="Votre e-mail" required autocomplete="email">
-            <textarea           name="message" placeholder="Votre message" required minlength="10"></textarea>
+            <input type="text" name="_gotcha" tabindex="-1" aria-hidden="true" class="visually-hidden-field">
+
+            <label for="contact-name">Nom</label>
+            <input type="text"  id="contact-name"    name="name"    placeholder="Votre nom"    required autocomplete="name">
+
+            <label for="contact-email">E-mail</label>
+            <input type="email" id="contact-email"   name="email"   placeholder="Votre e-mail" required autocomplete="email">
+
+            <label for="contact-message">Message</label>
+            <textarea            id="contact-message" name="message" placeholder="Votre message" required minlength="10"></textarea>
+
             <button type="submit" class="cta-button">🚀 Envoyer</button>
         </form>
         <div id="form-status" role="alert" aria-live="polite"></div>
@@ -335,6 +349,9 @@
     </svg>
 </a>
 
-<script src="/script.js" defer></script>
+<!-- SRI : regénérer le hash à CHAQUE modification de script.js (voir README > Maintenance) -->
+<script src="/script.js" defer
+        integrity="sha384-d8aACYe6A17NAMe90LU7+iSKRDbyDEVw845Vao2pTH/oYEPKXGijgbfsY18wJ6/P"
+        crossorigin="anonymous"></script>
 </body>
 </html>

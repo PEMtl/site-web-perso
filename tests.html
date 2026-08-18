@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smoke Tests v1.3.0 — pe-monreal.com</title>
+    <title>Smoke Tests v1.5.0 — pe-monreal.com</title>
     <style>
         :root { --pass: #2b8a3e; --fail: #c92a2a; --bg: #f8f9fa; --card: #fff; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -21,13 +21,14 @@
         #summary { position: sticky; top: 0; background: var(--bg); padding: 0.75rem 0; margin-bottom: 1rem; font-weight: 600; font-size: 1.1rem; }
         #summary.all-pass { color: var(--pass); }
         #summary.has-fail  { color: var(--fail); }
+        #summary.error     { color: #c92a2a; }
     </style>
 </head>
 <body>
 
 <h1>🧪 Smoke Tests — pe-monreal.com</h1>
-<p class="meta">v1.3.0 · À ouvrir depuis le dossier projet avec un serveur local (ex: <code>npx serve .</code> ou Live Server VSCode)</p>
-<div id="summary">⏳ Exécution en cours…</div>
+<p class="meta">v1.5.0 · Charge et parse <code>index.html</code>, <code>style.css</code> et <code>script.js</code> via <code>fetch()</code> — nécessite un serveur local (<code>npx serve .</code> ou Live Server VSCode). Ne fonctionne pas en <code>file://</code> direct (CORS).</p>
+<div id="summary">⏳ Chargement des fichiers du projet…</div>
 <div id="results"></div>
 
 <script>
@@ -40,172 +41,233 @@ function _record(s, label, passed, detail = '') {
   if (passed) totalPass++; else totalFail++;
 }
 
-// ── 1. Structure HTML ──
-suite('Structure HTML', s => {
-  const checks = [
-    ['<html lang="fr">',                () => document.documentElement.lang === 'fr'],
-    ['<title> non vide',                () => document.title.length > 0],
-    ['meta description',                () => !!document.querySelector('meta[name="description"]')],
-    ['meta og:title',                   () => !!document.querySelector('meta[property="og:title"]')],
-    ['meta twitter:card',               () => !!document.querySelector('meta[name="twitter:card"]')],
-    ['link canonical',                  () => !!document.querySelector('link[rel="canonical"]')],
-    ['link manifest',                   () => !!document.querySelector('link[rel="manifest"]')],
-    ['JSON-LD Person',                  () => document.querySelector('script[type="application/ld+json"]')?.textContent.includes('"Person"')],
-    ['skip-link présent',               () => !!document.querySelector('.skip-link')],
-    ['skip-link href=#main-content',    () => document.querySelector('.skip-link')?.getAttribute('href') === '#main-content'],
-    ['nav.site-nav présente',           () => !!document.querySelector('.site-nav')],
-    ['#main-content présent',           () => !!document.getElementById('main-content')],
-    ['section #accueil',                () => !!document.getElementById('accueil')],
-    ['section #a-propos',               () => !!document.getElementById('a-propos')],
-    ['section #competences',            () => !!document.getElementById('competences')],
-    ['section #references',             () => !!document.getElementById('references')],
-    ['section #contact',                () => !!document.getElementById('contact')],
-    ['footer présent',                  () => !!document.querySelector('footer')],
-    ['#copyright-year présent',         () => !!document.getElementById('copyright-year')],
-    ['#theme-toggle présent',           () => !!document.getElementById('theme-toggle')],
-    ['style.css en <link>',             () => !!document.querySelector('link[href*="style.css"]')],
-    ['pas de <style> inline dans head', () => document.querySelectorAll('head style').length === 0],
-  ];
-  checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
-});
+async function run() {
+  let doc, cssText, jsText;
+  try {
+    const [htmlRes, cssRes, jsRes] = await Promise.all([
+      fetch('/index.html'),
+      fetch('/style.css'),
+      fetch('/script.js'),
+    ]);
+    const htmlText = await htmlRes.text();
+    cssText = await cssRes.text();
+    jsText = await jsRes.text();
+    doc = new DOMParser().parseFromString(htmlText, 'text/html');
+  } catch (err) {
+    document.getElementById('summary').textContent = `⚠️ Impossible de charger les fichiers (${err.message}) — sers le dossier via un serveur local.`;
+    document.getElementById('summary').className = 'error';
+    return;
+  }
 
-// ── 2. Hero v1.3 ──
-suite('Hero — v1.3 features', s => {
-  const checks = [
-    ['.availability-badge présent',         () => !!document.querySelector('.availability-badge')],
-    ['.availability-badge a role=status',   () => document.querySelector('.availability-badge')?.getAttribute('role') === 'status'],
-    ['.badge-dot présent',                  () => !!document.querySelector('.badge-dot')],
-    ['.hero-stats présent',                 () => !!document.querySelector('.hero-stats')],
-    ['3 stat-number avec data-target',      () => document.querySelectorAll('.stat-number[data-target]').length === 3],
-    ['stat 10 ans exp data-target=10',      () => !!document.querySelector('.stat-number[data-target="10"]')],
-    ['stat 4 grands comptes',               () => !!document.querySelector('.stat-number[data-target="4"]')],
-    ['stat 30+ apps',                       () => !!document.querySelector('.stat-number[data-target="30"]')],
-    ['photo width=250',                     () => document.querySelector('.hero-photo img')?.getAttribute('width') === '250'],
-    ['photo alt non vide',                  () => document.querySelector('.hero-photo img')?.alt.length > 0],
-    ['photo fetchpriority=high',            () => document.querySelector('.hero-photo img')?.getAttribute('fetchpriority') === 'high'],
-  ];
-  checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
-});
+  // ── 1. Structure HTML ──
+  suite('Structure HTML', s => {
+    const checks = [
+      ['<html lang="fr">',                () => doc.documentElement.lang === 'fr'],
+      ['<title> non vide',                () => doc.title.length > 0],
+      ['meta description',                () => !!doc.querySelector('meta[name="description"]')],
+      ['meta og:title',                   () => !!doc.querySelector('meta[property="og:title"]')],
+      ['meta twitter:card',               () => !!doc.querySelector('meta[name="twitter:card"]')],
+      ['link canonical',                  () => !!doc.querySelector('link[rel="canonical"]')],
+      ['canonical en non-www',            () => doc.querySelector('link[rel="canonical"]')?.getAttribute('href') === 'https://pe-monreal.com/'],
+      ['og:url en non-www',               () => doc.querySelector('meta[property="og:url"]')?.getAttribute('content') === 'https://pe-monreal.com/'],
+      ['meta theme-color présente',       () => !!doc.querySelector('meta[name="theme-color"]')],
+      ['link manifest',                   () => !!doc.querySelector('link[rel="manifest"]')],
+      ['JSON-LD contient Person',         () => doc.querySelector('script[type="application/ld+json"]')?.textContent.includes('"Person"')],
+      ['JSON-LD contient WebSite',        () => doc.querySelector('script[type="application/ld+json"]')?.textContent.includes('"WebSite"')],
+      ['JSON-LD contient ProfilePage',    () => doc.querySelector('script[type="application/ld+json"]')?.textContent.includes('"ProfilePage"')],
+      ['skip-link présent',               () => !!doc.querySelector('.skip-link')],
+      ['skip-link href=#main-content',    () => doc.querySelector('.skip-link')?.getAttribute('href') === '#main-content'],
+      ['nav.site-nav présente',           () => !!doc.querySelector('.site-nav')],
+      ['#main-content présent',           () => !!doc.getElementById('main-content')],
+      ['section #accueil',                () => !!doc.getElementById('accueil')],
+      ['section #a-propos',               () => !!doc.getElementById('a-propos')],
+      ['section #competences',            () => !!doc.getElementById('competences')],
+      ['section #references',             () => !!doc.getElementById('references')],
+      ['section #contact',                () => !!doc.getElementById('contact')],
+      ['footer présent',                  () => !!doc.querySelector('footer')],
+      ['#copyright-year présent',         () => !!doc.getElementById('copyright-year')],
+      ['#theme-toggle présent',           () => !!doc.getElementById('theme-toggle')],
+      ['style.css en <link>',             () => !!doc.querySelector('link[href*="style.css"]')],
+      ['pas de <style> inline dans head', () => doc.querySelectorAll('head style').length === 0],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
 
-// ── 3. Timeline ──
-suite('Timeline carrière', s => {
-  const checks = [
-    ['.timeline présente',              () => !!document.querySelector('.timeline')],
-    ['4 timeline-item',                 () => document.querySelectorAll('.timeline-item').length === 4],
-    ['chaque item a .timeline-year',    () => document.querySelectorAll('.timeline-item .timeline-year').length === 4],
-    ['chaque item a un h3',             () => document.querySelectorAll('.timeline-item h3').length === 4],
-    ['chaque item a .timeline-context', () => document.querySelectorAll('.timeline-item .timeline-context').length === 4],
-    ['chaque item a .timeline-link',    () => document.querySelectorAll('.timeline-item .timeline-link').length === 4],
-    ['timeline role=list',              () => document.querySelector('.timeline')?.getAttribute('role') === 'list'],
-    ['1er item = poste actuel (2023)',   () => document.querySelector('.timeline-item .timeline-year')?.textContent.includes('2023')],
-  ];
-  checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
-});
+  // ── 2. Hero ──
+  suite('Hero', s => {
+    const checks = [
+      ['.availability-badge présent',         () => !!doc.querySelector('.availability-badge')],
+      ['.availability-badge role=status',     () => doc.querySelector('.availability-badge')?.getAttribute('role') === 'status'],
+      ['.badge-dot présent',                  () => !!doc.querySelector('.badge-dot')],
+      ['.hero-stats présent',                 () => !!doc.querySelector('.hero-stats')],
+      ['3 stat-number avec data-target',      () => doc.querySelectorAll('.stat-number[data-target]').length === 3],
+      ['stat 10 ans exp data-target=10',      () => !!doc.querySelector('.stat-number[data-target="10"]')],
+      ['stat 4 grands comptes',               () => !!doc.querySelector('.stat-number[data-target="4"]')],
+      ['stat 30+ apps',                       () => !!doc.querySelector('.stat-number[data-target="30"]')],
+      ['photo width=250',                     () => doc.querySelector('.hero-photo img')?.getAttribute('width') === '250'],
+      ['photo alt non vide',                  () => (doc.querySelector('.hero-photo img')?.getAttribute('alt') || '').length > 0],
+      ['photo fetchpriority=high',            () => doc.querySelector('.hero-photo img')?.getAttribute('fetchpriority') === 'high'],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
 
-// ── 4. Social proof ──
-suite('Social proof', s => {
-  const checks = [
-    ['.social-proof présent',           () => !!document.querySelector('.social-proof')],
-    ['.testimonials présent',           () => !!document.querySelector('.testimonials')],
-    ['2 .testimonial',                  () => document.querySelectorAll('.testimonial').length === 2],
-    ['chaque testimonial a blockquote', () => document.querySelectorAll('.testimonial blockquote').length === 2],
-    ['chaque testimonial a cite',       () => document.querySelectorAll('.testimonial cite').length === 2],
-  ];
-  checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
-});
+  // ── 3. Timeline ──
+  suite('Timeline carrière', s => {
+    const checks = [
+      ['.timeline présente',              () => !!doc.querySelector('.timeline')],
+      ['4 timeline-item',                 () => doc.querySelectorAll('.timeline-item').length === 4],
+      ['chaque item a .timeline-year',    () => doc.querySelectorAll('.timeline-item .timeline-year').length === 4],
+      ['chaque item a un h3',             () => doc.querySelectorAll('.timeline-item h3').length === 4],
+      ['chaque item a .timeline-context', () => doc.querySelectorAll('.timeline-item .timeline-context').length === 4],
+      ['chaque item a .timeline-link',    () => doc.querySelectorAll('.timeline-item .timeline-link').length === 4],
+      ['timeline role=list',              () => doc.querySelector('.timeline')?.getAttribute('role') === 'list'],
+      ['1er item = poste actuel (2023)',  () => doc.querySelector('.timeline-item .timeline-year')?.textContent.includes('2023')],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
 
-// ── 5. Tooltips skill tags ──
-suite('Tooltips skill tags', s => {
-  const tagsWithTooltip = document.querySelectorAll('.skill-tag[data-tooltip]');
-  const checks = [
-    ['Au moins 5 tags avec data-tooltip', () => tagsWithTooltip.length >= 5],
-    ['data-tooltip non vide sur chacun',  () => [...tagsWithTooltip].every(t => t.dataset.tooltip.length > 0)],
-    ['PSPO1 a un tooltip',                () => [...tagsWithTooltip].some(t => t.textContent.includes('PSPO'))],
-  ];
-  checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
-});
+  // ── 4. Sécurité & SEO ──
+  suite('Sécurité & SEO', s => {
+    const checks = [
+      ['testimonials retirés (placeholder)', () => doc.querySelectorAll('.testimonial').length === 0],
+      ['honeypot sans style inline',         () => !doc.querySelector('input[name="_gotcha"]')?.hasAttribute('style')],
+      ['honeypot via classe CSS',            () => doc.querySelector('input[name="_gotcha"]')?.classList.contains('visually-hidden-field')],
+      ['aucune URL www. dans le HTML',       () => !doc.documentElement.outerHTML.includes('www.pe-monreal.com')],
+      ['SRI sur style.css (integrity)',      () => !!doc.querySelector('link[href*="style.css"][integrity]')],
+      ['SRI sur script.js (integrity)',      () => !!doc.querySelector('script[src*="script.js"][integrity]')],
+      ['crossorigin présent avec integrity', () => doc.querySelector('link[href*="style.css"]')?.getAttribute('crossorigin') === 'anonymous'
+                                                  && doc.querySelector('script[src*="script.js"]')?.getAttribute('crossorigin') === 'anonymous'],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
 
-// ── 6. Formulaire ──
-suite('Formulaire contact', s => {
-  const form = document.getElementById('contact-form');
-  const checks = [
-    ['#contact-form présent',           () => !!form],
-    ['action Formspree',                () => form?.action.includes('formspree.io')],
-    ['method POST',                     () => form?.method === 'post'],
-    ['honeypot aria-hidden',            () => document.querySelector('input[name="_gotcha"]')?.getAttribute('aria-hidden') === 'true'],
-    ['champ name présent',              () => !!document.querySelector('input[name="name"]')],
-    ['champ email type=email',          () => document.querySelector('input[name="email"]')?.type === 'email'],
-    ['champ message minlength>=10',     () => parseInt(document.querySelector('textarea[name="message"]')?.minLength) >= 10],
-    ['#form-status role=alert',         () => document.getElementById('form-status')?.getAttribute('role') === 'alert'],
-    ['#form-status aria-live=polite',   () => document.getElementById('form-status')?.getAttribute('aria-live') === 'polite'],
-    ['bouton submit présent',           () => !!document.querySelector('#contact-form button[type="submit"]')],
-  ];
-  checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
-});
+  // ── 5. Tooltips skill tags ──
+  suite('Tooltips skill tags', s => {
+    const tagsWithTooltip = [...doc.querySelectorAll('.skill-tag[data-tooltip]')];
+    const checks = [
+      ['Au moins 5 tags avec data-tooltip', () => tagsWithTooltip.length >= 5],
+      ['data-tooltip non vide sur chacun',  () => tagsWithTooltip.every(t => (t.getAttribute('data-tooltip') || '').length > 0)],
+      ['PSPO1 a un tooltip',                () => tagsWithTooltip.some(t => t.textContent.includes('PSPO'))],
+      ['tags avec tooltip sont focusables',  () => tagsWithTooltip.every(t => t.getAttribute('tabindex') === '0')],
+      ['tooltip CSS : couleurs fixes',      () => cssText.includes("background: #1a202c") && cssText.includes("color: #f7fafc")],
+      ['tooltip CSS : ne dépend plus de --accent', () => {
+        const m = cssText.match(/\.skill-tag\[data-tooltip\]::after\s*{[^}]*}/);
+        return !!m && !m[0].includes('var(--accent)');
+      }],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
 
-// ── 7. Accessibilité ──
-suite('Accessibilité', s => {
-  const checks = [
-    ['nav aria-label',                  () => !!document.querySelector('nav[aria-label]')],
-    ['#copy-email-btn aria-label',      () => !!document.querySelector('#copy-email-btn[aria-label]')],
-    ['#theme-toggle aria-label',        () => !!document.querySelector('#theme-toggle[aria-label]')],
-    ['.back-to-top aria-label',         () => !!document.querySelector('.back-to-top[aria-label]')],
-    ['tous les <img> ont un alt',       () => [...document.querySelectorAll('img')].every(i => i.hasAttribute('alt'))],
-    ['skills-grid role=list',           () => document.querySelectorAll('.skills-grid[role="list"]').length > 0],
-    ['.background-shapes aria-hidden',  () => document.querySelector('.background-shapes')?.getAttribute('aria-hidden') === 'true'],
-    ['availability-badge role=status',  () => document.querySelector('.availability-badge')?.getAttribute('role') === 'status'],
-    ['timeline role=list',              () => document.querySelector('.timeline')?.getAttribute('role') === 'list'],
-    ['email en mailto:',                () => !!document.querySelector('a[href^="mailto:"]')],
-  ];
-  checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
-});
+  // ── 6. Formulaire ──
+  suite('Formulaire contact', s => {
+    const form = doc.getElementById('contact-form');
+    const checks = [
+      ['#contact-form présent',           () => !!form],
+      ['action Formspree',                () => (form?.getAttribute('action') || '').includes('formspree.io')],
+      ['method POST',                     () => (form?.getAttribute('method') || '').toLowerCase() === 'post'],
+      ['honeypot aria-hidden',            () => doc.querySelector('input[name="_gotcha"]')?.getAttribute('aria-hidden') === 'true'],
+      ['champ name présent',              () => !!doc.querySelector('input[name="name"]')],
+      ['champ email type=email',          () => doc.querySelector('input[name="email"]')?.getAttribute('type') === 'email'],
+      ['champ message minlength>=10',     () => parseInt(doc.querySelector('textarea[name="message"]')?.getAttribute('minlength')) >= 10],
+      ['label visible pour name (WCAG)',  () => !!doc.querySelector('label[for="contact-name"]')],
+      ['label visible pour email (WCAG)', () => !!doc.querySelector('label[for="contact-email"]')],
+      ['label visible pour message',      () => !!doc.querySelector('label[for="contact-message"]')],
+      ['input name lié à son label',      () => doc.getElementById('contact-name')?.id === doc.querySelector('label[for="contact-name"]')?.getAttribute('for')],
+      ['#form-status role=alert',         () => doc.getElementById('form-status')?.getAttribute('role') === 'alert'],
+      ['#form-status aria-live=polite',   () => doc.getElementById('form-status')?.getAttribute('aria-live') === 'polite'],
+      ['bouton submit présent',           () => !!doc.querySelector('#contact-form button[type="submit"]')],
+      ['mock local présent dans JS',      () => jsText.includes('isLocal') && jsText.includes('localhost')],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
 
-// ── 8. Perf & SEO ──
-suite('Performance & SEO', s => {
-  const checks = [
-    ['preload photo profil',            () => !!document.querySelector('link[rel="preload"][as="image"]')],
-    ['preload font regular',            () => !!document.querySelector('link[rel="preload"][href*="regular"]')],
-    ['preload font 600',                () => !!document.querySelector('link[rel="preload"][href*="600"]')],
-    ['fetchpriority=high sur photo',    () => document.querySelector('.hero-photo img')?.getAttribute('fetchpriority') === 'high'],
-    ['loading=eager sur photo',         () => document.querySelector('.hero-photo img')?.getAttribute('loading') === 'eager'],
-    ['logos loading=lazy',              () => { const l = document.querySelectorAll('.entity-logo[loading]'); return l.length === 0 || [...l].every(e => e.getAttribute('loading') === 'lazy'); }],
-  ];
-  checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
-});
+  // ── 7. Accessibilité ──
+  suite('Accessibilité', s => {
+    const checks = [
+      ['nav aria-label',                  () => !!doc.querySelector('nav[aria-label]')],
+      ['#copy-email-btn aria-label',      () => !!doc.querySelector('#copy-email-btn[aria-label]')],
+      ['#theme-toggle aria-label',        () => !!doc.querySelector('#theme-toggle[aria-label]')],
+      ['.back-to-top aria-label',         () => !!doc.querySelector('.back-to-top[aria-label]')],
+      ['tous les <img> ont un alt',       () => [...doc.querySelectorAll('img')].every(i => i.hasAttribute('alt'))],
+      ['skills-grid role=list',           () => doc.querySelectorAll('.skills-grid[role="list"]').length > 0],
+      ['.background-shapes aria-hidden',  () => doc.querySelector('.background-shapes')?.getAttribute('aria-hidden') === 'true'],
+      ['availability-badge role=status',  () => doc.querySelector('.availability-badge')?.getAttribute('role') === 'status'],
+      ['timeline role=list',              () => doc.querySelector('.timeline')?.getAttribute('role') === 'list'],
+      ['email en mailto:',                () => !!doc.querySelector('a[href^="mailto:"]')],
+      ['nav-links focus-visible en CSS',  () => cssText.includes('.nav-links a:focus-visible')],
+      ['copy-btn focus-visible en CSS',   () => cssText.includes('.copy-btn:focus-visible')],
+      ['theme-toggle focus-visible CSS',  () => cssText.includes('.theme-toggle:focus-visible')],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
 
-// ── 9. Liens & nav ──
-suite('Liens & navigation', s => {
-  const extLinks = [...document.querySelectorAll('a[target="_blank"]')];
-  const checks = [
-    ['nav contient 5 liens',            () => document.querySelectorAll('.nav-links a').length === 5],
-    ['nav lien #references présent',    () => !!document.querySelector('.nav-links a[href="#references"]')],
-    ['liens externes rel=noopener',     () => extLinks.every(a => a.rel.includes('noopener'))],
-    ['liens externes rel=noreferrer',   () => extLinks.every(a => a.rel.includes('noreferrer'))],
-    ['Calendly en _blank',              () => !!document.querySelector('a[href*="calendly.com"][target="_blank"]')],
-    ['CV Google Drive présent',         () => !!document.querySelector('a[href*="drive.google.com"]')],
-    ['.back-to-top href=#accueil',      () => document.querySelector('.back-to-top')?.getAttribute('href') === '#accueil'],
-    ['timeline-link en _blank',         () => [...document.querySelectorAll('.timeline-link')].every(a => a.target === '_blank')],
-  ];
-  checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
-});
+  // ── 8. Performance & SEO ──
+  suite('Performance & SEO', s => {
+    const checks = [
+      ['preload photo profil',            () => !!doc.querySelector('link[rel="preload"][as="image"]')],
+      ['preload font 300',                () => !!doc.querySelector('link[rel="preload"][href*="300"]')],
+      ['preload font regular',            () => !!doc.querySelector('link[rel="preload"][href*="regular"]')],
+      ['preload font 600',                () => !!doc.querySelector('link[rel="preload"][href*="600"]')],
+      ['fetchpriority=high sur photo',    () => doc.querySelector('.hero-photo img')?.getAttribute('fetchpriority') === 'high'],
+      ['loading=eager sur photo',         () => doc.querySelector('.hero-photo img')?.getAttribute('loading') === 'eager'],
+      ['apple-touch-icon 180x180',        () => (doc.querySelector('link[rel="apple-touch-icon"]')?.getAttribute('href') || '').includes('apple-touch-icon')],
+      ['logos loading=lazy',              () => { const l = [...doc.querySelectorAll('.entity-logo[loading]')]; return l.length === 0 || l.every(e => e.getAttribute('loading') === 'lazy'); }],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
 
-// ── Rendu ──
-const container = document.getElementById('results');
-suites.forEach(s => {
-  s.fn(s);
-  const div = document.createElement('div');
-  div.className = 'suite';
-  div.innerHTML = `<h2>${s.name} <span style="font-weight:400;font-size:0.85rem;color:#aaa">(${s.tests.filter(t=>t.passed).length}/${s.tests.length})</span></h2>`
-    + s.tests.map(t => `<div class="test"><span class="badge ${t.passed ? 'pass' : 'fail'}">${t.passed ? 'PASS' : 'FAIL'}</span><span>${t.label}</span>${t.detail ? `<span class="detail">${t.detail}</span>` : ''}</div>`).join('');
-  container.appendChild(div);
-});
+  // ── 9. PWA & Offline ──
+  suite('PWA & Offline', async s => {
+    let manifestJson = null;
+    const checks = [
+      ['manifest.json accessible',        async () => { try { const r = await fetch('/manifest.json'); manifestJson = await r.json(); return r.ok; } catch { return false; } }],
+      ['manifest a icône 192x192',        () => manifestJson?.icons?.some(i => i.sizes === '192x192')],
+      ['manifest a icône 512x512',        () => manifestJson?.icons?.some(i => i.sizes === '512x512')],
+      ['sw.js enregistré dans script.js', () => jsText.includes("serviceWorker.register('/sw.js')")],
+      ['SW guardé par feature-detect',    () => jsText.includes("'serviceWorker' in navigator")],
+    ];
+    for (const [label, fn] of checks) {
+      try { _record(s, label, await fn()); } catch(e) { _record(s, label, false, e.message); }
+    }
+  });
 
-const summary = document.getElementById('summary');
-const total = totalPass + totalFail;
-summary.textContent = totalFail === 0
-  ? `✅ ${totalPass}/${total} tests passés — TOUT EST OK`
-  : `❌ ${totalFail} ÉCHEC(S) sur ${total} — ${totalPass} passés`;
-summary.className = totalFail === 0 ? 'all-pass' : 'has-fail';
+  // ── 10. Liens & navigation ──
+  suite('Liens & navigation', s => {
+    const extLinks = [...doc.querySelectorAll('a[target="_blank"]')];
+    const checks = [
+      ['nav contient 5 liens',            () => doc.querySelectorAll('.nav-links a').length === 5],
+      ['nav lien #references présent',    () => !!doc.querySelector('.nav-links a[href="#references"]')],
+      ['liens externes rel=noopener',     () => extLinks.every(a => (a.getAttribute('rel') || '').includes('noopener'))],
+      ['liens externes rel=noreferrer',   () => extLinks.every(a => (a.getAttribute('rel') || '').includes('noreferrer'))],
+      ['Calendly en _blank',              () => !!doc.querySelector('a[href*="calendly.com"][target="_blank"]')],
+      ['CV Google Drive présent',         () => !!doc.querySelector('a[href*="drive.google.com"]')],
+      ['.back-to-top href=#accueil',      () => doc.querySelector('.back-to-top')?.getAttribute('href') === '#accueil'],
+      ['timeline-link en _blank',         () => [...doc.querySelectorAll('.timeline-link')].every(a => a.getAttribute('target') === '_blank')],
+      ['nav mobile scroll horizontal',    () => cssText.includes('overflow-x: auto') && cssText.includes('.nav-links')],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
+
+  // ── Rendu ──
+  const container = document.getElementById('results');
+  for (const s of suites) {
+    await s.fn(s);
+    const div = document.createElement('div');
+    div.className = 'suite';
+    div.innerHTML = `<h2>${s.name} <span style="font-weight:400;font-size:0.85rem;color:#aaa">(${s.tests.filter(t=>t.passed).length}/${s.tests.length})</span></h2>`
+      + s.tests.map(t => `<div class="test"><span class="badge ${t.passed ? 'pass' : 'fail'}">${t.passed ? 'PASS' : 'FAIL'}</span><span>${t.label}</span>${t.detail ? `<span class="detail">${t.detail}</span>` : ''}</div>`).join('');
+    container.appendChild(div);
+  }
+
+  const summary = document.getElementById('summary');
+  const total = totalPass + totalFail;
+  summary.textContent = totalFail === 0
+    ? `✅ ${totalPass}/${total} tests passés — TOUT EST OK`
+    : `❌ ${totalFail} ÉCHEC(S) sur ${total} — ${totalPass} passés`;
+  summary.className = totalFail === 0 ? 'all-pass' : 'has-fail';
+}
+
+run();
 </script>
 </body>
 </html>
