@@ -1,6 +1,12 @@
+// ── CSS non bloquant : bascule media="print" → "all" dès l'exécution de ce script
+//    (defer = juste après le parsing HTML, avant DOMContentLoaded). Évite que style.css
+//    bloque le premier rendu tout en gardant zéro attribut inline (compatible CSP stricte). ──
+const mainCss = document.getElementById('main-css');
+if (mainCss) mainCss.media = 'all';
+
 document.addEventListener('DOMContentLoaded', () => {
 
-  const VERSION = '1.5.0';
+  const VERSION = '1.8.0';
 
   // ── Scroll animation cards ──
   const cards = document.querySelectorAll('.card:not(.hero)');
@@ -50,24 +56,37 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Nav sticky + section active ──
   const nav = document.querySelector('.site-nav');
   const heroSection = document.getElementById('accueil');
-  const sections = document.querySelectorAll('main section[id]');
+  const sectionsList = [...document.querySelectorAll('main section[id]')];
   const navLinks = document.querySelectorAll('.nav-links a[data-section]');
+  const backToTop = document.querySelector('.back-to-top');
 
   function updateNav() {
     if (!nav || !heroSection) return;
-    nav.classList.toggle('visible', heroSection.getBoundingClientRect().bottom < 0);
+    // Toutes les LECTURES de layout d'abord (évite le reflow forcé lecture/écriture entrelacées)
+    const heroBottom = heroSection.getBoundingClientRect().bottom;
+    const sectionTops = sectionsList.map((sec) => sec.getBoundingClientRect().top);
+    // Puis toutes les ÉCRITURES DOM
+    nav.classList.toggle('visible', heroBottom < 0);
     let current = '';
-    sections.forEach(sec => { if (sec.getBoundingClientRect().top <= 80) current = sec.id; });
+    sectionTops.forEach((top, i) => { if (top <= 80) current = sectionsList[i].id; });
     navLinks.forEach(a => a.classList.toggle('active', a.dataset.section === current));
   }
 
-  let navTicking = false;
-  window.addEventListener('scroll', () => {
-    if (!navTicking) {
-      requestAnimationFrame(() => { updateNav(); navTicking = false; });
-      navTicking = true;
+  // Un seul listener de scroll pour la nav ET le bouton back-to-top (un seul rAF
+  // par frame au lieu de deux listeners concurrents — moins de travail pour le
+  // navigateur pendant le scroll, particulièrement sensible sur Firefox/macOS).
+  let scrollTicking = false;
+  function onScroll() {
+    if (!scrollTicking) {
+      requestAnimationFrame(() => {
+        updateNav();
+        if (backToTop) backToTop.classList.toggle('visible', window.scrollY > 400);
+        scrollTicking = false;
+      });
+      scrollTicking = true;
     }
-  }, { passive: true });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
   updateNav();
 
   // ── Copie e-mail ──
@@ -135,18 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
     if (localStorage.getItem(STORAGE_KEY) === null) applyTheme(e.matches);
   });
-
-  // ── Back to top ──
-  const backToTop = document.querySelector('.back-to-top');
-  if (backToTop) {
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        requestAnimationFrame(() => { backToTop.classList.toggle('visible', window.scrollY > 400); ticking = false; });
-        ticking = true;
-      }
-    }, { passive: true });
-  }
 
   // ── Formulaire AJAX Formspree ──
   const form = document.getElementById('contact-form');

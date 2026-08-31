@@ -31,12 +31,21 @@
     <link rel="preload" as="font"   href="/fonts/manrope-v20-latin-regular.woff2" type="font/woff2" crossorigin>
     <link rel="preload" as="font"   href="/fonts/manrope-v20-latin-600.woff2"     type="font/woff2" crossorigin>
     <!-- SRI : regénérer les 2 hash à CHAQUE modification de style.css (voir README > Maintenance) -->
+    <!-- CSS non bloquant pour le rendu : chargé en priorité (preload) mais appliqué en media="print"
+         puis basculé en "all" par script.js dès son exécution (juste après le parsing HTML, avant
+         DOMContentLoaded). <noscript> couvre les navigateurs sans JS. Technique "loadCSS" compatible
+         CSP stricte (aucun attribut on* inline nécessaire). -->
     <link rel="preload" as="style" href="/style.css"
-          integrity="sha384-ec6z+q5HlzBvzxrtqOMTcfRtu7EjSKXBxrgCXnnrxnxOAcHR6lC662A+uEy5KBip"
+          integrity="sha384-oO0Ry4cTG9/12lqQ/0S6L+WtNh3FGdA94LANLjn+Cwzy0UvOYW3xn/BZtw8mGvo6"
           crossorigin="anonymous">
-    <link rel="stylesheet" href="/style.css"
-          integrity="sha384-ec6z+q5HlzBvzxrtqOMTcfRtu7EjSKXBxrgCXnnrxnxOAcHR6lC662A+uEy5KBip"
+    <link rel="stylesheet" href="/style.css" media="print" id="main-css"
+          integrity="sha384-oO0Ry4cTG9/12lqQ/0S6L+WtNh3FGdA94LANLjn+Cwzy0UvOYW3xn/BZtw8mGvo6"
           crossorigin="anonymous">
+    <noscript>
+      <link rel="stylesheet" href="/style.css"
+            integrity="sha384-oO0Ry4cTG9/12lqQ/0S6L+WtNh3FGdA94LANLjn+Cwzy0UvOYW3xn/BZtw8mGvo6"
+            crossorigin="anonymous">
+    </noscript>
 
     <script type="application/ld+json">
     {
@@ -187,42 +196,42 @@
         <div class="skills-container">
             <h3>Certifications</h3>
             <div class="skills-grid" role="list">
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Professional Scrum Product Owner I">🏆 Certified PSPO1®</span>
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Qualité et accessibilité web">🏆 Opquast Qualité Web</span>
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Mesure audience et acquisition">🏆 Google Analytics / Adwords</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Professional Scrum Product Owner I">🏆 Certified PSPO1®<span class="sr-only"> — Professional Scrum Product Owner I</span></span>
+                <span class="skill-tag" role="listitem" data-tooltip="Qualité et accessibilité web">🏆 Opquast Qualité Web<span class="sr-only"> — Qualité et accessibilité web</span></span>
+                <span class="skill-tag" role="listitem" data-tooltip="Mesure audience et acquisition">🏆 Google Analytics / Adwords<span class="sr-only"> — Mesure audience et acquisition</span></span>
             </div>
             <h3>Product</h3>
             <div class="skills-grid" role="list">
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Manifeste Agile, principes empiriques">Agilité</span>
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Sprints, WIP limits, PI Planning">Scrum / Kanban / SAFe</span>
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="UX Research, interviews, personas">User centric</span>
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Définition et suivi de la delivery">Vision delivery</span>
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Design mobile-first systématique">Mobile first</span>
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Roadmap produit, OKR, priorisation">Vision roadmap</span>
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Recette fonctionnelle et TNR">Test fonctionnel / TNR</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Manifeste Agile, principes empiriques">Agilité<span class="sr-only"> — Manifeste Agile, principes empiriques</span></span>
+                <span class="skill-tag" role="listitem" data-tooltip="Sprints, WIP limits, PI Planning">Scrum / Kanban / SAFe<span class="sr-only"> — Sprints, WIP limits, PI Planning</span></span>
+                <span class="skill-tag" role="listitem" data-tooltip="UX Research, interviews, personas">User centric<span class="sr-only"> — UX Research, interviews, personas</span></span>
+                <span class="skill-tag" role="listitem" data-tooltip="Définition et suivi de la delivery">Vision delivery<span class="sr-only"> — Définition et suivi de la delivery</span></span>
+                <span class="skill-tag" role="listitem" data-tooltip="Design mobile-first systématique">Mobile first<span class="sr-only"> — Design mobile-first systématique</span></span>
+                <span class="skill-tag" role="listitem" data-tooltip="Roadmap produit, OKR, priorisation">Vision roadmap<span class="sr-only"> — Roadmap produit, OKR, priorisation</span></span>
+                <span class="skill-tag" role="listitem" data-tooltip="Recette fonctionnelle et TNR">Test fonctionnel / TNR<span class="sr-only"> — Recette fonctionnelle et TNR</span></span>
             </div>
             <h3>Outils</h3>
             <div class="skills-grid" role="list">
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Jira, Confluence, Bitbucket">Suite Atlassian</span>
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Versioning, PR, CI/CD">Git &amp; GitHub</span>
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Docs, Sheets, Drive, Teams">Google Workspace / M365</span>
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Documentation et gestion de projet">Notion / Loop / Trello</span>
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Maquettes, prototypes interactifs">Figma / Invision</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Jira, Confluence, Bitbucket">Suite Atlassian<span class="sr-only"> — Jira, Confluence, Bitbucket</span></span>
+                <span class="skill-tag" role="listitem" data-tooltip="Versioning, PR, CI/CD">Git &amp; GitHub<span class="sr-only"> — Versioning, PR, CI/CD</span></span>
+                <span class="skill-tag" role="listitem" data-tooltip="Docs, Sheets, Drive, Teams">Google Workspace / M365<span class="sr-only"> — Docs, Sheets, Drive, Teams</span></span>
+                <span class="skill-tag" role="listitem" data-tooltip="Documentation et gestion de projet">Notion / Loop / Trello<span class="sr-only"> — Documentation et gestion de projet</span></span>
+                <span class="skill-tag" role="listitem" data-tooltip="Maquettes, prototypes interactifs">Figma / Invision<span class="sr-only"> — Maquettes, prototypes interactifs</span></span>
                 <span class="skill-tag" role="listitem">Windows / macOS</span>
             </div>
             <h3>Stacks projets en mission</h3>
             <div class="skills-grid" role="list">
                 <span class="skill-tag" role="listitem">CMS</span>
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Containerisation, orchestration">Docker</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Containerisation, orchestration">Docker<span class="sr-only"> — Containerisation, orchestration</span></span>
                 <span class="skill-tag" role="listitem">Git / GitHub</span>
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Monitoring infra (OVHcloud)">Grafana / Prometheus</span>
+                <span class="skill-tag" role="listitem" data-tooltip="Monitoring infra (OVHcloud)">Grafana / Prometheus<span class="sr-only"> — Monitoring infra (OVHcloud)</span></span>
                 <span class="skill-tag" role="listitem">HTML5 &amp; CSS3</span>
                 <span class="skill-tag" role="listitem">NuxtJS / VueJS</span>
                 <span class="skill-tag" role="listitem">Angular</span>
                 <span class="skill-tag" role="listitem">React</span>
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="iOS et Android natif">Swift / Kotlin</span>
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Requêtes, modélisation, reporting">SQL</span>
-                <span class="skill-tag" role="listitem" tabindex="0" data-tooltip="Cloud public et hébergement mutualisé">OVH / AWS / O2Switch</span>
+                <span class="skill-tag" role="listitem" data-tooltip="iOS et Android natif">Swift / Kotlin<span class="sr-only"> — iOS et Android natif</span></span>
+                <span class="skill-tag" role="listitem" data-tooltip="Requêtes, modélisation, reporting">SQL<span class="sr-only"> — Requêtes, modélisation, reporting</span></span>
+                <span class="skill-tag" role="listitem" data-tooltip="Cloud public et hébergement mutualisé">OVH / AWS / O2Switch<span class="sr-only"> — Cloud public et hébergement mutualisé</span></span>
                 <span class="skill-tag" role="listitem">Google Cloud</span>
             </div>
         </div>
@@ -231,7 +240,7 @@
     <!-- ══ MISSIONS / TIMELINE ══ -->
     <section id="references" class="card content-section">
         <h2>Missions &amp; Références</h2>
-        <p>Parcours de 10 ans sur des projets, en ESN et chez en direct chez le client.</p>
+        <p>Parcours de 10 ans sur des projets tech complexes, en ESN et en direct chez le client.</p>
 
         <div class="timeline" role="list">
 
@@ -239,7 +248,7 @@
                 <p class="timeline-year">2025 — Aujourd'hui</p>
                 <h3>Product Owner — La Poste Groupe</h3>
                 <p class="timeline-context">Via <strong>eXalt</strong> · Montpellier</p>
-                <p>Pilotage SAFe des développements back-end pour l'application de location de VAE Véligo</p>
+                <p>Pilotage SAFe des développements back-end pour l'application de location de VAE Véligo.</p>
                 <a href="https://drive.google.com/file/d/1RSj1XwDLZioAfmCrIbtV0qG3oiF9oV5k/view" class="timeline-link" target="_blank" rel="noopener noreferrer">Voir le détail &rarr;</a>
             </article>
 
@@ -359,7 +368,7 @@
 
 <!-- SRI : regénérer le hash à CHAQUE modification de script.js (voir README > Maintenance) -->
 <script src="/script.js" defer
-        integrity="sha384-d8aACYe6A17NAMe90LU7+iSKRDbyDEVw845Vao2pTH/oYEPKXGijgbfsY18wJ6/P"
+        integrity="sha384-ogIugYTtbZm076JXTeN9JavPlqu3BOCcLU12M1eAJHd0ciNSiiVgNdKVcT1EPLyE"
         crossorigin="anonymous"></script>
 </body>
 </html>

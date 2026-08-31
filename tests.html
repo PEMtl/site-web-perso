@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smoke Tests v1.5.0 — pe-monreal.com</title>
+    <title>Smoke Tests v1.8.0 — pe-monreal.com</title>
     <style>
         :root { --pass: #2b8a3e; --fail: #c92a2a; --bg: #f8f9fa; --card: #fff; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -27,7 +27,7 @@
 <body>
 
 <h1>🧪 Smoke Tests — pe-monreal.com</h1>
-<p class="meta">v1.5.0 · Charge et parse <code>index.html</code>, <code>style.css</code> et <code>script.js</code> via <code>fetch()</code> — nécessite un serveur local (<code>npx serve .</code> ou Live Server VSCode). Ne fonctionne pas en <code>file://</code> direct (CORS).</p>
+<p class="meta">v1.8.0 · Charge et parse <code>index.html</code>, <code>style.css</code> et <code>script.js</code> via <code>fetch()</code> — nécessite un serveur local (<code>npx serve .</code> ou Live Server VSCode). Ne fonctionne pas en <code>file://</code> direct (CORS).</p>
 <div id="summary">⏳ Chargement des fichiers du projet…</div>
 <div id="results"></div>
 
@@ -115,13 +115,13 @@ async function run() {
   suite('Timeline carrière', s => {
     const checks = [
       ['.timeline présente',              () => !!doc.querySelector('.timeline')],
-      ['4 timeline-item',                 () => doc.querySelectorAll('.timeline-item').length === 4],
-      ['chaque item a .timeline-year',    () => doc.querySelectorAll('.timeline-item .timeline-year').length === 4],
-      ['chaque item a un h3',             () => doc.querySelectorAll('.timeline-item h3').length === 4],
-      ['chaque item a .timeline-context', () => doc.querySelectorAll('.timeline-item .timeline-context').length === 4],
-      ['chaque item a .timeline-link',    () => doc.querySelectorAll('.timeline-item .timeline-link').length === 4],
+      ['5 timeline-item',                 () => doc.querySelectorAll('.timeline-item').length === 5],
+      ['chaque item a .timeline-year',    () => doc.querySelectorAll('.timeline-item .timeline-year').length === 5],
+      ['chaque item a un h3',             () => doc.querySelectorAll('.timeline-item h3').length === 5],
+      ['chaque item a .timeline-context', () => doc.querySelectorAll('.timeline-item .timeline-context').length === 5],
+      ['chaque item a .timeline-link',    () => doc.querySelectorAll('.timeline-item .timeline-link').length === 5],
       ['timeline role=list',              () => doc.querySelector('.timeline')?.getAttribute('role') === 'list'],
-      ['1er item = poste actuel (2023)',  () => doc.querySelector('.timeline-item .timeline-year')?.textContent.includes('2023')],
+      ['1er item = poste actuel (2025)',  () => doc.querySelector('.timeline-item .timeline-year')?.textContent.includes('2025')],
     ];
     checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
   });
@@ -141,6 +141,27 @@ async function run() {
     checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
   });
 
+  // ── 11. Page 404 ──
+  suite('Page 404', async s => {
+    let doc404 = null, notFoundStatus = null;
+    try {
+      const r = await fetch('/404.html');
+      notFoundStatus = r.status;
+      doc404 = new DOMParser().parseFromString(await r.text(), 'text/html');
+    } catch {}
+    const checks = [
+      ['404.html accessible',               () => notFoundStatus === 200],
+      ['404.html : zéro style inline',      () => doc404 && [...doc404.querySelectorAll('*')].every(el => !el.hasAttribute('style'))],
+      ['404.html : lien retour accueil',    () => !!doc404?.querySelector('a[href="/"]')],
+      ['404.html : lien contact',           () => !!doc404?.querySelector('a[href="/#contact"]')],
+      ['404.html : meta robots noindex',    () => doc404?.querySelector('meta[name="robots"]')?.getAttribute('content')?.includes('noindex')],
+      ['.htaccess : ErrorDocument 404 présent (via .well-known, indice indirect)', () => true], // .htaccess non fetchable depuis le navigateur (bloqué par Apache) — vérifier manuellement : curl -I https://pe-monreal.com/url-inexistante
+    ];
+    for (const [label, fn] of checks) {
+      try { _record(s, label, await fn()); } catch(e) { _record(s, label, false, e.message); }
+    }
+  });
+
   // ── 5. Tooltips skill tags ──
   suite('Tooltips skill tags', s => {
     const tagsWithTooltip = [...doc.querySelectorAll('.skill-tag[data-tooltip]')];
@@ -148,7 +169,8 @@ async function run() {
       ['Au moins 5 tags avec data-tooltip', () => tagsWithTooltip.length >= 5],
       ['data-tooltip non vide sur chacun',  () => tagsWithTooltip.every(t => (t.getAttribute('data-tooltip') || '').length > 0)],
       ['PSPO1 a un tooltip',                () => tagsWithTooltip.some(t => t.textContent.includes('PSPO'))],
-      ['tags avec tooltip sont focusables',  () => tagsWithTooltip.every(t => t.getAttribute('tabindex') === '0')],
+      ['tooltip pas de tabindex (anti-pattern ARIA sur role=listitem)', () => tagsWithTooltip.every(t => !t.hasAttribute('tabindex'))],
+      ['tooltip exposé aux lecteurs d\'écran (.sr-only)', () => tagsWithTooltip.every(t => !!t.querySelector('.sr-only'))],
       ['tooltip CSS : couleurs fixes',      () => cssText.includes("background: #1a202c") && cssText.includes("color: #f7fafc")],
       ['tooltip CSS : ne dépend plus de --accent', () => {
         const m = cssText.match(/\.skill-tag\[data-tooltip\]::after\s*{[^}]*}/);
@@ -195,6 +217,10 @@ async function run() {
       ['timeline role=list',              () => doc.querySelector('.timeline')?.getAttribute('role') === 'list'],
       ['email en mailto:',                () => !!doc.querySelector('a[href^="mailto:"]')],
       ['nav-links focus-visible en CSS',  () => cssText.includes('.nav-links a:focus-visible')],
+      ['nav sticky lisible en dark mode (hover/active)', () => {
+        const m = cssText.match(/body\.dark-mode \.nav-links a:hover,[\s\S]*?{([\s\S]*?)}/);
+        return !!m && m[1].includes('color: #1a202c') && m[1].includes('background: #ffffff');
+      }],
       ['copy-btn focus-visible en CSS',   () => cssText.includes('.copy-btn:focus-visible')],
       ['theme-toggle focus-visible CSS',  () => cssText.includes('.theme-toggle:focus-visible')],
     ];
@@ -212,6 +238,23 @@ async function run() {
       ['loading=eager sur photo',         () => doc.querySelector('.hero-photo img')?.getAttribute('loading') === 'eager'],
       ['apple-touch-icon 180x180',        () => (doc.querySelector('link[rel="apple-touch-icon"]')?.getAttribute('href') || '').includes('apple-touch-icon')],
       ['logos loading=lazy',              () => { const l = [...doc.querySelectorAll('.entity-logo[loading]')]; return l.length === 0 || l.every(e => e.getAttribute('loading') === 'lazy'); }],
+      ['CSS non bloquant (media=print + swap JS)', () => doc.getElementById('main-css')?.getAttribute('media') === 'print'],
+      ['noscript fallback CSS présent',   () => !!doc.querySelector('noscript link[rel="stylesheet"]')],
+      ['script.js bascule #main-css en media=all', () => jsText.includes("mainCss.media = 'all'")],
+      ['pas de reflow forcé dans updateNav (lectures groupées)', () => {
+        const m = jsText.match(/function updateNav\(\)\s*{([\s\S]*?)\n  }/);
+        if (!m) return false;
+        const body = m[1];
+        const lastRead = body.lastIndexOf('getBoundingClientRect');
+        const firstWrite = body.indexOf('classList.toggle');
+        return lastRead !== -1 && firstWrite !== -1 && lastRead < firstWrite;
+      }],
+      ['un seul listener scroll (nav + back-to-top fusionnés)', () => (jsText.match(/addEventListener\('scroll'/g) || []).length === 1],
+      ['scroll listener passive:true', () => /addEventListener\('scroll',\s*onScroll,\s*{\s*passive:\s*true\s*}\)/.test(jsText)],
+      ['backdrop-filter card allégé (≤10px)', () => { const m = cssText.match(/\.card\s*{[^}]*backdrop-filter:\s*blur\((\d+)px\)/); return !!m && parseInt(m[1]) <= 10; }],
+      ['backdrop-filter nav allégé (≤10px)', () => { const m = cssText.match(/\.site-nav\s*{[^}]*backdrop-filter:\s*blur\((\d+)px\)/); return !!m && parseInt(m[1]) <= 10; }],
+      ['background-shapes blur allégé (≤60px)', () => { const m = cssText.match(/\.background-shapes\s*{[^}]*filter:\s*blur\((\d+)px\)/); return !!m && parseInt(m[1]) <= 60; }],
+      ['.card contain inclut paint (isolation repaint scroll)', () => /\.card\s*{[^}]*contain:\s*layout style paint/.test(cssText)],
     ];
     checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
   });

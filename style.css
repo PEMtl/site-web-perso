@@ -75,7 +75,11 @@ body {
 }
 .skip-link:focus { top: 1rem; }
 
-/* ── Background décoratif ── */
+/* ── Background décoratif ──
+   Rayon de flou réduit (100px→60px v1.8.0) : un blur aussi large sur un élément
+   plein écran est coûteux à composer pour le navigateur à chaque frame de scroll,
+   surtout combiné aux backdrop-filter des cards/nav qui échantillonnent ce qu'il
+   y a derrière eux. Effet visuel quasi identique, charge GPU nettement réduite. */
 .background-shapes {
     position: fixed;
     inset: 0;
@@ -83,13 +87,16 @@ body {
     background:
         radial-gradient(circle at 15% 50%, #dbe3ed, transparent 25%),
         radial-gradient(circle at 85% 30%, #e0e5ea, transparent 30%);
-    filter: blur(100px);
+    filter: blur(60px);
     opacity: 0.6;
     pointer-events: none;
     transition: opacity var(--transition);
 }
 
-/* ── Nav sticky ── */
+/* ── Nav sticky ──
+   backdrop-filter réduit (16px→10px v1.8.0) + translateZ(0) pour forcer sa propre
+   couche de composition GPU : élément sticky + backdrop-filter est le combo le
+   plus coûteux à recomposer pendant le scroll (recalculé à chaque frame). */
 .site-nav {
     position: sticky;
     top: 0;
@@ -99,16 +106,16 @@ body {
     align-items: center;
     justify-content: center;
     background: rgba(240,242,245,0.82);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border);
     box-shadow: 0 1px 8px var(--shadow);
     transition: background var(--transition), border-color var(--transition), opacity var(--transition), transform var(--transition);
     opacity: 0;
-    transform: translateY(-100%);
+    transform: translateY(-100%) translateZ(0);
     pointer-events: none;
 }
-.site-nav.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.site-nav.visible { opacity: 1; transform: translateY(0) translateZ(0); pointer-events: auto; }
 .nav-links {
     display: flex;
     gap: 0.25rem;
@@ -146,19 +153,22 @@ body {
 /* ── Layout ── */
 .container { max-width: 1140px; margin: 0 auto; padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
 
-/* ── Card ── */
+/* ── Card ──
+   backdrop-filter réduit (15px→10px) et contain étendu à "paint" (v1.8.0) :
+   isole le repaint de chaque card du reste de la page pendant le scroll,
+   au lieu de laisser le navigateur recomposer l'ensemble à chaque frame. */
 .card {
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 3rem;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 8px 32px 0 var(--shadow);
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.6s ease-out, transform var(--transition), box-shadow var(--transition), background-color var(--transition), border-color var(--transition);
-    contain: layout style;
+    contain: layout style paint;
 }
 .card.hero { opacity: 1; transform: none; }
 .card.is-visible { opacity: 1; transform: translateY(0); }
@@ -256,6 +266,13 @@ body {
 
 /* ── CTA ── */
 .cta-buttons-group { display: flex; gap: 1.5rem; margin-top: 2rem; flex-wrap: wrap; }
+.cta-buttons-group.centered { justify-content: center; }
+
+/* ── Page 404 (aucun style inline — requis par la CSP style-src 'self') ── */
+.error-page { text-align: center; }
+.error-code { font-size: 4rem; margin-bottom: 0.5rem; color: var(--accent); }
+.error-title { border: none; display: block; }
+.error-text { margin-top: 1rem; margin-bottom: 0; }
 .cta-button {
     display: inline-flex;
     align-items: center;
@@ -277,8 +294,7 @@ body {
 .cta-button.secondary { background-color: transparent; border-color: var(--accent); color: var(--accent); }
 .cta-button.secondary:hover { background-color: var(--accent); color: #fff; }
 .cta-button:focus-visible,
-.contact-links a:focus-visible,
-.reference-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.contact-links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .cta-button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
 /* ── Compétences ── */
@@ -301,12 +317,6 @@ body {
 }
 .skill-tag:hover { background-color: var(--accent-hover); color: #fff; }
 .skill-tag[data-tooltip] { cursor: help; }
-.skill-tag[data-tooltip]:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-    background-color: var(--accent-hover);
-    color: #fff;
-}
 /* Couleurs fixes (non liées à --accent) : le tooltip doit rester lisible
    quel que soit le thème, contrairement à --accent qui s'inverse en dark mode
    et rendait le texte blanc sur fond blanc. */
@@ -329,8 +339,7 @@ body {
     transition: opacity 0.15s ease, transform 0.15s ease;
     z-index: 10;
 }
-.skill-tag[data-tooltip]:hover::after,
-.skill-tag[data-tooltip]:focus-visible::after {
+.skill-tag[data-tooltip]:hover::after {
     opacity: 1;
     transform: translateX(-50%) scale(1);
 }
@@ -395,31 +404,6 @@ body {
 }
 .timeline-link:hover { text-decoration: underline; }
 
-/* ── Références (vue résumée — cachée si timeline active) ── */
-.references-container { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 2rem; }
-.reference-item {
-    display: grid;
-    grid-template-columns: 160px 1fr;
-    gap: 2.5rem;
-    align-items: center;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--border);
-}
-.reference-item:last-child { border-bottom: none; padding-bottom: 0; }
-.reference-context { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; }
-.context-entity { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
-.entity-label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-.entity-logo { height: 32px; width: auto; max-width: 120px; object-fit: contain; }
-.entity-logo-svg { height: 32px; width: 120px; display: flex; align-items: center; justify-content: center; }
-.entity-logo-svg svg { height: 32px; width: auto; max-width: 120px; }
-.context-separator { width: 1px; height: 20px; background-color: var(--border); margin: 0.5rem 0; }
-.reference-content h3 { font-size: 1.4rem; margin-bottom: 0.5rem; color: var(--accent); line-height: 1.3; }
-.reference-content p { font-size: 1rem; margin-bottom: 0.75rem; }
-.reference-link { display: inline-block; margin-top: 0.75rem; font-size: 0.9rem; font-weight: 600; color: var(--accent); text-decoration: none; }
-.reference-link:hover { text-decoration: underline; }
-.reference-link .arrow { display: inline-block; margin-left: 5px; transition: transform var(--transition); }
-.reference-link:hover .arrow { transform: translateX(5px); }
-
 /* ── Contact ── */
 .contact-links { display: flex; gap: 1.5rem; margin-top: 2rem; margin-bottom: 2rem; flex-wrap: wrap; }
 .contact-links a {
@@ -478,6 +462,22 @@ form label {
     left: -9999px;
     opacity: 0;
     pointer-events: none;
+}
+/* Contenu réservé aux lecteurs d'écran (pattern sr-only standard) — reste dans le flux
+   normal du document, contrairement à .visually-hidden-field, pour une compatibilité
+   maximale avec les technologies d'assistance. Utilisé pour exposer le contenu des
+   tooltips CSS ::after (invisibles pour les lecteurs d'écran) sans rendre focusable
+   un élément role="listitem" (anti-pattern ARIA détecté par l'audit d'accessibilité). */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 form input, form textarea {
     background: rgba(255,255,255,0.5);
@@ -586,10 +586,6 @@ footer { text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.9rem;
     .cta-buttons-group { justify-content: center; }
     .hero-stats { justify-content: center; }
     .availability-badge { margin: 0 auto 1.5rem; }
-    .reference-item { grid-template-columns: 1fr; text-align: center; gap: 1.5rem; }
-    .reference-content { text-align: left; }
-    .reference-context { flex-direction: row; justify-content: center; gap: 1.5rem; }
-    .context-separator { width: 1px; height: 40px; margin: 0; }
     .about-grid { grid-template-columns: 1fr; gap: 2rem; }
 }
 @media (max-width: 768px) {
@@ -597,18 +593,6 @@ footer { text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.9rem;
     .card { padding: 1.5rem; }
     .cta-buttons-group { flex-direction: column; }
     .back-to-top { display: none; }
-    .reference-link {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--accent);
-        color: #fff;
-        padding: 10px 20px;
-        border-radius: 8px;
-        font-weight: 600;
-        text-decoration: none;
-    }
-    .reference-link .arrow { display: none; }
     .skill-tag[data-tooltip]::after { display: none; }
 }
 
@@ -626,6 +610,16 @@ body.dark-mode {
 }
 body.dark-mode .background-shapes { opacity: 0.08; }
 body.dark-mode .site-nav { background: rgba(26,32,44,0.88); }
+/* Fix critique : background: var(--accent) devient blanc en dark mode ; sans cet override,
+   le texte color:#fff hérité reste blanc sur fond blanc → lien illisible au survol/actif/focus.
+   Couleurs explicites (pas de var()) pour rendre ce bloc autonome et impossible à casser
+   par un changement futur de --accent — vérifié par un test automatique (tests.html). */
+body.dark-mode .nav-links a:hover,
+body.dark-mode .nav-links a.active,
+body.dark-mode .nav-links a:focus-visible {
+    background: #ffffff;
+    color: #1a202c;
+}
 body.dark-mode .skill-tag,
 body.dark-mode .contact-links a { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.15); }
 body.dark-mode .cta-button.secondary { color: #fff; border-color: #fff; }

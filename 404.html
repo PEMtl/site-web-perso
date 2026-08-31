@@ -8,16 +8,18 @@
     <meta name="robots" content="noindex, follow">
     <meta name="theme-color" content="#1a202c">
     <link rel="icon" href="/images/favicon-32x32.png" sizes="32x32" type="image/png">
+    <!-- Pas de SRI ici volontairement : une 404 doit toujours s'afficher,
+         même si le hash de style.css est temporairement désynchronisé ailleurs. -->
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <div class="background-shapes" aria-hidden="true"></div>
 <main class="container">
-    <section class="card content-section" style="text-align:center;">
-        <h1 style="font-size:4rem;margin-bottom:0.5rem;">404</h1>
-        <h2 style="border:none;display:block;">Page introuvable</h2>
-        <p style="margin-top:1rem;">Cette page n'existe pas ou a été déplacée.</p>
-        <div class="cta-buttons-group" style="justify-content:center;">
+    <section class="card content-section error-page">
+        <h1 class="error-code">404</h1>
+        <h2 class="error-title">Page introuvable</h2>
+        <p class="error-text">Cette page n'existe pas ou a été déplacée.</p>
+        <div class="cta-buttons-group centered">
             <a href="/" class="cta-button">🏠 Retour à l'accueil</a>
             <a href="/#contact" class="cta-button secondary">📨 Me contacter</a>
         </div>
