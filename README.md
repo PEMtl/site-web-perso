@@ -3,7 +3,7 @@
 Site vitrine one-page de Pierre-Etienne Monreal, Consultant Product Owner Senior basé à Montpellier.
 
 **Live** : [https://pe-monreal.com](https://pe-monreal.com)  
-**Version** : 2.0.1  
+**Version** : 2.2.0  
 **Stack** : HTML5 · CSS3 · JS vanilla · Formspree · Service Worker · OVH
 
 ---
@@ -15,6 +15,45 @@ Site vitrine one-page de Pierre-Etienne Monreal, Consultant Product Owner Senior
 3. **Vérifie l'orthographe exacte du domaine avant de tester quoi que ce soit** : `pe-monreal.com` (avec un tiret). `pe.monreal.com` (point, sans tiret) est un domaine tiers totalement différent.
 4. **Régénérer les hash SRI si `style.css` ou `script.js` ont changé** (voir Sécurité). Un hash désynchronisé bloque silencieusement le chargement du fichier.
 5. **Ne jamais déployer fichier par fichier** — toujours l'intégralité du repo, pour éviter tout état intermédiaire incohérent.
+
+---
+
+## 🔒 HTTPS forcé + blocage des dotfiles (v2.2.0)
+
+**Question : le HTTP redirige-t-il systématiquement vers HTTPS ?**
+
+Avant v2.1.0 : non. L'ancienne règle ne testait que le sous-domaine (`www` ou non), jamais le protocole — `http://pe-monreal.com/` (domaine nu, HTTP) n'était **jamais** redirigé. Corrigé avec une règle combinée en un seul saut :
+
+```apache
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} ^www\. [NC]
+RewriteRule ^ https://pe-monreal.com%{REQUEST_URI} [R=301,L]
+```
+
+Vérification après déploiement :
+```bash
+curl -I http://pe-monreal.com/          # doit renvoyer 301 vers https://pe-monreal.com/
+curl -I http://www.pe-monreal.com/      # doit renvoyer 301 vers https://pe-monreal.com/
+curl -I https://www.pe-monreal.com/     # doit renvoyer 301 vers https://pe-monreal.com/
+```
+
+**Question : `.git` et `.gitattributes` doivent-ils être sur le serveur ?**
+
+Non, jamais pour `.git/` — c'est un vrai risque de sécurité. Si ce dossier était exposé publiquement, tout l'historique du dépôt (structure, anciens commits, éventuels secrets jamais nettoyés) deviendrait téléchargeable via des outils automatisés qui scannent `/.git/config` ou `/.git/HEAD` en masse sur tout le web. `.gitattributes` n'est pas dangereux en soi (fichier de config Git sans effet côté serveur), mais n'a aucune utilité une fois déployé — à garder uniquement en local/dans le dépôt Git.
+
+**Filet de sécurité ajouté** (ne dispense pas de simplement ne jamais les uploader) : toute requête vers un fichier ou dossier commençant par un point renvoie désormais un 403, sauf `/.well-known/` qui doit rester public :
+
+```apache
+RewriteCond %{REQUEST_URI} !^/\.well-known/
+RewriteRule "(^|/)\." - [F]
+```
+
+Vérification après déploiement :
+```bash
+curl -I https://pe-monreal.com/.git/config       # doit renvoyer 403 Forbidden
+curl -I https://pe-monreal.com/.gitattributes    # doit renvoyer 403 Forbidden
+curl -I https://pe-monreal.com/.well-known/security.txt  # doit renvoyer 200 OK
+```
 
 ---
 
@@ -85,6 +124,27 @@ curl -I https://pe-monreal.com/url-qui-nexiste-pas
 ```
 
 ---
+
+## 🔒 HTTP → HTTPS : faille trouvée et corrigée (v2.1.0)
+
+**Question posée** : le SSL est-il OK, le HTTP redirige-t-il toujours vers HTTPS ?
+
+**Réponse avant fix : non, pas dans tous les cas.** L'ancien `.htaccess` ne contenait qu'une redirection `www → non-www`, qui ciblait `https://` en dur — donc `http://www.pe-monreal.com` finissait bien en HTTPS non-www par effet de bord. **Mais `http://pe-monreal.com` (sans www, en clair) n'était intercepté par aucune règle** : la condition ne matchait que les hosts commençant par `www.`. Le header HSTS présent par ailleurs ne force rien non plus — il ne s'applique qu'une fois qu'un navigateur a déjà visité le site en HTTPS au moins une fois (`env=HTTPS`), donc inopérant sur un tout premier accès en HTTP.
+
+**Corrigé** : une règle combinée unique (`RewriteCond %{HTTPS} off [OR] RewriteCond %{HTTP_HOST} ^www\.`) redirige en un seul saut HTTP 301 vers `https://pe-monreal.com`, quel que soit le point d'entrée (HTTP nu, HTTPS www, HTTP www). Réduit aussi le nombre de redirections en cascade par rapport à une version à deux règles séparées (meilleur pour le SEO et la performance).
+
+**Non testable automatiquement** : `tests.html` ne peut pas vérifier ce point de façon fiable — un test en JS depuis une page chargée en HTTPS ne peut pas taper le domaine en HTTP en clair (bloqué comme contenu mixte par le navigateur). Seule une vérification manuelle externe fait foi :
+
+```bash
+curl -I http://pe-monreal.com/          # doit renvoyer 301 → https://pe-monreal.com/
+curl -I http://www.pe-monreal.com/      # doit renvoyer 301 → https://pe-monreal.com/
+curl -I https://www.pe-monreal.com/     # doit renvoyer 301 → https://pe-monreal.com/
+curl -I https://pe-monreal.com/         # doit renvoyer 200 directement, aucune redirection
+```
+
+**⚠️ Point de vigilance à tester en premier après déploiement** : sur certains hébergements avec un proxy/CDN en amont d'Apache, `%{HTTPS}` peut rester bloqué à "off" en interne même quand le visiteur est bien en HTTPS, ce qui provoquerait une **boucle de redirection infinie**. OVH mutualisé classique termine généralement le SSL directement au niveau Apache (pas de proxy intermédiaire), donc ce risque est faible ici, mais teste bien la commande `curl -I https://pe-monreal.com/` en premier après déploiement pour t'assurer qu'elle renvoie du 200 et pas une boucle de 301.
+
+**Régression CRLF constatée à nouveau** : le fichier `.htaccess` que tu m'as fourni pour ce diagnostic était de nouveau intégralement en CRLF, malgré le `.gitattributes` du repo. Si tu éditais/exportais ce fichier par un autre chemin que `git checkout` (édition directe dans un éditeur Windows, copier-coller depuis un outil qui convertit les retours à la ligne), le `.gitattributes` ne peut rien y faire — il n'agit qu'au moment du `checkout`/`commit` Git. Le fichier livré ici est de nouveau en LF propre.
 
 ## 🎯 404.html page blanche — bug trouvé et corrigé (v2.0.1)
 
@@ -193,4 +253,4 @@ npx serve .
 
 ---
 
-*v2.0.1 · Septembre 2026*
+*v2.2.0 · Septembre 2026*
