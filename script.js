@@ -6,7 +6,7 @@ if (mainCss) mainCss.media = 'all';
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  const VERSION = '2.2.0';
+  const VERSION = '2.3.0';
 
   // ── Scroll animation cards ──
   const cards = document.querySelectorAll('.card:not(.hero)');

@@ -3,18 +3,56 @@
 Site vitrine one-page de Pierre-Etienne Monreal, Consultant Product Owner Senior basé à Montpellier.
 
 **Live** : [https://pe-monreal.com](https://pe-monreal.com)  
-**Version** : 2.2.0  
+**Version** : 2.4.2 (documentation)  
 **Stack** : HTML5 · CSS3 · JS vanilla · Formspree · Service Worker · OVH
 
 ---
 
 ## ⚠️ AVANT DE DÉPLOYER — lire impérativement
 
-1. **`.htaccess` est un fichier caché (dotfile).** La plupart des clients FTP (FileZilla…) le masquent par défaut. Active "Afficher les fichiers cachés" avant l'upload, sinon aucune règle de sécurité, cache ou 404 ne s'applique.
-2. **Tous les fichiers texte doivent être en fins de ligne LF (Unix), jamais CRLF (Windows).** Un `.gitattributes` force ça dans ce repo, mais reste vigilant après tout export manuel (FTP, copier-coller, éditeur Windows). Une archive antérieure de ce projet était intégralement en CRLF sans que personne ne s'en aperçoive — cause probable de plusieurs bugs "fantômes" observés.
+1. **`.htaccess` est un fichier caché (dotfile).** Active "Afficher les fichiers cachés" en permanence dans FileZilla (`Serveur → Forcer l'affichage des fichiers cachés`) — sinon aucune règle de sécurité, cache ou 404 ne s'applique.
+2. **Tous les fichiers texte doivent être en fins de ligne LF (Unix), jamais CRLF (Windows).** Ce projet ne passe pas par Git pour le déploiement (upload manuel FileZilla) — `.gitattributes` n'a donc **aucun effet** ici, il ne protège que le dépôt Git local. La vraie protection est le mode de transfert FileZilla (voir workflow ci-dessous) + l'éditeur configuré en LF.
 3. **Vérifie l'orthographe exacte du domaine avant de tester quoi que ce soit** : `pe-monreal.com` (avec un tiret). `pe.monreal.com` (point, sans tiret) est un domaine tiers totalement différent.
 4. **Régénérer les hash SRI si `style.css` ou `script.js` ont changé** (voir Sécurité). Un hash désynchronisé bloque silencieusement le chargement du fichier.
-5. **Ne jamais déployer fichier par fichier** — toujours l'intégralité du repo, pour éviter tout état intermédiaire incohérent.
+5. **Ne jamais déployer fichier par fichier** — toujours l'intégralité du dossier modifié, pour éviter tout état intermédiaire incohérent.
+
+---
+
+## 🔁 Workflow de déploiement recommandé (OVH + FileZilla + GitHub Desktop, sans CI/CD)
+
+Ce projet n'a pas de déploiement automatisé — tout est manuel entre la machine locale et le serveur OVH. Ce workflow garde les mêmes outils mais réduit fortement le risque d'erreur (CRLF, fichier oublié, contenu divergent) constaté à plusieurs reprises sur ce projet.
+
+### Réglages à faire une seule fois
+
+| Où | Réglage |
+|---|---|
+| FileZilla | `Édition → Paramètres → Transferts → Type de transfert de fichier` → **Binaire** (jamais "Auto") |
+| FileZilla | `Serveur → Forcer l'affichage des fichiers cachés` → activé en permanence |
+| Éditeur (VS Code) | `"files.eol": "\n"` dans les settings globaux, ou bouton `CRLF`→`LF` en bas à droite |
+| Git (via terminal ou GitHub Desktop) | `git config --global core.autocrlf false` — laisse `.gitattributes` seul maître des fins de ligne, sans double conversion |
+
+### Cycle de travail à chaque modification
+
+1. Modifier les fichiers en local uniquement (jamais directement sur le serveur via l'éditeur intégré de FileZilla)
+2. GitHub Desktop → commit avec un message clair
+3. Tester en local : `npx serve .` puis ouvrir `tests.html` — corriger avant de déployer si un test échoue
+4. FileZilla → uploader le dossier entier modifié (jamais un seul fichier isolé)
+5. Lancer la checklist post-déploiement ci-dessous
+6. Si tout est vert : noter la version déployée (tag GitHub Desktop ou mention dans le dernier commit, ex. "✅ déployé le 13/09")
+
+### Checklist post-déploiement (30 secondes)
+
+```bash
+curl -I https://pe-monreal.com/                            # doit renvoyer 200
+curl -I http://pe-monreal.com/                              # doit rediriger 301 vers https
+curl -I https://pe-monreal.com/url-qui-nexiste-pas           # doit renvoyer 404
+curl -I https://pe-monreal.com/.git/config                  # doit renvoyer 403
+curl -sI https://pe-monreal.com/style.css | grep -i cache-control  # doit contenir "immutable"
+```
+
+Sans terminal sous la main : ouvrir directement `https://pe-monreal.com/tests.html` sur le vrai domaine couvre une bonne partie de ces vérifications automatiquement.
+
+**✅ Vérifié en conditions réelles le 13/09** (sur le vrai domaine, pas en local) : les 5 points ci-dessus + `/.well-known/security.txt` (200, doit rester public) sont tous conformes. Détail d'architecture noté au passage : OVH place un load-balancer (headers `x-iplb-*`) et un frontal OpenResty devant Apache — ça n'affecte aucune des règles `.htaccess` de ce projet, qui restent bien appliquées par Apache en bout de chaîne.
 
 ---
 
@@ -56,6 +94,12 @@ curl -I https://pe-monreal.com/.well-known/security.txt  # doit renvoyer 200 OK
 ```
 
 ---
+
+## 📤 Pourquoi FileZilla en particulier — détail technique
+
+Complète le workflow ci-dessus : en mode de transfert "Auto" (celui qu'on vient de désactiver), FileZilla décide fichier par fichier s'il transfère en ASCII (avec conversion de fins de ligne) ou en Binaire (octets tels quels), selon une liste d'extensions reconnues. Un fichier comme `.htaccess` n'a pas d'extension classique et peut tomber hors de cette liste — comportement imprévisible, cause probable des retours récurrents de CRLF observés sur ce projet avant le passage en mode Binaire forcé.
+
+**Vérifier l'intégrité de `.htaccess` après upload** — il est bloqué en accès direct (403 par design, voir sécurité plus bas), donc pas de `curl` direct possible. Vérification indirecte : si les tests HTTP→HTTPS et blocage dotfiles ci-dessous passent, `.htaccess` a été correctement interprété par Apache (un CRLF pathologique aurait cassé ces deux mécanismes).
 
 ## 📁 Structure du projet
 
@@ -111,7 +155,7 @@ curl -I https://pe-monreal.com/.well-known/security.txt  # doit renvoyer 200 OK
 
 **Trois causes possibles identifiées, dans l'ordre de probabilité :**
 
-1. **Fins de ligne CRLF découvertes dans l'archive réelle du site** — tous les fichiers texte (`.htaccess` inclus) étaient en CRLF (Windows), sans `.gitattributes` pour l'empêcher. Cohérent avec un `core.autocrlf=true` actif côté Git sous Windows, qui reconvertit silencieusement les fichiers à chaque `checkout`. **Corrigé** : tout renormalisé en LF, `.gitattributes` ajouté pour empêcher toute régression future.
+1. **Fins de ligne CRLF découvertes dans l'archive réelle du site** — tous les fichiers texte (`.htaccess` inclus) étaient en CRLF (Windows). Le déploiement de ce projet se faisant uniquement via FileZilla (pas de Git), la cause la plus probable est le mode de transfert FileZilla — voir la section "Déploiement manuel via FileZilla" plus haut pour le détail et le correctif.
 2. **Typo de domaine** : `pe.monreal.com` (testé dans les échanges précédents) n'est pas le site — c'est un domaine tiers sans rapport. Le bon domaine est `pe-monreal.com` (avec tiret).
 3. **`.htaccess` jamais réellement déployé** — fichier caché souvent oublié par les clients FTP.
 
@@ -144,7 +188,7 @@ curl -I https://pe-monreal.com/         # doit renvoyer 200 directement, aucune 
 
 **⚠️ Point de vigilance à tester en premier après déploiement** : sur certains hébergements avec un proxy/CDN en amont d'Apache, `%{HTTPS}` peut rester bloqué à "off" en interne même quand le visiteur est bien en HTTPS, ce qui provoquerait une **boucle de redirection infinie**. OVH mutualisé classique termine généralement le SSL directement au niveau Apache (pas de proxy intermédiaire), donc ce risque est faible ici, mais teste bien la commande `curl -I https://pe-monreal.com/` en premier après déploiement pour t'assurer qu'elle renvoie du 200 et pas une boucle de 301.
 
-**Régression CRLF constatée à nouveau** : le fichier `.htaccess` que tu m'as fourni pour ce diagnostic était de nouveau intégralement en CRLF, malgré le `.gitattributes` du repo. Si tu éditais/exportais ce fichier par un autre chemin que `git checkout` (édition directe dans un éditeur Windows, copier-coller depuis un outil qui convertit les retours à la ligne), le `.gitattributes` ne peut rien y faire — il n'agit qu'au moment du `checkout`/`commit` Git. Le fichier livré ici est de nouveau en LF propre.
+**Régression CRLF constatée à nouveau** : le fichier `.htaccess` que tu m'as fourni pour ce diagnostic était de nouveau intégralement en CRLF. Cause corrigée dans la compréhension du problème : ce projet se déploie exclusivement via FileZilla, jamais via Git — le `.gitattributes` du repo n'a donc jamais pu jouer le moindre rôle protecteur ici. Voir la section "Déploiement manuel via FileZilla" pour le vrai correctif (mode de transfert Binaire). Le fichier livré ici est de nouveau en LF propre.
 
 ## 🎯 404.html page blanche — bug trouvé et corrigé (v2.0.1)
 
@@ -236,11 +280,12 @@ npx serve .
 | Symptôme | Solution |
 |---|---|
 | 404 ne s'affiche jamais | Vérifier le domaine testé (tiret !), les fins de ligne LF, et que `.htaccess` est bien déployé |
-| Fins de ligne CRLF réapparues | Vérifier `git config core.autocrlf` sur la machine de commit — `.gitattributes` doit forcer LF |
+| Fins de ligne CRLF réapparues | Ce projet se déploie via FileZilla, pas Git — `.gitattributes` n'a aucun effet. Passer le type de transfert FileZilla en "Binaire" (pas "Auto") et vérifier que l'éditeur local sauvegarde bien en LF |
 | Site ne charge plus (CSS/JS blancs) | Hash SRI désynchronisé — régénérer |
 | Nav sticky visible sur petit téléphone | Vérifier `@media (max-width: 480px) { .site-nav { display: none; } }` dans `style.css` |
 | `tests.html` : compte affiché ≠ compte réel | Vérifier que tous les libellés passent par `escapeHtml()` avant insertion DOM |
 | Tooltip illisible en dark mode | Couleurs fixes `#1a202c`/`#f7fafc`, jamais `var(--accent)` |
+| `tests.html` en ligne : FAILs concentrés sur perf/nav mobile (listener scroll, blur, contain, matchMedia) | `style.css` et/ou `script.js` en ligne sont une version antérieure — réuploader les DEUX fichiers ensemble depuis le dernier zip (jamais un seul isolé, cause de désynchronisation SRI) |
 
 ---
 
@@ -253,4 +298,4 @@ npx serve .
 
 ---
 
-*v2.2.0 · Septembre 2026*
+*v2.4.2 (doc) / v2.3.0 (code) · Septembre 2026*
