@@ -6,7 +6,7 @@ if (mainCss) mainCss.media = 'all';
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  const VERSION = '1.8.0';
+  const VERSION = '1.9.0';
 
   // ── Scroll animation cards ──
   const cards = document.querySelectorAll('.card:not(.hero)');
@@ -59,9 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const sectionsList = [...document.querySelectorAll('main section[id]')];
   const navLinks = document.querySelectorAll('.nav-links a[data-section]');
   const backToTop = document.querySelector('.back-to-top');
+  // La nav sticky est supprimée en CSS (display:none) sous 480px — inutile de calculer
+  // sa visibilité/section active à chaque scroll sur ces écrans (coût de calcul évité).
+  const navHiddenQuery = window.matchMedia('(max-width: 480px)');
 
   function updateNav() {
-    if (!nav || !heroSection) return;
+    if (!nav || !heroSection || navHiddenQuery.matches) return;
     // Toutes les LECTURES de layout d'abord (évite le reflow forcé lecture/écriture entrelacées)
     const heroBottom = heroSection.getBoundingClientRect().bottom;
     const sectionTops = sectionsList.map((sec) => sec.getBoundingClientRect().top);

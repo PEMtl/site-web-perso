@@ -1,0 +1,20 @@
+# Force LF sur tous les fichiers texte, quel que soit l'OS de la machine qui clone/commit.
+# Sans ce fichier, Git peut convertir silencieusement LF → CRLF au checkout si
+# core.autocrlf=true est actif (réglage par défaut courant sous Windows) — cause probable
+# des régressions "le fix est là mais ne marche jamais" observées sur ce projet.
+* text=auto eol=lf
+
+*.html text eol=lf
+*.css  text eol=lf
+*.js   text eol=lf
+*.json text eol=lf
+*.xml  text eol=lf
+*.txt  text eol=lf
+.htaccess text eol=lf
+.gitattributes text eol=lf
+
+# Binaires : jamais de conversion de fin de ligne
+*.png   binary
+*.webp  binary
+*.woff2 binary
+*.ico   binary

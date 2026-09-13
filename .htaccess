@@ -77,6 +77,14 @@
 #   1. Ce .htaccess est bien uploadé (voir avertissement dotfile en tête
 #      du fichier, et dans le README section "AVANT DE DÉPLOYER")
 #   2. 404.html est bien à la racine exacte du site
-#   3. Test : curl -I https://pe-monreal.com/url-qui-nexiste-pas
+#   3. TOUS les fichiers texte du repo sont en fins de ligne LF (Unix), pas
+#      CRLF (Windows). Un export/checkout Git avec core.autocrlf=true peut
+#      réintroduire du CRLF silencieusement — .gitattributes de ce repo
+#      force LF, mais vérifier après tout export manuel (FTP, copier-coller)
+#   4. Test depuis un terminal : curl -I https://pe-monreal.com/url-qui-nexiste-pas
 #      doit renvoyer "HTTP/1.1 404 Not Found"
+#   5. Vérifier l'orthographe exacte du domaine testé : le site est sur
+#      "pe-monreal.com" (AVEC un tiret) — "pe.monreal.com" (sans tiret,
+#      point à la place) est un domaine tiers totalement différent et ne
+#      renverra jamais rien lié à ce site, quel que soit l'état du serveur
 ErrorDocument 404 /404.html
