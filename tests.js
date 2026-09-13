@@ -135,7 +135,7 @@ async function run() {
       ['404.html : lien retour accueil',    () => !!doc404?.querySelector('a[href="/"]')],
       ['404.html : lien contact',           () => !!doc404?.querySelector('a[href="/#contact"]')],
       ['404.html : meta robots noindex',    () => doc404?.querySelector('meta[name="robots"]')?.getAttribute('content')?.includes('noindex')],
-      ['.htaccess : ErrorDocument 404 présent (via .well-known, indice indirect)', () => true], // .htaccess non fetchable depuis le navigateur (bloqué par Apache) — vérifier manuellement : curl -I https://pe-monreal.com/url-inexistante
+      ['404.html : .card a la classe is-visible (sinon opacity:0 permanent, page blanche — aucun script.js ici pour l\'ajouter dynamiquement)', () => doc404?.querySelector('.card')?.classList.contains('is-visible')],
     ];
     for (const [label, fn] of checks) {
       try { _record(s, label, await fn()); } catch(e) { _record(s, label, false, e.message); }

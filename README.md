@@ -3,7 +3,7 @@
 Site vitrine one-page de Pierre-Etienne Monreal, Consultant Product Owner Senior basé à Montpellier.
 
 **Live** : [https://pe-monreal.com](https://pe-monreal.com)  
-**Version** : 2.0.0  
+**Version** : 2.0.1  
 **Stack** : HTML5 · CSS3 · JS vanilla · Formspree · Service Worker · OVH
 
 ---
@@ -85,6 +85,18 @@ curl -I https://pe-monreal.com/url-qui-nexiste-pas
 ```
 
 ---
+
+## 🎯 404.html page blanche — bug trouvé et corrigé (v2.0.1)
+
+**Symptôme rapporté** : le mécanisme 404 fonctionne enfin (statut HTTP correct), mais la page s'affiche totalement blanche.
+
+**Cause réelle** : `.card` (classe réutilisée sur toutes les sections du site, y compris `404.html`) démarre à `opacity: 0` par défaut. Sur `index.html`, `script.js` bascule cette opacité à 1 via la classe `.is-visible`, ajoutée dynamiquement par un `IntersectionObserver` au scroll. **`404.html` ne charge volontairement aucun script** (pour garantir qu'elle s'affiche même si du JS casse ailleurs sur le site) — la classe `.is-visible` n'est donc jamais ajoutée, et le contenu de la card reste invisible pour toujours.
+
+**Corrigé** : ajout statique de la classe `is-visible` directement dans le HTML de `404.html` (`class="card content-section error-page is-visible"`) — aucune dépendance à du JS, la card s'affiche immédiatement.
+
+**Vérifié** : le CSS fourni par l'utilisateur pour diagnostic a été comparé ligne à ligne avec `style.css` — aucune dérive trouvée, confirmant que le problème n'était pas une désynchronisation CSS mais bien cette classe manquante.
+
+Un test placebo qui ne testait rien (`() => true`) a été retiré de la suite "Page 404" dans `tests.js`, remplacé par un vrai test qui vérifie la présence de `.is-visible` sur `.card` — protège contre toute régression future de ce bug précis.
 
 ## 🚨 `tests.html` bloqué en prod — bug CSP critique trouvé (v2.0.0)
 
@@ -181,4 +193,4 @@ npx serve .
 
 ---
 
-*v2.0.0 · Septembre 2026*
+*v2.0.1 · Septembre 2026*
