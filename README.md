@@ -3,7 +3,7 @@
 Site vitrine one-page de Pierre-Etienne Monreal, Consultant Product Owner Senior basé à Montpellier.
 
 **Live** : [https://pe-monreal.com](https://pe-monreal.com)  
-**Version** : 1.9.0  
+**Version** : 2.0.0  
 **Stack** : HTML5 · CSS3 · JS vanilla · Formspree · Service Worker · OVH
 
 ---
@@ -86,6 +86,21 @@ curl -I https://pe-monreal.com/url-qui-nexiste-pas
 
 ---
 
+## 🚨 `tests.html` bloqué en prod — bug CSP critique trouvé (v2.0.0)
+
+**Symptôme rapporté** : `tests.html` reste bloqué indéfiniment sur "⏳ Chargement..." sur le vrai domaine, alors qu'il fonctionnait dans mes tests locaux.
+
+**Cause réelle** : `tests.html` contenait son code JS et son CSS directement en **inline** (`<script>...</script>` et `<style>...</style>` dans le fichier). Or la CSP du site (`script-src 'self'`, `style-src 'self'`, appliquée à **toutes** les pages via `.htaccess`) interdit tout script/style inline sans `unsafe-inline`, nonce ou hash. Sur le vrai domaine, le navigateur bloque silencieusement ce code — aucune erreur visible sauf dans la console développeur — et la page reste figée sur son état HTML statique initial.
+
+**Pourquoi mes tests précédents ne l'ont pas détecté** : je testais via un serveur Python local basique qui n'envoie aucun header CSP, donc le script inline s'exécutait sans problème dans cet environnement — faux positif. Erreur de méthode de ma part.
+
+**Corrigé** :
+- Code JS extrait dans `tests.js`, chargé via `<script src="/tests.js">`
+- CSS extrait dans `tests.css`, chargé via `<link rel="stylesheet" href="/tests.css">`
+- SRI ajoutée sur les deux, cohérent avec le reste du site
+- Nouveaux tests ajoutés qui vérifient qu'aucun script/style inline ne revient jamais dans `tests.html`
+- Audit exhaustif du reste du site : le seul autre `<script>` sans `src=` est le bloc JSON-LD (`application/ld+json`) dans `index.html`, qui n'est pas exécutable et est explicitement exempté de `script-src` par tous les navigateurs — aucune action requise
+
 ## 🧪 `tests.html` — bug de rendu trouvé et corrigé (v1.9.0)
 
 **Doute exprimé** : "pas sûr qu'il fonctionne".
@@ -166,4 +181,4 @@ npx serve .
 
 ---
 
-*v1.9.0 · Septembre 2026*
+*v2.0.0 · Septembre 2026*

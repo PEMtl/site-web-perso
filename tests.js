@@ -1,0 +1,308 @@
+const suites = [];
+let totalPass = 0, totalFail = 0;
+
+function suite(name, fn) { suites.push({ name, fn, tests: [] }); }
+function _record(s, label, passed, detail = '') {
+  s.tests.push({ label, passed, detail });
+  if (passed) totalPass++; else totalFail++;
+}
+// Échappe les caractères HTML avant insertion via innerHTML. Sans ça, un libellé de
+// test contenant des chevrons (ex. "<html lang=\"fr\">", "pas de <style> inline")
+// est interprété comme du VRAI HTML par le navigateur au lieu de s'afficher comme
+// texte — une balise <style> ouverte non refermée avale silencieusement tout le
+// contenu suivant, cachant visuellement des dizaines de tests pourtant exécutés
+// et réussis (bug détecté : suite "Structure HTML" n'affichait que 2 tests sur 27).
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+async function run() {
+  let doc, cssText, jsText, testsHtmlText;
+  try {
+    const [htmlRes, cssRes, jsRes, testsHtmlRes] = await Promise.all([
+      fetch('/index.html'),
+      fetch('/style.css'),
+      fetch('/script.js'),
+      fetch('/tests.html'),
+    ]);
+    const htmlText = await htmlRes.text();
+    cssText = await cssRes.text();
+    jsText = await jsRes.text();
+    testsHtmlText = await testsHtmlRes.text();
+    doc = new DOMParser().parseFromString(htmlText, 'text/html');
+  } catch (err) {
+    document.getElementById('summary').textContent = `⚠️ Impossible de charger les fichiers (${err.message}) — sers le dossier via un serveur local.`;
+    document.getElementById('summary').className = 'error';
+    return;
+  }
+
+  // ── 1. Structure HTML ──
+  suite('Structure HTML', s => {
+    const checks = [
+      ['<html lang="fr">',                () => doc.documentElement.lang === 'fr'],
+      ['<title> non vide',                () => doc.title.length > 0],
+      ['meta description',                () => !!doc.querySelector('meta[name="description"]')],
+      ['meta og:title',                   () => !!doc.querySelector('meta[property="og:title"]')],
+      ['meta twitter:card',               () => !!doc.querySelector('meta[name="twitter:card"]')],
+      ['link canonical',                  () => !!doc.querySelector('link[rel="canonical"]')],
+      ['canonical en non-www',            () => doc.querySelector('link[rel="canonical"]')?.getAttribute('href') === 'https://pe-monreal.com/'],
+      ['og:url en non-www',               () => doc.querySelector('meta[property="og:url"]')?.getAttribute('content') === 'https://pe-monreal.com/'],
+      ['meta theme-color présente',       () => !!doc.querySelector('meta[name="theme-color"]')],
+      ['link manifest',                   () => !!doc.querySelector('link[rel="manifest"]')],
+      ['JSON-LD contient Person',         () => doc.querySelector('script[type="application/ld+json"]')?.textContent.includes('"Person"')],
+      ['JSON-LD contient WebSite',        () => doc.querySelector('script[type="application/ld+json"]')?.textContent.includes('"WebSite"')],
+      ['JSON-LD contient ProfilePage',    () => doc.querySelector('script[type="application/ld+json"]')?.textContent.includes('"ProfilePage"')],
+      ['skip-link présent',               () => !!doc.querySelector('.skip-link')],
+      ['skip-link href=#main-content',    () => doc.querySelector('.skip-link')?.getAttribute('href') === '#main-content'],
+      ['nav.site-nav présente',           () => !!doc.querySelector('.site-nav')],
+      ['#main-content présent',           () => !!doc.getElementById('main-content')],
+      ['section #accueil',                () => !!doc.getElementById('accueil')],
+      ['section #a-propos',               () => !!doc.getElementById('a-propos')],
+      ['section #competences',            () => !!doc.getElementById('competences')],
+      ['section #references',             () => !!doc.getElementById('references')],
+      ['section #contact',                () => !!doc.getElementById('contact')],
+      ['footer présent',                  () => !!doc.querySelector('footer')],
+      ['#copyright-year présent',         () => !!doc.getElementById('copyright-year')],
+      ['#theme-toggle présent',           () => !!doc.getElementById('theme-toggle')],
+      ['style.css en <link>',             () => !!doc.querySelector('link[href*="style.css"]')],
+      ['pas de <style> inline dans head', () => doc.querySelectorAll('head style').length === 0],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
+
+  // ── 2. Hero ──
+  suite('Hero', s => {
+    const checks = [
+      ['.availability-badge présent',         () => !!doc.querySelector('.availability-badge')],
+      ['.availability-badge role=status',     () => doc.querySelector('.availability-badge')?.getAttribute('role') === 'status'],
+      ['.badge-dot présent',                  () => !!doc.querySelector('.badge-dot')],
+      ['.hero-stats présent',                 () => !!doc.querySelector('.hero-stats')],
+      ['3 stat-number avec data-target',      () => doc.querySelectorAll('.stat-number[data-target]').length === 3],
+      ['stat 10 ans exp data-target=10',      () => !!doc.querySelector('.stat-number[data-target="10"]')],
+      ['stat 4 grands comptes',               () => !!doc.querySelector('.stat-number[data-target="4"]')],
+      ['stat 30+ apps',                       () => !!doc.querySelector('.stat-number[data-target="30"]')],
+      ['photo width=250',                     () => doc.querySelector('.hero-photo img')?.getAttribute('width') === '250'],
+      ['photo alt non vide',                  () => (doc.querySelector('.hero-photo img')?.getAttribute('alt') || '').length > 0],
+      ['photo fetchpriority=high',            () => doc.querySelector('.hero-photo img')?.getAttribute('fetchpriority') === 'high'],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
+
+  // ── 3. Timeline ──
+  suite('Timeline carrière', s => {
+    const checks = [
+      ['.timeline présente',              () => !!doc.querySelector('.timeline')],
+      ['5 timeline-item',                 () => doc.querySelectorAll('.timeline-item').length === 5],
+      ['chaque item a .timeline-year',    () => doc.querySelectorAll('.timeline-item .timeline-year').length === 5],
+      ['chaque item a un h3',             () => doc.querySelectorAll('.timeline-item h3').length === 5],
+      ['chaque item a .timeline-context', () => doc.querySelectorAll('.timeline-item .timeline-context').length === 5],
+      ['chaque item a .timeline-link',    () => doc.querySelectorAll('.timeline-item .timeline-link').length === 5],
+      ['timeline role=list',              () => doc.querySelector('.timeline')?.getAttribute('role') === 'list'],
+      ['1er item = poste actuel (2025)',  () => doc.querySelector('.timeline-item .timeline-year')?.textContent.includes('2025')],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
+
+  // ── 4. Sécurité & SEO ──
+  suite('Sécurité & SEO', s => {
+    const checks = [
+      ['testimonials retirés (placeholder)', () => doc.querySelectorAll('.testimonial').length === 0],
+      ['honeypot sans style inline',         () => !doc.querySelector('input[name="_gotcha"]')?.hasAttribute('style')],
+      ['honeypot via classe CSS',            () => doc.querySelector('input[name="_gotcha"]')?.classList.contains('visually-hidden-field')],
+      ['aucune URL www. dans le HTML',       () => !doc.documentElement.outerHTML.includes('www.pe-monreal.com')],
+      ['SRI sur style.css (integrity)',      () => !!doc.querySelector('link[href*="style.css"][integrity]')],
+      ['SRI sur script.js (integrity)',      () => !!doc.querySelector('script[src*="script.js"][integrity]')],
+      ['crossorigin présent avec integrity', () => doc.querySelector('link[href*="style.css"]')?.getAttribute('crossorigin') === 'anonymous'
+                                                  && doc.querySelector('script[src*="script.js"]')?.getAttribute('crossorigin') === 'anonymous'],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
+
+  // ── 11. Page 404 ──
+  suite('Page 404', async s => {
+    let doc404 = null, notFoundStatus = null;
+    try {
+      const r = await fetch('/404.html');
+      notFoundStatus = r.status;
+      doc404 = new DOMParser().parseFromString(await r.text(), 'text/html');
+    } catch {}
+    const checks = [
+      ['404.html accessible',               () => notFoundStatus === 200],
+      ['404.html : zéro style inline',      () => doc404 && [...doc404.querySelectorAll('*')].every(el => !el.hasAttribute('style'))],
+      ['404.html : lien retour accueil',    () => !!doc404?.querySelector('a[href="/"]')],
+      ['404.html : lien contact',           () => !!doc404?.querySelector('a[href="/#contact"]')],
+      ['404.html : meta robots noindex',    () => doc404?.querySelector('meta[name="robots"]')?.getAttribute('content')?.includes('noindex')],
+      ['.htaccess : ErrorDocument 404 présent (via .well-known, indice indirect)', () => true], // .htaccess non fetchable depuis le navigateur (bloqué par Apache) — vérifier manuellement : curl -I https://pe-monreal.com/url-inexistante
+    ];
+    for (const [label, fn] of checks) {
+      try { _record(s, label, await fn()); } catch(e) { _record(s, label, false, e.message); }
+    }
+  });
+
+  // ── 5. Tooltips skill tags ──
+  suite('Tooltips skill tags', s => {
+    const tagsWithTooltip = [...doc.querySelectorAll('.skill-tag[data-tooltip]')];
+    const checks = [
+      ['Au moins 5 tags avec data-tooltip', () => tagsWithTooltip.length >= 5],
+      ['data-tooltip non vide sur chacun',  () => tagsWithTooltip.every(t => (t.getAttribute('data-tooltip') || '').length > 0)],
+      ['PSPO1 a un tooltip',                () => tagsWithTooltip.some(t => t.textContent.includes('PSPO'))],
+      ['tooltip pas de tabindex (anti-pattern ARIA sur role=listitem)', () => tagsWithTooltip.every(t => !t.hasAttribute('tabindex'))],
+      ['tooltip exposé aux lecteurs d\'écran (.sr-only)', () => tagsWithTooltip.every(t => !!t.querySelector('.sr-only'))],
+      ['tooltip CSS : couleurs fixes',      () => cssText.includes("background: #1a202c") && cssText.includes("color: #f7fafc")],
+      ['tooltip CSS : ne dépend plus de --accent', () => {
+        const m = cssText.match(/\.skill-tag\[data-tooltip\]::after\s*{[^}]*}/);
+        return !!m && !m[0].includes('var(--accent)');
+      }],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
+
+  // ── 6. Formulaire ──
+  suite('Formulaire contact', s => {
+    const form = doc.getElementById('contact-form');
+    const checks = [
+      ['#contact-form présent',           () => !!form],
+      ['action Formspree',                () => (form?.getAttribute('action') || '').includes('formspree.io')],
+      ['method POST',                     () => (form?.getAttribute('method') || '').toLowerCase() === 'post'],
+      ['honeypot aria-hidden',            () => doc.querySelector('input[name="_gotcha"]')?.getAttribute('aria-hidden') === 'true'],
+      ['champ name présent',              () => !!doc.querySelector('input[name="name"]')],
+      ['champ email type=email',          () => doc.querySelector('input[name="email"]')?.getAttribute('type') === 'email'],
+      ['champ message minlength>=10',     () => parseInt(doc.querySelector('textarea[name="message"]')?.getAttribute('minlength')) >= 10],
+      ['label visible pour name (WCAG)',  () => !!doc.querySelector('label[for="contact-name"]')],
+      ['label visible pour email (WCAG)', () => !!doc.querySelector('label[for="contact-email"]')],
+      ['label visible pour message',      () => !!doc.querySelector('label[for="contact-message"]')],
+      ['input name lié à son label',      () => doc.getElementById('contact-name')?.id === doc.querySelector('label[for="contact-name"]')?.getAttribute('for')],
+      ['#form-status role=alert',         () => doc.getElementById('form-status')?.getAttribute('role') === 'alert'],
+      ['#form-status aria-live=polite',   () => doc.getElementById('form-status')?.getAttribute('aria-live') === 'polite'],
+      ['bouton submit présent',           () => !!doc.querySelector('#contact-form button[type="submit"]')],
+      ['mock local présent dans JS',      () => jsText.includes('isLocal') && jsText.includes('localhost')],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
+
+  // ── 7. Accessibilité ──
+  suite('Accessibilité', s => {
+    const checks = [
+      ['nav aria-label',                  () => !!doc.querySelector('nav[aria-label]')],
+      ['#copy-email-btn aria-label',      () => !!doc.querySelector('#copy-email-btn[aria-label]')],
+      ['#theme-toggle aria-label',        () => !!doc.querySelector('#theme-toggle[aria-label]')],
+      ['.back-to-top aria-label',         () => !!doc.querySelector('.back-to-top[aria-label]')],
+      ['tous les <img> ont un alt',       () => [...doc.querySelectorAll('img')].every(i => i.hasAttribute('alt'))],
+      ['skills-grid role=list',           () => doc.querySelectorAll('.skills-grid[role="list"]').length > 0],
+      ['.background-shapes aria-hidden',  () => doc.querySelector('.background-shapes')?.getAttribute('aria-hidden') === 'true'],
+      ['availability-badge role=status',  () => doc.querySelector('.availability-badge')?.getAttribute('role') === 'status'],
+      ['timeline role=list',              () => doc.querySelector('.timeline')?.getAttribute('role') === 'list'],
+      ['email en mailto:',                () => !!doc.querySelector('a[href^="mailto:"]')],
+      ['nav-links focus-visible en CSS',  () => cssText.includes('.nav-links a:focus-visible')],
+      ['nav sticky lisible en dark mode (hover/active)', () => {
+        const m = cssText.match(/body\.dark-mode \.nav-links a:hover,[\s\S]*?{([\s\S]*?)}/);
+        return !!m && m[1].includes('color: #1a202c') && m[1].includes('background: #ffffff');
+      }],
+      ['copy-btn focus-visible en CSS',   () => cssText.includes('.copy-btn:focus-visible')],
+      ['theme-toggle focus-visible CSS',  () => cssText.includes('.theme-toggle:focus-visible')],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
+
+  // ── 8. Performance & SEO ──
+  suite('Performance & SEO', s => {
+    const checks = [
+      ['preload photo profil',            () => !!doc.querySelector('link[rel="preload"][as="image"]')],
+      ['preload font 300',                () => !!doc.querySelector('link[rel="preload"][href*="300"]')],
+      ['preload font regular',            () => !!doc.querySelector('link[rel="preload"][href*="regular"]')],
+      ['preload font 600',                () => !!doc.querySelector('link[rel="preload"][href*="600"]')],
+      ['fetchpriority=high sur photo',    () => doc.querySelector('.hero-photo img')?.getAttribute('fetchpriority') === 'high'],
+      ['loading=eager sur photo',         () => doc.querySelector('.hero-photo img')?.getAttribute('loading') === 'eager'],
+      ['apple-touch-icon 180x180',        () => (doc.querySelector('link[rel="apple-touch-icon"]')?.getAttribute('href') || '').includes('apple-touch-icon')],
+      ['logos loading=lazy',              () => { const l = [...doc.querySelectorAll('.entity-logo[loading]')]; return l.length === 0 || l.every(e => e.getAttribute('loading') === 'lazy'); }],
+      ['CSS non bloquant (media=print + swap JS)', () => doc.getElementById('main-css')?.getAttribute('media') === 'print'],
+      ['noscript fallback CSS présent',   () => !!doc.querySelector('noscript link[rel="stylesheet"]')],
+      ['script.js bascule #main-css en media=all', () => jsText.includes("mainCss.media = 'all'")],
+      ['pas de reflow forcé dans updateNav (lectures groupées)', () => {
+        const m = jsText.match(/function updateNav\(\)\s*{([\s\S]*?)\n  }/);
+        if (!m) return false;
+        const body = m[1];
+        const lastRead = body.lastIndexOf('getBoundingClientRect');
+        const firstWrite = body.indexOf('classList.toggle');
+        return lastRead !== -1 && firstWrite !== -1 && lastRead < firstWrite;
+      }],
+      ['un seul listener scroll (nav + back-to-top fusionnés)', () => (jsText.match(/addEventListener\('scroll'/g) || []).length === 1],
+      ['scroll listener passive:true', () => /addEventListener\('scroll',\s*onScroll,\s*{\s*passive:\s*true\s*}\)/.test(jsText)],
+      ['backdrop-filter card allégé (≤10px)', () => { const m = cssText.match(/\.card\s*{[^}]*backdrop-filter:\s*blur\((\d+)px\)/); return !!m && parseInt(m[1]) <= 10; }],
+      ['backdrop-filter nav allégé (≤10px)', () => { const m = cssText.match(/\.site-nav\s*{[^}]*backdrop-filter:\s*blur\((\d+)px\)/); return !!m && parseInt(m[1]) <= 10; }],
+      ['background-shapes blur allégé (≤60px)', () => { const m = cssText.match(/\.background-shapes\s*{[^}]*filter:\s*blur\((\d+)px\)/); return !!m && parseInt(m[1]) <= 60; }],
+      ['.card contain inclut paint (isolation repaint scroll)', () => /\.card\s*{[^}]*contain:\s*layout style paint/.test(cssText)],
+      ['nav sticky supprimée sur petit mobile (≤480px)', () => /@media \(max-width: 480px\)\s*{\s*\.site-nav\s*{\s*display:\s*none;/.test(cssText)],
+      ['updateNav ne calcule rien sur petit mobile (guard matchMedia)', () => /function updateNav\(\)\s*{\s*if \(!nav \|\| !heroSection \|\| navHiddenQuery\.matches\) return;/.test(jsText)],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
+
+  // ── 9. PWA & Offline ──
+  suite('PWA & Offline', async s => {
+    let manifestJson = null;
+    const checks = [
+      ['manifest.json accessible',        async () => { try { const r = await fetch('/manifest.json'); manifestJson = await r.json(); return r.ok; } catch { return false; } }],
+      ['manifest a icône 192x192',        () => manifestJson?.icons?.some(i => i.sizes === '192x192')],
+      ['manifest a icône 512x512',        () => manifestJson?.icons?.some(i => i.sizes === '512x512')],
+      ['sw.js enregistré dans script.js', () => jsText.includes("serviceWorker.register('/sw.js')")],
+      ['SW guardé par feature-detect',    () => jsText.includes("'serviceWorker' in navigator")],
+    ];
+    for (const [label, fn] of checks) {
+      try { _record(s, label, await fn()); } catch(e) { _record(s, label, false, e.message); }
+    }
+  });
+
+  // ── 10. Liens & navigation ──
+  suite('Liens & navigation', s => {
+    const extLinks = [...doc.querySelectorAll('a[target="_blank"]')];
+    const checks = [
+      ['nav contient 5 liens',            () => doc.querySelectorAll('.nav-links a').length === 5],
+      ['nav lien #references présent',    () => !!doc.querySelector('.nav-links a[href="#references"]')],
+      ['liens externes rel=noopener',     () => extLinks.every(a => (a.getAttribute('rel') || '').includes('noopener'))],
+      ['liens externes rel=noreferrer',   () => extLinks.every(a => (a.getAttribute('rel') || '').includes('noreferrer'))],
+      ['Calendly en _blank',              () => !!doc.querySelector('a[href*="calendly.com"][target="_blank"]')],
+      ['CV Google Drive présent',         () => !!doc.querySelector('a[href*="drive.google.com"]')],
+      ['.back-to-top href=#accueil',      () => doc.querySelector('.back-to-top')?.getAttribute('href') === '#accueil'],
+      ['timeline-link en _blank',         () => [...doc.querySelectorAll('.timeline-link')].every(a => a.getAttribute('target') === '_blank')],
+      ['nav mobile scroll horizontal',    () => cssText.includes('overflow-x: auto') && cssText.includes('.nav-links')],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
+
+  // ── 12. Auto-vérification de tests.html lui-même ──
+  suite('Auto-vérification tests.html', s => {
+    const checks = [
+      ['escapeHtml() utilisée avant tout rendu innerHTML (fix bug affichage)', () => typeof escapeHtml === 'function' && escapeHtml('<style>x</style>') === '&lt;style&gt;x&lt;/style&gt;'],
+      ['escapeHtml échappe les esperluettes', () => escapeHtml('R&D') === 'R&amp;D'],
+      ['tests.html : zéro <script> inline (CSP script-src self)', () => !/<script>[\s\S]*?<\/script>/.test(testsHtmlText.replace(/<script src="[^"]*"[^>]*><\/script>/g, ''))],
+      ['tests.html : script chargé en externe (/tests.js)', () => /<script src="\/tests\.js"/.test(testsHtmlText)],
+      ['tests.html : zéro <style> inline (CSP style-src self)', () => !/<style>[\s\S]*?<\/style>/.test(testsHtmlText)],
+      ['tests.html : styles chargés en externe (/tests.css)', () => /<link rel="stylesheet" href="\/tests\.css"/.test(testsHtmlText)],
+    ];
+    checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
+
+  // ── Rendu ──
+  const container = document.getElementById('results');
+  for (const s of suites) {
+    await s.fn(s);
+    const div = document.createElement('div');
+    div.className = 'suite';
+    div.innerHTML = `<h2>${escapeHtml(s.name)} <span style="font-weight:400;font-size:0.85rem;color:#aaa">(${s.tests.filter(t=>t.passed).length}/${s.tests.length})</span></h2>`
+      + s.tests.map(t => `<div class="test"><span class="badge ${t.passed ? 'pass' : 'fail'}">${t.passed ? 'PASS' : 'FAIL'}</span><span>${escapeHtml(t.label)}</span>${t.detail ? `<span class="detail">${escapeHtml(t.detail)}</span>` : ''}</div>`).join('');
+    container.appendChild(div);
+  }
+
+  const summary = document.getElementById('summary');
+  const total = totalPass + totalFail;
+  summary.textContent = totalFail === 0
+    ? `✅ ${totalPass}/${total} tests passés — TOUT EST OK`
+    : `❌ ${totalFail} ÉCHEC(S) sur ${total} — ${totalPass} passés`;
+  summary.className = totalFail === 0 ? 'all-pass' : 'has-fail';
+}
+
+run();

@@ -3,7 +3,7 @@
  * Stratégie : cache-first pour les assets versionnés (CSS/JS/fonts/images),
  * network-first avec fallback cache pour le HTML (toujours la dernière version si en ligne).
  */
-const CACHE_NAME = "pe-monreal-v1.9.0";
+const CACHE_NAME = "pe-monreal-v2.0.0";
 const PRECACHE_URLS = [
   '/',
   '/style.css',
