@@ -177,7 +177,8 @@ async function run() {
       ['#form-status role=alert',         () => doc.getElementById('form-status')?.getAttribute('role') === 'alert'],
       ['#form-status aria-live=polite',   () => doc.getElementById('form-status')?.getAttribute('aria-live') === 'polite'],
       ['bouton submit présent',           () => !!doc.querySelector('#contact-form button[type="submit"]')],
-      ['mock local présent dans JS',      () => jsText.includes('isLocal') && jsText.includes('localhost')],
+      ['pas de mock local dans le code livré (les tests interceptent Formspree)', () => !jsText.includes('isLocal')],
+      ['validation native active (pas de novalidate)', () => !form?.hasAttribute('novalidate')],
     ];
     checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
   });
@@ -196,6 +197,8 @@ async function run() {
       ['timeline role=list',              () => doc.querySelector('.timeline')?.getAttribute('role') === 'list'],
       ['email en mailto:',                () => !!doc.querySelector('a[href^="mailto:"]')],
       ['nav-links focus-visible en CSS',  () => cssText.includes('.nav-links a:focus-visible')],
+      ['nav cachée retirée de la tabulation (visibility:hidden)', () => /\.site-nav\s*{[^}]*visibility:\s*hidden/.test(cssText)],
+      ['accès localStorage tolérant aux erreurs', () => !/[^\w]localStorage\.(get|set)Item/.test(jsText.replace(/try\s*{[^}]*}/g, ''))],
       ['nav sticky lisible en dark mode (hover/active)', () => {
         const m = cssText.match(/body\.dark-mode \.nav-links a:hover,[\s\S]*?{([\s\S]*?)}/);
         return !!m && m[1].includes('color: #1a202c') && m[1].includes('background: #ffffff');
@@ -215,7 +218,7 @@ async function run() {
       ['preload font 600',                () => !!doc.querySelector('link[rel="preload"][href*="600"]')],
       ['fetchpriority=high sur photo',    () => doc.querySelector('.hero-photo img')?.getAttribute('fetchpriority') === 'high'],
       ['loading=eager sur photo',         () => doc.querySelector('.hero-photo img')?.getAttribute('loading') === 'eager'],
-      ['apple-touch-icon 180x180',        () => (doc.querySelector('link[rel="apple-touch-icon"]')?.getAttribute('href') || '').includes('apple-touch-icon')],
+      ['apple-touch-icon référencé',        () => (doc.querySelector('link[rel="apple-touch-icon"]')?.getAttribute('href') || '').includes('apple-touch-icon')],
       ['logos loading=lazy',              () => { const l = [...doc.querySelectorAll('.entity-logo[loading]')]; return l.length === 0 || l.every(e => e.getAttribute('loading') === 'lazy'); }],
       ['CSS non bloquant (media=print + swap JS)', () => doc.getElementById('main-css')?.getAttribute('media') === 'print'],
       ['noscript fallback CSS présent',   () => !!doc.querySelector('noscript link[rel="stylesheet"]')],
@@ -297,7 +300,7 @@ async function run() {
     await s.fn(s);
     const div = document.createElement('div');
     div.className = 'suite';
-    div.innerHTML = `<h2>${escapeHtml(s.name)} <span style="font-weight:400;font-size:0.85rem;color:#aaa">(${s.tests.filter(t=>t.passed).length}/${s.tests.length})</span></h2>`
+    div.innerHTML = `<h2>${escapeHtml(s.name)} <span class="count">(${s.tests.filter(t=>t.passed).length}/${s.tests.length})</span></h2>`
       + s.tests.map(t => `<div class="test"><span class="badge ${t.passed ? 'pass' : 'fail'}">${t.passed ? 'PASS' : 'FAIL'}</span><span>${escapeHtml(t.label)}</span>${t.detail ? `<span class="detail">${escapeHtml(t.detail)}</span>` : ''}</div>`).join('');
     container.appendChild(div);
   }

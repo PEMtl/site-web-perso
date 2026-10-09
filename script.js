@@ -6,7 +6,7 @@ if (mainCss) mainCss.media = 'all';
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  const VERSION = '2.5.0';
+  const VERSION = '2.6.0';
 
   // ── Scroll animation cards ──
   const cards = document.querySelectorAll('.card:not(.hero)');
@@ -29,8 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   // ── Compteurs animés ──
+  // Le HTML contient les valeurs finales (lisibles sans JS ni animation) ; on ne repart de 0
+  // que si l'animation est possible ET autorisée (prefers-reduced-motion respecté).
   const statNumbers = document.querySelectorAll('.stat-number[data-target]');
-  if (statNumbers.length > 0 && 'IntersectionObserver' in window) {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (statNumbers.length > 0 && 'IntersectionObserver' in window && !reduceMotion) {
+    statNumbers.forEach(el => { el.textContent = '0'; });
     const counterObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
@@ -106,9 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
         ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none;';
         document.body.appendChild(ta);
         ta.focus(); ta.select();
-        try { document.execCommand('copy'); } catch {}
+        let copied = false;
+        try { copied = document.execCommand('copy'); } catch {}
         document.body.removeChild(ta);
-        showCopied();
+        if (copied) showCopied(); else showCopyError();
         return;
       }
       try {
@@ -116,10 +121,14 @@ document.addEventListener('DOMContentLoaded', () => {
         showCopied();
       } catch (err) {
         console.error('Clipboard error:', err);
-        if (copyTextSpan) copyTextSpan.textContent = 'Erreur';
-        setTimeout(() => { if (copyTextSpan) copyTextSpan.textContent = originalText; }, 2000);
+        showCopyError();
       }
     });
+
+    function showCopyError() {
+      if (copyTextSpan) copyTextSpan.textContent = 'Erreur';
+      setTimeout(() => { if (copyTextSpan) copyTextSpan.textContent = originalText; }, 2000);
+    }
 
     function showCopied() {
       copyBtn.classList.add('copied');
@@ -137,25 +146,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const themeToggle = document.getElementById('theme-toggle');
   const body = document.body;
   const STORAGE_KEY = 'pe-theme';
+  // localStorage peut lever une exception (cookies bloqués, mode privé) : jamais bloquant.
+  const readTheme = () => { try { return localStorage.getItem(STORAGE_KEY); } catch { return null; } };
+  const saveTheme = (value) => { try { localStorage.setItem(STORAGE_KEY, value); } catch {} };
 
   function applyTheme(isDark) {
     body.classList.toggle('dark-mode', isDark);
     if (themeToggle) themeToggle.setAttribute('aria-label', isDark ? 'Passer en mode clair' : 'Passer en mode sombre');
   }
 
-  const savedTheme = localStorage.getItem(STORAGE_KEY);
+  const savedTheme = readTheme();
   applyTheme(savedTheme !== null ? savedTheme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches);
 
   if (themeToggle) {
     themeToggle.addEventListener('click', () => {
       const isDark = body.classList.toggle('dark-mode');
-      localStorage.setItem(STORAGE_KEY, isDark ? 'dark' : 'light');
+      saveTheme(isDark ? 'dark' : 'light');
       themeToggle.setAttribute('aria-label', isDark ? 'Passer en mode clair' : 'Passer en mode sombre');
     });
   }
 
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    if (localStorage.getItem(STORAGE_KEY) === null) applyTheme(e.matches);
+    if (readTheme() === null) applyTheme(e.matches);
   });
 
   // ── Formulaire AJAX Formspree ──
@@ -168,18 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Envoi en cours…'; }
       formStatus.className = '';
       formStatus.style.display = 'none';
-
-      // ── Mock local : court-circuite Formspree sur localhost/127.0.0.1 ──
-      const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
-      if (isLocal) {
-        await new Promise(r => setTimeout(r, 800));
-        formStatus.textContent = '✅ [TEST LOCAL] Formulaire OK — Formspree non sollicité.';
-        formStatus.classList.add('success');
-        formStatus.style.display = 'block';
-        form.reset();
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '🚀 Envoyer'; }
-        return;
-      }
 
       try {
         const response = await fetch(form.action, {

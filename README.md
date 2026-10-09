@@ -3,8 +3,8 @@
 Site vitrine one-page de Pierre-Etienne Monreal, Consultant Product Owner Senior basé à Montpellier.
 
 **Live** : [https://pe-monreal.com](https://pe-monreal.com)  
-**Version** : 2.5.0  
-**Stack** : HTML5 · CSS3 · JS vanilla · Formspree · OVH
+**Version** : 2.6.0  
+**Stack** : HTML5 · CSS3 · JS vanilla · Formspree · OVH — outillage de test local en Node (jamais déployé)
 
 ---
 
@@ -13,8 +13,9 @@ Site vitrine one-page de Pierre-Etienne Monreal, Consultant Product Owner Senior
 1. **`.htaccess` est un fichier caché (dotfile).** Active "Afficher les fichiers cachés" en permanence dans FileZilla (`Serveur → Forcer l'affichage des fichiers cachés`) — sinon aucune règle de sécurité, cache ou 404 ne s'applique.
 2. **Tous les fichiers texte doivent être en fins de ligne LF (Unix), jamais CRLF (Windows).** Ce projet ne passe pas par Git pour le déploiement (upload manuel FileZilla) — `.gitattributes` n'a donc **aucun effet** ici, il ne protège que le dépôt Git local. La vraie protection est le mode de transfert FileZilla (voir workflow ci-dessous) + l'éditeur configuré en LF.
 3. **Vérifie l'orthographe exacte du domaine avant de tester quoi que ce soit** : `pe-monreal.com` (avec un tiret). `pe.monreal.com` (point, sans tiret) est un domaine tiers totalement différent.
-4. **Régénérer les hash SRI si `style.css` ou `script.js` ont changé** (voir Sécurité). Un hash désynchronisé bloque silencieusement le chargement du fichier.
-5. **Ne jamais déployer fichier par fichier** — toujours l'intégralité du dossier modifié, pour éviter tout état intermédiaire incohérent.
+4. **Ne jamais éditer les hash SRI à la main** : `cd tools && npm run sri:write` les recalcule et les corrige dans toutes les pages (`npm test` échoue si un hash est désynchronisé). Un hash faux bloque silencieusement le chargement du fichier.
+5. **Ne jamais déployer fichier par fichier** — toujours l'intégralité du contenu de `site/`, pour éviter tout état intermédiaire incohérent.
+6. **Seul le contenu de `site/` va sur le serveur.** Jamais `README.md`, `tools/`, `node_modules/`, `.git/` ni `.gitattributes`.
 
 ---
 
@@ -30,13 +31,14 @@ Ce projet n'a pas de déploiement automatisé — tout est manuel entre la machi
 | FileZilla | `Serveur → Forcer l'affichage des fichiers cachés` → activé en permanence |
 | Éditeur (VS Code) | `"files.eol": "\n"` dans les settings globaux, ou bouton `CRLF`→`LF` en bas à droite |
 | Git (via terminal ou GitHub Desktop) | `git config --global core.autocrlf false` — laisse `.gitattributes` seul maître des fins de ligne, sans double conversion |
+| Node.js (une fois) | `cd tools && npm install && npx playwright install chromium` — outillage de test local uniquement |
 
 ### Cycle de travail à chaque modification
 
 1. Modifier les fichiers en local uniquement (jamais directement sur le serveur via l'éditeur intégré de FileZilla)
 2. GitHub Desktop → commit avec un message clair
-3. Tester en local : `npx serve .` puis ouvrir `tests.html` — corriger avant de déployer si un test échoue
-4. FileZilla → uploader le dossier entier modifié (jamais un seul fichier isolé)
+3. Si `style.css`, `script.js` ou `tests.js` ont changé : `cd tools && npm run sri:write`. Puis **`npm test`** (vérifie les hash SRI + 23 tests de comportement dans un vrai navigateur, avec les en-têtes de sécurité de production). Corriger avant de déployer si un test échoue
+4. FileZilla → uploader le contenu entier de `site/` (jamais un seul fichier isolé)
 5. Lancer la checklist post-déploiement ci-dessous
 6. Si tout est vert : noter la version déployée (tag GitHub Desktop ou mention dans le dernier commit, ex. "✅ déployé le 13/09")
 
@@ -104,28 +106,28 @@ Complète le workflow ci-dessus : en mode de transfert "Auto" (celui qu'on vient
 ## 📁 Structure du projet
 
 ```
-/
-├── index.html           # Point d'entrée unique
-├── mentions-legales.html # Mentions légales + info RGPD (ajouté v2.5.0)
-├── style.css            # Tous les styles
-├── script.js            # Comportements JS (defer) + swap CSS non-bloquant
-├── robots.txt           # Crawl ouvert + lien sitemap
-├── sitemap.xml          # URL unique — lastmod à jour à chaque déploiement
-├── 404.html             # Page d'erreur personnalisée (zéro style inline)
-├── .htaccess            # Sécurité Apache + cache + compression + 404 — DOTFILE CACHÉ
-├── .gitattributes       # Force LF sur tous les fichiers texte du repo
-├── .well-known/
-│   └── security.txt     # Contact sécurité (RFC 9116)
-├── tests.html           # Smoke tests — fetch + parse les fichiers sources
-├── fonts/
-│   └── manrope-v20-latin-{300,regular,600}.woff2
-├── images/
-│   ├── photo-profil.webp
-│   ├── favicon-{16x16,32x32}.png
-│   └── apple-touch-icon.png (180×180)
-└── signature/            # Signature email HTML autonome — HORS PÉRIMÈTRE du site,
-                           # styles inline volontaires (requis par les clients mail),
-                           # ne pas appliquer la CSP ou les corrections du site ici.
+/                          # racine du dépôt Git
+├── README.md
+├── .gitattributes         # Force LF sur tous les fichiers texte du repo (local uniquement)
+├── .gitignore             # node_modules/
+├── tools/                 # OUTILLAGE LOCAL — jamais déployé
+│   ├── package.json       # scripts : serve · sri · sri:write · test
+│   ├── serve.mjs          # serveur de dev avec les en-têtes de prod (CSP lue dans .htaccess) + 404
+│   ├── sri.mjs            # vérifie / corrige (--write) toutes les empreintes SRI
+│   └── e2e.test.mjs       # 23 tests de comportement (Playwright/Chromium), Formspree intercepté
+└── site/                  # TOUT ce qui est déployé sur OVH (contenu de ce dossier = racine du site)
+    ├── index.html
+    ├── mentions-legales.html
+    ├── style.css · script.js
+    ├── robots.txt · sitemap.xml
+    ├── 404.html           # Page d'erreur personnalisée (zéro style inline)
+    ├── .htaccess          # Sécurité Apache + cache + compression + 404 — DOTFILE CACHÉ
+    ├── .well-known/security.txt   # Contact sécurité (RFC 9116)
+    ├── tests.html · tests.js · tests.css   # Smoke tests, utilisables aussi en ligne
+    ├── fonts/manrope-v20-latin-{300,regular,600}.woff2
+    ├── images/            # photo-profil.webp · favicon-{16x16,32x32}.png · apple-touch-icon.png (180×180)
+    └── signature/         # Signature email HTML autonome — HORS PÉRIMÈTRE du site, styles inline
+                           # volontaires (clients mail), ne pas y appliquer la CSP ni les correctifs du site
 ```
 
 ⚠️ **À supprimer du serveur via FileZilla (v2.5.0)** — ne font plus partie du site, voir section Audit ci-dessous :
@@ -143,7 +145,8 @@ Complète le workflow ci-dessus : en mode de transfert "Auto" (celui qu'on vient
 | Manrope woff2 (auto-hébergé) | Police — 3 weights (300/400/600) — zéro Google Fonts |
 | Formspree | Backend formulaire contact — ID `xjkejbdp` |
 | Apache `.htaccess` | HSTS · CSP durcie · Cache-Control explicite + immutable · compression · 404 · redirection www→non-www |
-| SRI (`integrity`) | Hash SHA-384 sur `style.css` et `script.js` |
+| SRI (`integrity`) | Hash SHA-384 sur `style.css`, `script.js`, `tests.js`, `tests.css` — générés par `tools/sri.mjs` |
+| Outillage local (`tools/`) | Node + Playwright : tests de comportement navigateur, serveur fidèle à la prod, vérif SRI. Aucune dépendance côté site |
 | `.gitattributes` | Force LF sur tout le repo, quel que soit l'OS de la machine qui clone/commit |
 
 ---
@@ -162,6 +165,30 @@ Un audit tiers, basé uniquement sur l'URL publique (sans accès au code), a sou
 | SRI manuel "inutile hors CDN, casse à chaque modif" | ⚠️ Partiellement juste | Le raisonnement technique est faux (le SRI protège aussi contre une altération du fichier entre le poste et le serveur, pas seulement contre un CDN tiers) mais le coût opérationnel réel (recalcul manuel à chaque upload FTP, sans CI/CD) est un vrai point de friction vécu sur ce projet — **conservé pour l'instant**, à rediscuter si la charge de maintenance devient trop lourde |
 
 Détail complet de cette analyse disponible dans l'historique de conversation du 2026-10-08.
+
+---
+
+## 🔬 Audit technique sur le code (v2.5.0 → v2.6.0)
+
+Second audit, fait cette fois sur le code complet. Chaque constat a été reproduit dans un navigateur avant correction. Le plus important : **135/135 tests verts ne validaient aucun comportement** (présence d'attributs et de chaînes seulement).
+
+| # | Défaut (reproduit) | Correction v2.6.0 |
+|---|---|---|
+| 1 | Formulaire : `novalidate` sans validation JS → un formulaire vide partait vers Formspree avec un "succès" | `novalidate` retiré : validation native (`required`, `type=email`, `minlength`) |
+| 2 | `localStorage` non protégé : un accès refusé stoppait l'initialisation, le formulaire AJAX n'était jamais installé | `readTheme()` / `saveTheme()` tolérants aux erreurs (thème en mémoire si stockage bloqué) |
+| 3 | Nav invisible (`opacity:0`) mais atteignable au clavier | `visibility:hidden` tant que cachée (sort de l'ordre de tabulation) |
+| 4 | Sans JavaScript : sections à `opacity:0` + compteurs à 0 | `@media (scripting: none)` affiche tout ; valeurs finales écrites dans le HTML |
+| 5 | Mode sombre : bouton principal bleu sur blanc (2,28:1) | Règle de lien restreinte à `a:not(.cta-button)` |
+| 6 | `prefers-reduced-motion` ignoré par les compteurs | Pas d'animation si la préférence est active |
+| 7 | Copie e-mail : "Copié !" affiché même si la copie échouait | Résultat de `execCommand` pris en compte, message "Erreur" sinon |
+| 8 | Impression : le thème sombre fuyait (titres blancs sur fond clair) | Bloc dark mode encapsulé dans `@media screen` |
+| 9 | `tests.html` : style inline généré par `tests.js` bloqué par la CSP en prod depuis la v2.0.0 (cosmétique, invisible en local) | Classe `.count` dans `tests.css` |
+| 10 | Mock `localhost` dans le code livré : contournait le chemin réseau réel et masquait le défaut n°1 | Supprimé — les tests interceptent eux-mêmes Formspree |
+| 11 | CSS mort (`.entity-logo`, `.reference-link`) après suppression des logos | Supprimé |
+
+**Contre-épreuve** : la suite de 23 tests navigateur a été exécutée sur la v2.5.0 → **11 échecs** (un par défaut) ; sur la v2.6.0 → 23/23. Un test (envoi bloqué) a aussi été vérifié en réintroduisant volontairement `novalidate` : il échoue bien.
+
+**Limite connue** : si `script.js` est bloqué (hash SRI faux, erreur réseau), les sections restent masquées ; seul le cas "JavaScript désactivé" est couvert par CSS. Le garde-fou est `npm test` (SRI vérifié avant chaque publication).
 
 ---
 
@@ -281,13 +308,15 @@ openssl dgst -sha384 -binary script.js | openssl base64 -A
 
 ## 🧪 Tests de non-régression
 
-`tests.html` fetch et parse `index.html`, `style.css`, `script.js`, `404.html` et `mentions-legales.html`. Nécessite un serveur local :
-```bash
-npx serve .
-# puis ouvrir http://localhost:.../tests.html
-```
+Trois niveaux, du plus rapide au plus fidèle :
 
-12 suites, 135 assertions, toutes vertes et vérifiées par exécution réelle cette session (serveur HTTP local + jsdom, pas une simple relecture de code — une suite "Mentions légales & RGPD" a été ajoutée pour couvrir la nouvelle page, la suite "PWA & Offline" a été retirée avec le code qu'elle testait).
+| Niveau | Commande | Ce que ça prouve |
+|---|---|---|
+| SRI | `cd tools && npm run sri` | Chaque `integrity` correspond au fichier réel (`npm run sri:write` corrige) |
+| Comportement (23 tests) | `cd tools && npm test` | Formulaire (champs invalides, succès, erreur serveur), stockage bloqué, clavier, sans JS, contraste dark, reduced-motion, copie e-mail, impression, 404, absence d'erreur CSP/SRI, et exécution de `tests.html` — dans Chromium, avec les en-têtes de production ; Formspree est intercepté (aucun message réel envoyé) |
+| Smoke statique (138 assertions, 12 suites) | `tests.html` (local via `npm run serve`, ou en ligne) | Présence et cohérence des éléments, attributs et règles — utile en production après upload, mais **ne prouve pas** les comportements |
+
+Ce que `tests.html` en ligne ne couvre pas, et reste à vérifier avec la checklist `curl` : les règles `.htaccess` (redirection HTTPS, 404, dotfiles, en-têtes).
 
 ---
 
@@ -302,6 +331,8 @@ npx serve .
 | `tests.html` : compte affiché ≠ compte réel | Vérifier que tous les libellés passent par `escapeHtml()` avant insertion DOM |
 | Tooltip illisible en dark mode | Couleurs fixes `#1a202c`/`#f7fafc`, jamais `var(--accent)` |
 | `tests.html` en ligne : FAILs concentrés sur perf/nav mobile (listener scroll, blur, contain, matchMedia) | `style.css` et/ou `script.js` en ligne sont une version antérieure — réuploader les DEUX fichiers ensemble depuis le dernier zip (jamais un seul isolé, cause de désynchronisation SRI) |
+| `npm test` : « ÉCART » sur une empreinte SRI | `npm run sri:write` puis relancer — ne jamais éditer les hash à la main |
+| `npm test` : Chromium introuvable | `npx playwright install chromium` (ou variable `PLAYWRIGHT_CHROMIUM_PATH`) |
 | `mentions-legales.html` : identité éditeur incomplète | Placeholders `[À compléter]` dans le fichier — statut juridique, SIRET, adresse. Non fictifs par choix : à remplir avec tes vraies informations avant mise en ligne officielle |
 
 ---
@@ -315,4 +346,4 @@ npx serve .
 
 ---
 
-*v2.5.0 · Octobre 2026*
+*v2.6.0 · Octobre 2026*
