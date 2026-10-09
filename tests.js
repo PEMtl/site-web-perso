@@ -51,7 +51,6 @@ async function run() {
       ['canonical en non-www',            () => doc.querySelector('link[rel="canonical"]')?.getAttribute('href') === 'https://pe-monreal.com/'],
       ['og:url en non-www',               () => doc.querySelector('meta[property="og:url"]')?.getAttribute('content') === 'https://pe-monreal.com/'],
       ['meta theme-color présente',       () => !!doc.querySelector('meta[name="theme-color"]')],
-      ['link manifest',                   () => !!doc.querySelector('link[rel="manifest"]')],
       ['JSON-LD contient Person',         () => doc.querySelector('script[type="application/ld+json"]')?.textContent.includes('"Person"')],
       ['JSON-LD contient WebSite',        () => doc.querySelector('script[type="application/ld+json"]')?.textContent.includes('"WebSite"')],
       ['JSON-LD contient ProfilePage',    () => doc.querySelector('script[type="application/ld+json"]')?.textContent.includes('"ProfilePage"')],
@@ -121,7 +120,7 @@ async function run() {
     checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
   });
 
-  // ── 11. Page 404 ──
+  // ── 5. Page 404 ──
   suite('Page 404', async s => {
     let doc404 = null, notFoundStatus = null;
     try {
@@ -142,7 +141,7 @@ async function run() {
     }
   });
 
-  // ── 5. Tooltips skill tags ──
+  // ── 6. Tooltips skill tags ──
   suite('Tooltips skill tags', s => {
     const tagsWithTooltip = [...doc.querySelectorAll('.skill-tag[data-tooltip]')];
     const checks = [
@@ -160,7 +159,7 @@ async function run() {
     checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
   });
 
-  // ── 6. Formulaire ──
+  // ── 7. Formulaire ──
   suite('Formulaire contact', s => {
     const form = doc.getElementById('contact-form');
     const checks = [
@@ -183,7 +182,7 @@ async function run() {
     checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
   });
 
-  // ── 7. Accessibilité ──
+  // ── 8. Accessibilité ──
   suite('Accessibilité', s => {
     const checks = [
       ['nav aria-label',                  () => !!doc.querySelector('nav[aria-label]')],
@@ -207,7 +206,7 @@ async function run() {
     checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
   });
 
-  // ── 8. Performance & SEO ──
+  // ── 9. Performance & SEO ──
   suite('Performance & SEO', s => {
     const checks = [
       ['preload photo profil',            () => !!doc.querySelector('link[rel="preload"][as="image"]')],
@@ -241,21 +240,6 @@ async function run() {
     checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
   });
 
-  // ── 9. PWA & Offline ──
-  suite('PWA & Offline', async s => {
-    let manifestJson = null;
-    const checks = [
-      ['manifest.json accessible',        async () => { try { const r = await fetch('/manifest.json'); manifestJson = await r.json(); return r.ok; } catch { return false; } }],
-      ['manifest a icône 192x192',        () => manifestJson?.icons?.some(i => i.sizes === '192x192')],
-      ['manifest a icône 512x512',        () => manifestJson?.icons?.some(i => i.sizes === '512x512')],
-      ['sw.js enregistré dans script.js', () => jsText.includes("serviceWorker.register('/sw.js')")],
-      ['SW guardé par feature-detect',    () => jsText.includes("'serviceWorker' in navigator")],
-    ];
-    for (const [label, fn] of checks) {
-      try { _record(s, label, await fn()); } catch(e) { _record(s, label, false, e.message); }
-    }
-  });
-
   // ── 10. Liens & navigation ──
   suite('Liens & navigation', s => {
     const extLinks = [...doc.querySelectorAll('a[target="_blank"]')];
@@ -269,8 +253,29 @@ async function run() {
       ['.back-to-top href=#accueil',      () => doc.querySelector('.back-to-top')?.getAttribute('href') === '#accueil'],
       ['timeline-link en _blank',         () => [...doc.querySelectorAll('.timeline-link')].every(a => a.getAttribute('target') === '_blank')],
       ['nav mobile scroll horizontal',    () => cssText.includes('overflow-x: auto') && cssText.includes('.nav-links')],
+      ['lien footer vers mentions légales', () => !!doc.querySelector('a[href="/mentions-legales.html"]')],
     ];
     checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
+  });
+
+  // ── 11. Mentions légales & RGPD ──
+  suite('Mentions légales & RGPD', async s => {
+    let docLegal = null, legalStatus = null;
+    try {
+      const r = await fetch('/mentions-legales.html');
+      legalStatus = r.status;
+      docLegal = new DOMParser().parseFromString(await r.text(), 'text/html');
+    } catch {}
+    const checks = [
+      ['mentions-legales.html accessible',        () => legalStatus === 200],
+      ['mentions-legales.html : zéro style inline', () => docLegal && [...docLegal.querySelectorAll('*')].every(el => !el.hasAttribute('style'))],
+      ['mentions-legales.html : .card a la classe is-visible', () => docLegal?.querySelector('.card')?.classList.contains('is-visible')],
+      ['mentions-legales.html : section RGPD présente', () => (docLegal?.body?.textContent || '').includes('RGPD')],
+      ['mentions-legales.html : lien retour accueil',  () => !!docLegal?.querySelector('a[href="/"]')],
+    ];
+    for (const [label, fn] of checks) {
+      try { _record(s, label, await fn()); } catch(e) { _record(s, label, false, e.message); }
+    }
   });
 
   // ── 12. Auto-vérification de tests.html lui-même ──

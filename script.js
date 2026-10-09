@@ -6,7 +6,7 @@ if (mainCss) mainCss.media = 'all';
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  const VERSION = '2.3.0';
+  const VERSION = '2.5.0';
 
   // ── Scroll animation cards ──
   const cards = document.querySelectorAll('.card:not(.hero)');
@@ -203,15 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
       } finally {
         if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '🚀 Envoyer'; }
       }
-    });
-  }
-
-  // ── Service Worker (cache offline) ──
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').catch((err) => {
-        console.error('SW registration failed:', err);
-      });
     });
   }
 

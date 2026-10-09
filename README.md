@@ -3,8 +3,8 @@
 Site vitrine one-page de Pierre-Etienne Monreal, Consultant Product Owner Senior basé à Montpellier.
 
 **Live** : [https://pe-monreal.com](https://pe-monreal.com)  
-**Version** : 2.4.2 (documentation)  
-**Stack** : HTML5 · CSS3 · JS vanilla · Formspree · Service Worker · OVH
+**Version** : 2.5.0  
+**Stack** : HTML5 · CSS3 · JS vanilla · Formspree · OVH
 
 ---
 
@@ -105,31 +105,31 @@ Complète le workflow ci-dessus : en mode de transfert "Auto" (celui qu'on vient
 
 ```
 /
-├── index.html          # Point d'entrée unique
-├── style.css           # Tous les styles
-├── script.js           # Comportements JS (defer) + swap CSS non-bloquant
-├── sw.js                # Service Worker — cache offline
-├── manifest.json         # PWA manifest
-├── robots.txt              # Crawl ouvert + lien sitemap
-├── sitemap.xml               # URL unique — lastmod à jour à chaque déploiement
-├── 404.html                    # Page d'erreur personnalisée (zéro style inline)
-├── .htaccess                     # Sécurité Apache + cache + compression + 404 — DOTFILE CACHÉ
-├── .gitattributes                  # Force LF sur tous les fichiers texte du repo
+├── index.html           # Point d'entrée unique
+├── mentions-legales.html # Mentions légales + info RGPD (ajouté v2.5.0)
+├── style.css            # Tous les styles
+├── script.js            # Comportements JS (defer) + swap CSS non-bloquant
+├── robots.txt           # Crawl ouvert + lien sitemap
+├── sitemap.xml          # URL unique — lastmod à jour à chaque déploiement
+├── 404.html             # Page d'erreur personnalisée (zéro style inline)
+├── .htaccess            # Sécurité Apache + cache + compression + 404 — DOTFILE CACHÉ
+├── .gitattributes       # Force LF sur tous les fichiers texte du repo
 ├── .well-known/
-│   └── security.txt                  # Contact sécurité (RFC 9116)
-├── tests.html                          # Smoke tests — fetch + parse les fichiers sources
+│   └── security.txt     # Contact sécurité (RFC 9116)
+├── tests.html           # Smoke tests — fetch + parse les fichiers sources
 ├── fonts/
 │   └── manrope-v20-latin-{300,regular,600}.woff2
 ├── images/
 │   ├── photo-profil.webp
 │   ├── favicon-{16x16,32x32}.png
-│   ├── apple-touch-icon.png (180×180)
-│   ├── icon-{192x192,512x512}.png (PWA)
-│   └── logos/
-└── signature/           # Signature email HTML autonome — HORS PÉRIMÈTRE du site,
-                          # styles inline volontaires (requis par les clients mail),
-                          # ne pas appliquer la CSP ou les corrections du site ici.
+│   └── apple-touch-icon.png (180×180)
+└── signature/            # Signature email HTML autonome — HORS PÉRIMÈTRE du site,
+                           # styles inline volontaires (requis par les clients mail),
+                           # ne pas appliquer la CSP ou les corrections du site ici.
 ```
+
+⚠️ **À supprimer du serveur via FileZilla (v2.5.0)** — ne font plus partie du site, voir section Audit ci-dessous :
+`manifest.json`, `sw.js`, `images/icon-192x192.png`, `images/icon-512x512.png`, et le dossier `images/logos/` (3 fichiers morts, jamais référencés dans le HTML — reliquat de l'ancien chantier "logos SVG" resté en suspens).
 
 ---
 
@@ -139,13 +139,29 @@ Complète le workflow ci-dessus : en mode de transfert "Auto" (celui qu'on vient
 |---|---|
 | HTML5 sémantique | Structure · Schema.org (`Person`, `WebSite`, `ProfilePage`) · Open Graph · Twitter Card |
 | CSS3 vanilla (`style.css`) | Variables · dark mode · glassmorphism · nav sticky (masquée ≤480px) · tooltip accessible · print · responsive |
-| JS vanilla (`script.js`) | Nav sticky sans reflow forcé, désactivée sur petit mobile · compteurs animés · dark mode · AJAX form · swap CSS non-bloquant · SW registration |
-| Service Worker (`sw.js`) | Cache offline — network-first HTML, cache-first assets statiques |
+| JS vanilla (`script.js`) | Nav sticky sans reflow forcé, désactivée sur petit mobile · compteurs animés · dark mode · AJAX form · swap CSS non-bloquant |
 | Manrope woff2 (auto-hébergé) | Police — 3 weights (300/400/600) — zéro Google Fonts |
 | Formspree | Backend formulaire contact — ID `xjkejbdp` |
 | Apache `.htaccess` | HSTS · CSP durcie · Cache-Control explicite + immutable · compression · 404 · redirection www→non-www |
 | SRI (`integrity`) | Hash SHA-384 sur `style.css` et `script.js` |
 | `.gitattributes` | Force LF sur tout le repo, quel que soit l'OS de la machine qui clone/commit |
+
+---
+
+## 🔍 Audit externe (`analyse-pe-monreal.md`) — traitement v2.5.0
+
+Un audit tiers, basé uniquement sur l'URL publique (sans accès au code), a soulevé plusieurs points techniques. Analyse point par point avant action :
+
+| Constat de l'audit | Verdict | Action |
+|---|---|---|
+| Manifest PWA / Service Worker / préchargements : inutiles pour une page vitrine | ✅ Juste | **Supprimés** : `manifest.json`, `sw.js`, icônes 192/512, lien `rel="manifest"`, enregistrement SW dans `script.js`, règles cache `.htaccess` associées |
+| Formulaire sans honeypot ni anti-spam | ❌ Faux | Le honeypot `_gotcha` existe depuis l'origine (masqué via classe CSS, pas de `style=""`, exprès pour rester CSP-compliant) — invisible à une revue purement visuelle, donc raté par un audit sans accès au DOM/JS |
+| Menu absent/peu visible sur mobile | ❌ Faux | Masquage mobile (`display:none` ≤480px) est un choix **délibéré**, demandé explicitement sur une session précédente, pas un oubli |
+| Pas de mentions légales ni RGPD | ✅ Juste | **Ajouté** : `mentions-legales.html` (identité éditeur à compléter par le propriétaire, hébergement OVH, traitement Formspree, droits RGPD) + lien en footer |
+| CSS "minuscule", chargement différé = sur-ingénierie inutile | ❌ Faux | `style.css` fait 600+ lignes ; le chargement non-bloquant corrige un vrai finding PageSpeed Insights mesuré (render-blocking resources) — **conservé** |
+| SRI manuel "inutile hors CDN, casse à chaque modif" | ⚠️ Partiellement juste | Le raisonnement technique est faux (le SRI protège aussi contre une altération du fichier entre le poste et le serveur, pas seulement contre un CDN tiers) mais le coût opérationnel réel (recalcul manuel à chaque upload FTP, sans CI/CD) est un vrai point de friction vécu sur ce projet — **conservé pour l'instant**, à rediscuter si la charge de maintenance devient trop lourde |
+
+Détail complet de cette analyse disponible dans l'historique de conversation du 2026-10-08.
 
 ---
 
@@ -265,13 +281,13 @@ openssl dgst -sha384 -binary script.js | openssl base64 -A
 
 ## 🧪 Tests de non-régression
 
-`tests.html` fetch et parse `index.html`, `style.css`, `script.js` et `404.html`. Nécessite un serveur local :
+`tests.html` fetch et parse `index.html`, `style.css`, `script.js`, `404.html` et `mentions-legales.html`. Nécessite un serveur local :
 ```bash
 npx serve .
 # puis ouvrir http://localhost:.../tests.html
 ```
 
-12 suites, 131 assertions, toutes vertes et vérifiées par exécution réelle (pas de simple lecture de code) cette session.
+12 suites, 135 assertions, toutes vertes et vérifiées par exécution réelle cette session (serveur HTTP local + jsdom, pas une simple relecture de code — une suite "Mentions légales & RGPD" a été ajoutée pour couvrir la nouvelle page, la suite "PWA & Offline" a été retirée avec le code qu'elle testait).
 
 ---
 
@@ -286,6 +302,7 @@ npx serve .
 | `tests.html` : compte affiché ≠ compte réel | Vérifier que tous les libellés passent par `escapeHtml()` avant insertion DOM |
 | Tooltip illisible en dark mode | Couleurs fixes `#1a202c`/`#f7fafc`, jamais `var(--accent)` |
 | `tests.html` en ligne : FAILs concentrés sur perf/nav mobile (listener scroll, blur, contain, matchMedia) | `style.css` et/ou `script.js` en ligne sont une version antérieure — réuploader les DEUX fichiers ensemble depuis le dernier zip (jamais un seul isolé, cause de désynchronisation SRI) |
+| `mentions-legales.html` : identité éditeur incomplète | Placeholders `[À compléter]` dans le fichier — statut juridique, SIRET, adresse. Non fictifs par choix : à remplir avec tes vraies informations avant mise en ligne officielle |
 
 ---
 
@@ -298,4 +315,4 @@ npx serve .
 
 ---
 
-*v2.4.2 (doc) / v2.3.0 (code) · Septembre 2026*
+*v2.5.0 · Octobre 2026*

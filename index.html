@@ -24,7 +24,6 @@
     <link rel="icon"             href="/images/favicon-32x32.png" sizes="32x32" type="image/png">
     <link rel="icon"             href="/images/favicon-16x16.png" sizes="16x16" type="image/png">
     <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-    <link rel="manifest"         href="/manifest.json">
 
     <link rel="preload" as="image"  href="/images/photo-profil.webp" type="image/webp" fetchpriority="high">
     <link rel="preload" as="font"   href="/fonts/manrope-v20-latin-300.woff2"     type="font/woff2" crossorigin>
@@ -36,14 +35,14 @@
          DOMContentLoaded). <noscript> couvre les navigateurs sans JS. Technique "loadCSS" compatible
          CSP stricte (aucun attribut on* inline nécessaire). -->
     <link rel="preload" as="style" href="/style.css"
-          integrity="sha384-H+JnYxVjYLLKG1c4Jcqlbd2R4z1ljh59OlG2v05gt1GS55qEXvLLuEE7p0d8Cli8"
+          integrity="sha384-Mt8brLF1jkk3TB2tMNM+yooTy5MBZ1htuJwfG0W3nH2OL4PpiZSGdMzsi04FtOn5"
           crossorigin="anonymous">
     <link rel="stylesheet" href="/style.css" media="print" id="main-css"
-          integrity="sha384-H+JnYxVjYLLKG1c4Jcqlbd2R4z1ljh59OlG2v05gt1GS55qEXvLLuEE7p0d8Cli8"
+          integrity="sha384-Mt8brLF1jkk3TB2tMNM+yooTy5MBZ1htuJwfG0W3nH2OL4PpiZSGdMzsi04FtOn5"
           crossorigin="anonymous">
     <noscript>
       <link rel="stylesheet" href="/style.css"
-            integrity="sha384-H+JnYxVjYLLKG1c4Jcqlbd2R4z1ljh59OlG2v05gt1GS55qEXvLLuEE7p0d8Cli8"
+            integrity="sha384-Mt8brLF1jkk3TB2tMNM+yooTy5MBZ1htuJwfG0W3nH2OL4PpiZSGdMzsi04FtOn5"
             crossorigin="anonymous">
     </noscript>
 
@@ -345,6 +344,7 @@
 <footer>
     <div class="footer-content">
         <p>Tous droits réservés &mdash; &copy; <span id="copyright-year"></span> Pierre-Etienne Monreal</p>
+        <a href="/mentions-legales.html" class="footer-legal-link">Mentions légales &amp; confidentialité</a>
         <button id="theme-toggle" class="theme-toggle" aria-label="Passer en mode sombre">
             <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/>
@@ -368,7 +368,7 @@
 
 <!-- SRI : regénérer le hash à CHAQUE modification de script.js (voir README > Maintenance) -->
 <script src="/script.js" defer
-        integrity="sha384-wx/JkNzdxjnjUJsApm5Bt3xC+1fRkY+ZMXdfc77z6/xkw4npVrx3g8kFfFbjiAgD"
+        integrity="sha384-kF0yM0LtM+7rFPU+zOd7nA3X/vg71kKssU1OAUWEYagMUIwj1sV/edYFDHi0y4mV"
         crossorigin="anonymous"></script>
 </body>
 </html>
