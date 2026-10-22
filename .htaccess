@@ -115,7 +115,18 @@ ErrorDocument 404 /404.html
   RewriteRule "(^|/)\." - [F]
 </IfModule>
 
+# ── Fichiers de développement : refusés même s'ils sont uploadés par erreur ──
+# Le dépôt est à plat (site et outillage dans le même dossier). Un « glisser-déposer
+# du dossier entier » dans FileZilla enverrait tools/ et README.md : ces règles les
+# rendent illisibles (403) en filet de sécurité — ne dispense pas de les exclure.
+<IfModule mod_rewrite.c>
+  RewriteRule ^(tools|node_modules)(/|$) - [F]
+  RewriteRule ^(README\.md|package(-lock)?\.json)$ - [F]
+</IfModule>
+
 # Vérification manuelle après déploiement :
 #   curl -I https://pe-monreal.com/.git/config       → doit renvoyer 403 Forbidden
 #   curl -I https://pe-monreal.com/.gitattributes    → doit renvoyer 403 Forbidden
+#   curl -I https://pe-monreal.com/tools/serve.mjs   → doit renvoyer 403 Forbidden
+#   curl -I https://pe-monreal.com/README.md         → doit renvoyer 403 Forbidden
 #   curl -I https://pe-monreal.com/.well-known/security.txt → doit renvoyer 200 OK

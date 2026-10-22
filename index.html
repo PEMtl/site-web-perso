@@ -29,22 +29,25 @@
     <link rel="preload" as="font"   href="/fonts/manrope-v20-latin-300.woff2"     type="font/woff2" crossorigin>
     <link rel="preload" as="font"   href="/fonts/manrope-v20-latin-regular.woff2" type="font/woff2" crossorigin>
     <link rel="preload" as="font"   href="/fonts/manrope-v20-latin-600.woff2"     type="font/woff2" crossorigin>
-    <!-- SRI : regénérer les 2 hash à CHAQUE modification de style.css (voir README > Maintenance) -->
+    <!-- SRI : regénérer les hash à CHAQUE modification de style.css / loadcss.js / script.js : npm run sri:write (voir README > Maintenance) -->
     <!-- CSS non bloquant pour le rendu : chargé en priorité (preload) mais appliqué en media="print"
-         puis basculé en "all" par script.js dès son exécution (juste après le parsing HTML, avant
-         DOMContentLoaded). <noscript> couvre les navigateurs sans JS. Technique "loadCSS" compatible
+         puis basculé en "all" par loadcss.js dès son exécution (juste après le parsing HTML, avant
+         DOMContentLoaded). Script isolé : la page reste stylée même si script.js échoue. <noscript> couvre les navigateurs sans JS. Technique "loadCSS" compatible
          CSP stricte (aucun attribut on* inline nécessaire). -->
     <link rel="preload" as="style" href="/style.css"
-          integrity="sha384-0FGWxr51euHH8BFSn8NK4IzuW4yY6mW+Op047kXQHUzKU75p1jqG1td9RynqSSee"
+          integrity="sha384-ZEZE509YH+mmwyo9A8+C6elOlbnQ5xfg4LZmUN5Ft9cITVcBNxgsIv6fbKRuJgHG"
           crossorigin="anonymous">
     <link rel="stylesheet" href="/style.css" media="print" id="main-css"
-          integrity="sha384-0FGWxr51euHH8BFSn8NK4IzuW4yY6mW+Op047kXQHUzKU75p1jqG1td9RynqSSee"
+          integrity="sha384-ZEZE509YH+mmwyo9A8+C6elOlbnQ5xfg4LZmUN5Ft9cITVcBNxgsIv6fbKRuJgHG"
           crossorigin="anonymous">
     <noscript>
       <link rel="stylesheet" href="/style.css"
-            integrity="sha384-0FGWxr51euHH8BFSn8NK4IzuW4yY6mW+Op047kXQHUzKU75p1jqG1td9RynqSSee"
+            integrity="sha384-ZEZE509YH+mmwyo9A8+C6elOlbnQ5xfg4LZmUN5Ft9cITVcBNxgsIv6fbKRuJgHG"
             crossorigin="anonymous">
     </noscript>
+    <script src="/loadcss.js" defer
+            integrity="sha384-KWvy1PAzrsSS7glFpI2oDZx1WgJSW5jbjhgMIoNBzTbpCfbSI/W2KsBSGsOWKoxW"
+            crossorigin="anonymous"></script>
 
     <script type="application/ld+json">
     {
@@ -366,9 +369,8 @@
     </svg>
 </a>
 
-<!-- SRI : regénérer le hash à CHAQUE modification de script.js (voir README > Maintenance) -->
 <script src="/script.js" defer
-        integrity="sha384-VVCnRvq65zrx4oKZJ1L+nM24x7gsVSXVhzgsyDUKr4naY8V/A6+cetYhgQrex8ri"
+        integrity="sha384-kB6juBRQQhXOYwbtu9CcehO62vYOHvGslqG2Z9F30rBVnMc72kJBnQ7u4HqvH/Jq"
         crossorigin="anonymous"></script>
 </body>
 </html>

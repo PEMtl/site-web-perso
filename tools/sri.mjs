@@ -1,4 +1,4 @@
-// Vérifie (ou corrige avec --write) les empreintes SRI de toutes les pages de site/.
+// Vérifie (ou corrige avec --write) les empreintes SRI de toutes les pages à la racine du dépôt.
 // Supprime la principale source d'erreur de publication : un hash oublié après une
 // modification de style.css / script.js / tests.js bloque silencieusement la ressource.
 import fs from 'node:fs';
@@ -6,7 +6,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
-const SITE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'site');
+const SITE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const write = process.argv.includes('--write');
 let bad = 0, total = 0;
 

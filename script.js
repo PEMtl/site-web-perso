@@ -1,16 +1,15 @@
-// ── CSS non bloquant : bascule media="print" → "all" dès l'exécution de ce script
-//    (defer = juste après le parsing HTML, avant DOMContentLoaded). Évite que style.css
-//    bloque le premier rendu tout en gardant zéro attribut inline (compatible CSP stricte). ──
-const mainCss = document.getElementById('main-css');
-if (mainCss) mainCss.media = 'all';
+// Révélation au scroll (cartes) et compteurs animés : activés seulement si le navigateur
+// le permet ET si l'utilisateur ne demande pas de réduire les animations. La classe est posée
+// dès l'exécution (avant DOMContentLoaded) ; sans elle, tout le contenu reste visible.
+const canAnimate = 'IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (canAnimate) document.documentElement.classList.add('js-reveal');
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  const VERSION = '2.6.0';
+  const VERSION = '2.7.0';
 
   // ── Scroll animation cards ──
-  const cards = document.querySelectorAll('.card:not(.hero)');
-  if (cards.length > 0 && 'IntersectionObserver' in window) {
+  if (canAnimate) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -19,9 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     }, { threshold: 0.08 });
-    cards.forEach(card => observer.observe(card));
-  } else {
-    cards.forEach(card => card.classList.add('is-visible'));
+    document.querySelectorAll('.card:not(.hero)').forEach(card => observer.observe(card));
   }
 
   // ── Copyright year ──
@@ -30,10 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Compteurs animés ──
   // Le HTML contient les valeurs finales (lisibles sans JS ni animation) ; on ne repart de 0
-  // que si l'animation est possible ET autorisée (prefers-reduced-motion respecté).
+  // que si l'animation est possible ET autorisée.
   const statNumbers = document.querySelectorAll('.stat-number[data-target]');
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (statNumbers.length > 0 && 'IntersectionObserver' in window && !reduceMotion) {
+  if (canAnimate && statNumbers.length > 0) {
     statNumbers.forEach(el => { el.textContent = '0'; });
     const counterObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -173,13 +169,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Formulaire AJAX Formspree ──
   const form = document.getElementById('contact-form');
   const formStatus = document.getElementById('form-status');
-  if (form && formStatus) {
+  const submitBtn = form?.querySelector('button[type="submit"]');
+  if (form && formStatus && submitBtn) {
+    const submitLabel = submitBtn.textContent;
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const submitBtn = form.querySelector('button[type="submit"]');
-      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Envoi en cours…'; }
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Envoi en cours…';
       formStatus.className = '';
-      formStatus.style.display = 'none';
 
       try {
         const response = await fetch(form.action, {
@@ -187,21 +184,17 @@ document.addEventListener('DOMContentLoaded', () => {
           body: new FormData(form),
           headers: { 'Accept': 'application/json' }
         });
-        if (response.ok) {
-          formStatus.textContent = '✅ Message envoyé ! Je vous répondrai dans les plus brefs délais.';
-          formStatus.classList.add('success');
-          formStatus.style.display = 'block';
-          form.reset();
-        } else {
-          const json = await response.json().catch(() => ({}));
-          throw new Error(json?.errors?.map(e => e.message).join(', ') || 'Erreur serveur');
-        }
+        if (!response.ok) throw new Error(`Formspree HTTP ${response.status}`);
+        formStatus.textContent = '✅ Message envoyé ! Je vous répondrai dans les plus brefs délais.';
+        formStatus.classList.add('success');
+        form.reset();
       } catch (err) {
-        formStatus.textContent = `❌ Erreur : ${err.message}. Contactez-moi directement par e-mail.`;
+        console.error('Form error:', err);
+        formStatus.textContent = '❌ Le message n\'a pas pu être envoyé. Réessayez ou contactez-moi directement par e-mail.';
         formStatus.classList.add('error');
-        formStatus.style.display = 'block';
       } finally {
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '🚀 Envoyer'; }
+        submitBtn.disabled = false;
+        submitBtn.textContent = submitLabel;
       }
     });
   }

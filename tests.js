@@ -20,17 +20,19 @@ function escapeHtml(str) {
 }
 
 async function run() {
-  let doc, cssText, jsText, testsHtmlText;
+  let doc, cssText, jsText, loadcssText, testsHtmlText;
   try {
-    const [htmlRes, cssRes, jsRes, testsHtmlRes] = await Promise.all([
+    const [htmlRes, cssRes, jsRes, loadcssRes, testsHtmlRes] = await Promise.all([
       fetch('/index.html'),
       fetch('/style.css'),
       fetch('/script.js'),
+      fetch('/loadcss.js'),
       fetch('/tests.html'),
     ]);
     const htmlText = await htmlRes.text();
     cssText = await cssRes.text();
     jsText = await jsRes.text();
+    loadcssText = await loadcssRes.text();
     testsHtmlText = await testsHtmlRes.text();
     doc = new DOMParser().parseFromString(htmlText, 'text/html');
   } catch (err) {
@@ -113,9 +115,11 @@ async function run() {
       ['honeypot via classe CSS',            () => doc.querySelector('input[name="_gotcha"]')?.classList.contains('visually-hidden-field')],
       ['aucune URL www. dans le HTML',       () => !doc.documentElement.outerHTML.includes('www.pe-monreal.com')],
       ['SRI sur style.css (integrity)',      () => !!doc.querySelector('link[href*="style.css"][integrity]')],
-      ['SRI sur script.js (integrity)',      () => !!doc.querySelector('script[src*="script.js"][integrity]')],
+      ['SRI sur script.js (integrity)',      () => !!doc.querySelector('script[src="/script.js"][integrity]')],
+      ['SRI sur loadcss.js (integrity)',     () => !!doc.querySelector('script[src="/loadcss.js"][integrity]')],
       ['crossorigin présent avec integrity', () => doc.querySelector('link[href*="style.css"]')?.getAttribute('crossorigin') === 'anonymous'
-                                                  && doc.querySelector('script[src*="script.js"]')?.getAttribute('crossorigin') === 'anonymous'],
+                                                  && doc.querySelector('script[src="/script.js"]')?.getAttribute('crossorigin') === 'anonymous'
+                                                  && doc.querySelector('script[src="/loadcss.js"]')?.getAttribute('crossorigin') === 'anonymous'],
     ];
     checks.forEach(([label, fn]) => { try { _record(s, label, fn()); } catch(e) { _record(s, label, false, e.message); } });
   });
@@ -134,7 +138,7 @@ async function run() {
       ['404.html : lien retour accueil',    () => !!doc404?.querySelector('a[href="/"]')],
       ['404.html : lien contact',           () => !!doc404?.querySelector('a[href="/#contact"]')],
       ['404.html : meta robots noindex',    () => doc404?.querySelector('meta[name="robots"]')?.getAttribute('content')?.includes('noindex')],
-      ['404.html : .card a la classe is-visible (sinon opacity:0 permanent, page blanche — aucun script.js ici pour l\'ajouter dynamiquement)', () => doc404?.querySelector('.card')?.classList.contains('is-visible')],
+      ['404.html : aucun script requis (cartes visibles par défaut)', () => doc404 && !doc404.querySelector('script') && !doc404.querySelector('.card.is-visible')],
     ];
     for (const [label, fn] of checks) {
       try { _record(s, label, await fn()); } catch(e) { _record(s, label, false, e.message); }
@@ -222,7 +226,9 @@ async function run() {
       ['logos loading=lazy',              () => { const l = [...doc.querySelectorAll('.entity-logo[loading]')]; return l.length === 0 || l.every(e => e.getAttribute('loading') === 'lazy'); }],
       ['CSS non bloquant (media=print + swap JS)', () => doc.getElementById('main-css')?.getAttribute('media') === 'print'],
       ['noscript fallback CSS présent',   () => !!doc.querySelector('noscript link[rel="stylesheet"]')],
-      ['script.js bascule #main-css en media=all', () => jsText.includes("mainCss.media = 'all'")],
+      ['loadcss.js bascule #main-css en media=all (isolé de script.js)', () => loadcssText.includes("mainCss.media = 'all'") && !jsText.includes('main-css')],
+      ['cartes visibles par défaut : opacity:0 seulement sous .js-reveal, jamais via scripting:none', () => /\.js-reveal \.card:not\(\.hero\):not\(\.is-visible\)\s*{\s*opacity:\s*0/.test(cssText) && !/\.card\s*{[^}]*opacity:\s*0/.test(cssText) && !cssText.includes('scripting')],
+      ['script.js pose .js-reveal seulement si animation possible et autorisée', () => /canAnimate[^\n]*prefers-reduced-motion/.test(jsText) && jsText.includes("classList.add('js-reveal')")],
       ['pas de reflow forcé dans updateNav (lectures groupées)', () => {
         const m = jsText.match(/function updateNav\(\)\s*{([\s\S]*?)\n  }/);
         if (!m) return false;
@@ -272,7 +278,7 @@ async function run() {
     const checks = [
       ['mentions-legales.html accessible',        () => legalStatus === 200],
       ['mentions-legales.html : zéro style inline', () => docLegal && [...docLegal.querySelectorAll('*')].every(el => !el.hasAttribute('style'))],
-      ['mentions-legales.html : .card a la classe is-visible', () => docLegal?.querySelector('.card')?.classList.contains('is-visible')],
+      ['mentions-legales.html : aucun script requis (cartes visibles par défaut)', () => docLegal && !docLegal.querySelector('script') && !docLegal.querySelector('.card.is-visible')],
       ['mentions-legales.html : section RGPD présente', () => (docLegal?.body?.textContent || '').includes('RGPD')],
       ['mentions-legales.html : lien retour accueil',  () => !!docLegal?.querySelector('a[href="/"]')],
     ];

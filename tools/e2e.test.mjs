@@ -17,7 +17,7 @@ after(async () => { await browser?.close(); await server?.close(); });
 const FINAL_STATS = ['10+', '4', '30+'];
 
 // Ouvre une page ; `formspree` = { status, body } renvoyé par l'interception ; `posts` compte les envois.
-async function open(url = '/', { context = {}, init, formspree = { status: 200, body: '{}' } } = {}) {
+async function open(url = '/', { context = {}, init, setup, formspree = { status: 200, body: '{}' } } = {}) {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, ...context });
   if (init) await ctx.addInitScript(init);
   const page = await ctx.newPage();
@@ -26,6 +26,7 @@ async function open(url = '/', { context = {}, init, formspree = { status: 200, 
     posts.push(route.request().postData());
     await route.fulfill({ status: formspree.status, contentType: 'application/json', body: formspree.body });
   });
+  await setup?.(page);
   page.on('pageerror', e => problems.push(`pageerror: ${e.message}`));
   page.on('console', m => { if (/Content.Security.Policy|integrity|Failed to load/i.test(m.text())) problems.push(m.text()); });
   const response = await page.goto(BASE + url);
@@ -97,13 +98,31 @@ test('formulaire : saisie valide → un envoi, succès affiché, champs vidés',
   await ctx.close();
 });
 
-test('formulaire : erreur serveur → message d\'erreur, bouton de nouveau actif', async () => {
+const ERROR_MSG = /n'a pas pu être envoyé/;
+
+test('formulaire : erreur serveur → message fixe lisible, bouton de nouveau actif', async () => {
   const { page, ctx } = await open('/', { formspree: { status: 422, body: JSON.stringify({ errors: [{ message: 'Adresse refusée' }] }) } });
+  const label = await page.textContent('#contact-form button[type=submit]');
   await fillValid(page);
   await page.click('#contact-form button[type=submit]');
   await page.waitForSelector('#form-status.error');
-  assert.match(await page.textContent('#form-status'), /Adresse refusée/);
+  assert.match(await page.textContent('#form-status'), ERROR_MSG);
   assert.equal(await page.isEnabled('#contact-form button[type=submit]'), true);
+  assert.equal(await page.textContent('#contact-form button[type=submit]'), label, 'libellé initial restauré');
+  await ctx.close();
+});
+
+test('formulaire : échec réseau → message fixe (pas « Failed to fetch »), saisie conservée', async () => {
+  const { page, ctx } = await open('/', { setup: p => p.route('https://formspree.io/**', route => route.abort()) });
+  const label = await page.textContent('#contact-form button[type=submit]');
+  await fillValid(page);
+  await page.click('#contact-form button[type=submit]');
+  await page.waitForSelector('#form-status.error');
+  const msg = await page.textContent('#form-status');
+  assert.match(msg, ERROR_MSG);
+  assert.doesNotMatch(msg, /fetch|network/i);
+  assert.equal(await page.inputValue('#contact-name'), 'Test Auto');
+  assert.equal(await page.textContent('#contact-form button[type=submit]'), label);
   await ctx.close();
 });
 
@@ -133,13 +152,14 @@ test('localStorage bloqué : le formulaire AJAX et le thème fonctionnent quand 
 // ── 3. Clavier ──
 test('nav cachée : aucun focus invisible ; focusable une fois affichée', async () => {
   const { page, ctx } = await open();
+  // État stable d'abord : à l'application du CSS, la nav passe de « visible » à « cachée » via une transition.
+  await page.waitForFunction(() => getComputedStyle(document.querySelector('.site-nav')).visibility === 'hidden', null, { timeout: 3000 });
   for (let i = 0; i < 4; i++) await page.keyboard.press('Tab');
   assert.equal(await page.evaluate(() => !!document.activeElement.closest('.site-nav')), false);
   assert.equal(await page.evaluate(() => { const a = document.querySelector('.nav-links a'); a.focus(); return document.activeElement === a; }), false);
   await page.evaluate(() => window.scrollTo(0, 1500));
   await page.waitForSelector('.site-nav.visible');
-  await page.waitForTimeout(400);
-  assert.equal(await page.evaluate(() => { const a = document.querySelector('.nav-links a'); a.focus(); return document.activeElement === a; }), true);
+  await page.waitForFunction(() => { const a = document.querySelector('.nav-links a'); a.focus(); return document.activeElement === a; }, null, { timeout: 3000 });
   await ctx.close();
 });
 
@@ -156,6 +176,52 @@ test('sans JavaScript : toutes les sections et les chiffres finaux sont visibles
   assert.deepEqual([...new Set(opacities)], ['1']);
   assert.deepEqual(await page.evaluate(() => [...document.querySelectorAll('.stat-number')].map(e => e.textContent)), FINAL_STATS);
   await ctx.close();
+});
+
+// Cartes : visibles par défaut ; masquées uniquement si script.js a posé .js-reveal.
+const cardOpacities = page => page.evaluate(() => [...document.querySelectorAll('main section.card')].map(s => getComputedStyle(s).opacity));
+
+test('script.js altéré (SRI invalide) : page stylée, cartes visibles, CSS appliqué', async () => {
+  const { page, ctx } = await open('/', {
+    setup: p => p.route('**/script.js', route => route.fulfill({ status: 200, contentType: 'text/javascript', body: '/* altéré */' })),
+  });
+  await page.waitForTimeout(400);
+  assert.equal(await page.evaluate(() => getComputedStyle(document.body).fontFamily.includes('Manrope')), true, 'style.css appliqué sans script.js');
+  assert.equal(await page.evaluate(() => document.documentElement.classList.contains('js-reveal')), false);
+  assert.deepEqual([...new Set(await cardOpacities(page))], ['1']);
+  await ctx.close();
+});
+
+test('prefers-reduced-motion : pas de masquage des cartes', async () => {
+  const { page, ctx } = await open('/', { context: { reducedMotion: 'reduce' } });
+  assert.equal(await page.evaluate(() => document.documentElement.classList.contains('js-reveal')), false);
+  assert.deepEqual([...new Set(await cardOpacities(page))], ['1']);
+  await ctx.close();
+});
+
+test('animation autorisée : cartes hors écran masquées puis révélées au scroll', async () => {
+  const { page, ctx } = await open();
+  assert.ok((await cardOpacities(page)).includes('0'), 'au moins une carte masquée avant scroll');
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await page.waitForFunction(() => [...document.querySelectorAll('main section.card')].every(s => getComputedStyle(s).opacity === '1'), null, { timeout: 5000 });
+  await ctx.close();
+});
+
+test('impression sans avoir fait défiler : toutes les cartes sont imprimées', async () => {
+  const { page, ctx } = await open();
+  assert.ok((await cardOpacities(page)).includes('0'), 'précondition : des cartes sont encore masquées à l\'écran');
+  await page.emulateMedia({ media: 'print' });
+  await page.waitForFunction(() => [...document.querySelectorAll('main section.card')].every(s => getComputedStyle(s).opacity === '1'), null, { timeout: 3000 });
+  await ctx.close();
+});
+
+// ── 4 bis. Fichiers de développement jamais servis (dépôt à plat) ──
+test('dépôt à plat : tools/, README.md et dotfiles refusés ; fichiers publics servis', async () => {
+  const status = async url => (await fetch(BASE + url)).status;
+  for (const url of ['/tools/serve.mjs', '/tools/e2e.test.mjs', '/tools/package.json', '/tools/node_modules/playwright/package.json', '/README.md', '/.gitignore', '/.gitattributes', '/.htaccess', '/.git/config'])
+    assert.equal(await status(url), 403, url);
+  for (const url of ['/', '/robots.txt', '/sitemap.xml', '/script.js', '/loadcss.js', '/style.css', '/.well-known/security.txt'])
+    assert.equal(await status(url), 200, url);
 });
 
 // ── 5. Boutons en mode sombre ──

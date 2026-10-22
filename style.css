@@ -163,20 +163,17 @@ body {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 8px 32px 0 var(--shadow);
-    opacity: 0;
-    transform: translateY(20px);
     transition: opacity 0.6s ease-out, transform var(--transition), box-shadow var(--transition), background-color var(--transition), border-color var(--transition);
     contain: layout style paint;
 }
-.card.hero { opacity: 1; transform: none; }
-.card.is-visible { opacity: 1; transform: translateY(0); }
-/* Alternance gauche/droite sur les cards non-hero */
-.card:not(.hero).is-visible:nth-child(even) { transform: translateX(0); }
-.card:not(.hero) { transform: translateX(-20px); }
-.card:not(.hero).is-visible { transform: translateX(0); }
-/* Sans JavaScript, rien ne peut ajouter .is-visible : on affiche tout. */
-@media (scripting: none) { .card, .card:not(.hero) { opacity: 1; transform: none; } }
-.card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px 0 rgba(0,0,0,0.12); }
+/* Révélation au scroll : les cartes sont VISIBLES par défaut (sans JS, script bloqué,
+   impression, 404). Script.js pose .js-reveal sur <html> seulement s'il peut les révéler.
+   transition: none = le masquage est instantané (pas de fondu 1→0 si le script arrive tard) ;
+   seule la révélation, qui retombe sur la transition de .card, est animée. */
+@media screen {
+    .js-reveal .card:not(.hero):not(.is-visible) { opacity: 0; transform: translateX(-20px); transition: none; }
+}
+.card.hero:hover { transform: translateY(-5px); box-shadow: 0 12px 40px 0 rgba(0,0,0,0.12); }
 
 /* ── Hero ── */
 .hero { display: grid; grid-template-columns: 2fr 1fr; align-items: center; gap: 3rem; }
@@ -570,7 +567,7 @@ footer { text-align: center; padding: 2rem; margin-top: 2rem; font-size: 0.9rem;
     .site-nav, .back-to-top, .theme-toggle, .background-shapes,
     .copy-btn, #contact-form, #form-status { display: none !important; }
     body { background: #fff; color: #000; font-size: 11pt; }
-    .card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; padding: 1.5rem; opacity: 1; transform: none; }
+    .card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; padding: 1.5rem; }
     .hero { display: block; }
     .hero-photo img { max-width: 100px; float: right; margin: 0 0 1rem 1rem; }
     a::after { content: ' (' attr(href) ')'; font-size: 9pt; color: #555; }
