@@ -3,7 +3,7 @@
 Site vitrine one-page de Pierre-Etienne Monreal, Consultant Product Owner Senior basé à Montpellier.
 
 **Live** : [https://pe-monreal.com](https://pe-monreal.com)  
-**Version** : 2.7.0  
+**Version** : 2.7.1  
 **Stack** : HTML5 · CSS3 · JS vanilla · Formspree · OVH — outillage de test local en Node (jamais déployé)
 
 ---
@@ -353,6 +353,7 @@ Ce que `tests.html` en ligne ne couvre pas, et reste à vérifier avec la checkl
 | Tooltip illisible en dark mode | Couleurs fixes `#1a202c`/`#f7fafc`, jamais `var(--accent)` |
 | `tests.html` en ligne : FAILs concentrés sur perf/nav mobile (listener scroll, blur, contain, matchMedia) | `style.css` et/ou `script.js` en ligne sont une version antérieure — réuploader les DEUX fichiers ensemble depuis le dernier zip (jamais un seul isolé, cause de désynchronisation SRI) |
 | `npm test` : « ÉCART » sur une empreinte SRI | `npm run sri:write` puis relancer — ne jamais éditer les hash à la main |
+| `tests.html` en ligne : FAILs sur des fichiers pourtant à jour sur le serveur | Cache navigateur (assets `immutable` 1 an). Depuis la v2.7.1, `tests.js` lit les fichiers avec `cache: 'reload'`. Si ça persiste : fenêtre de navigation privée |
 | `tools/` ou `README.md` accessibles en ligne (200) | `.htaccess` absent ou ancien sur le serveur — le réuploader (fichier caché) |
 | `npm test` : Chromium introuvable | `npx playwright install chromium` (ou variable `PLAYWRIGHT_CHROMIUM_PATH`) |
 | `mentions-legales.html` : identité éditeur incomplète | Placeholders `[À compléter]` dans le fichier — statut juridique, SIRET, adresse. Non fictifs par choix : à remplir avec tes vraies informations avant mise en ligne officielle |
@@ -368,4 +369,4 @@ Ce que `tests.html` en ligne ne couvre pas, et reste à vérifier avec la checkl
 
 ---
 
-*v2.7.0 · Octobre 2026*
+*v2.7.1 · Octobre 2026*

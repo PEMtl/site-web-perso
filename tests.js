@@ -1,5 +1,8 @@
 const suites = [];
 let totalPass = 0, totalFail = 0;
+// Les assets sont servis « immutable » (1 an) : un fetch() normal relit la copie en cache du
+// navigateur, donc d'anciennes versions → faux échecs. 'reload' force la lecture sur le serveur.
+const get = path => fetch(path, { cache: 'reload' });
 
 function suite(name, fn) { suites.push({ name, fn, tests: [] }); }
 function _record(s, label, passed, detail = '') {
@@ -23,11 +26,11 @@ async function run() {
   let doc, cssText, jsText, loadcssText, testsHtmlText;
   try {
     const [htmlRes, cssRes, jsRes, loadcssRes, testsHtmlRes] = await Promise.all([
-      fetch('/index.html'),
-      fetch('/style.css'),
-      fetch('/script.js'),
-      fetch('/loadcss.js'),
-      fetch('/tests.html'),
+      get('/index.html'),
+      get('/style.css'),
+      get('/script.js'),
+      get('/loadcss.js'),
+      get('/tests.html'),
     ]);
     const htmlText = await htmlRes.text();
     cssText = await cssRes.text();
@@ -128,7 +131,7 @@ async function run() {
   suite('Page 404', async s => {
     let doc404 = null, notFoundStatus = null;
     try {
-      const r = await fetch('/404.html');
+      const r = await get('/404.html');
       notFoundStatus = r.status;
       doc404 = new DOMParser().parseFromString(await r.text(), 'text/html');
     } catch {}
@@ -271,7 +274,7 @@ async function run() {
   suite('Mentions légales & RGPD', async s => {
     let docLegal = null, legalStatus = null;
     try {
-      const r = await fetch('/mentions-legales.html');
+      const r = await get('/mentions-legales.html');
       legalStatus = r.status;
       docLegal = new DOMParser().parseFromString(await r.text(), 'text/html');
     } catch {}

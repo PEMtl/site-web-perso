@@ -6,7 +6,7 @@ if (canAnimate) document.documentElement.classList.add('js-reveal');
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  const VERSION = '2.7.0';
+  const VERSION = '2.7.1';
 
   // ── Scroll animation cards ──
   if (canAnimate) {
